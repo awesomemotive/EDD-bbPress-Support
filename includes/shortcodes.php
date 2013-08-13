@@ -6,7 +6,7 @@
 /**
  * Support Dashboard Shortcode Callback
  */
-function bbps_dashboard_shortcode( $atts, $content = null ) {
+function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 	/*
 	 Show:
 	 - open tickets
@@ -14,14 +14,13 @@ function bbps_dashboard_shortcode( $atts, $content = null ) {
 	 - unassigned tickets
 	 - tickets awaiting answer
 	*/
-
 	global $user_ID;
 
 	if ( ! current_user_can( 'moderate' ) )
 		return;
 
-	wp_enqueue_script( 'bootstrap', BBPS_URL . 'bootstrap/js/bootstrap.min.js' );
-	wp_enqueue_style( 'bootstrap', BBPS_URL . 'bootstrap/css/bootstrap.min.css' );
+	wp_enqueue_script( 'bootstrap', BBPS_URL . 'bootstrap/js/bootstrap.min.js'   );
+	wp_enqueue_style(  'bootstrap', BBPS_URL . 'bootstrap/css/bootstrap.min.css' );
 
 	// Get tickets awaiting answer
 	$args = array(
@@ -127,40 +126,40 @@ function bbps_dashboard_shortcode( $atts, $content = null ) {
 	<div class="tab-content">
 		<div class="tab-pane active" id="your-waiting-tickets">
 			<ul class="bbp-tickets">
-				<?php if( $waiting_tickets->have_posts() ) : ?>
-					<?php while( $waiting_tickets->have_posts() ) : $waiting_tickets->the_post(); ?>
+				<?php if ( $waiting_tickets->have_posts() ) : ?>
+					<?php while ( $waiting_tickets->have_posts() ) : $waiting_tickets->the_post(); ?>
 						<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
-						<?php if( $parent != 318 ) : ?>
+						<?php if ( $parent != 318 ) : ?>
 						<?php $remove_url = add_query_arg( array( 'topic_id' => get_the_ID(), 'bbps_action' => 'remove_pending' ) ); ?>
 						<li>
-							<?php if( $parent == 499 ) { ?>
+							<?php if ( $parent == 499 ) { ?>
 							<strong>Priority:</strong>
 							<?php } ?>
-							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a> - <a href="<?php echo $remove_url; ?>">Remove Pending Status</a>
+							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a> - <a href="<?php echo $remove_url; ?>"><?php _e( 'Remove Pending Status', 'edd-bbpress-dashboard' ); ?></a>
 						</li>
 						<?php endif; ?>
 					<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
 				<?php else : ?>
-					<li>No tickets awaiting youre reply. Excellent, now go grab some unresolved or unassigned tickets.</li>
+					<li><?php _e( 'No tickets awaiting your reply. Excellent, now go grab some unresolved or unassigned tickets.', 'edd-bbpress-dashboard' ); ?></li>
 				<?php endif; ?>
 			</ul>
 		</div>
 		<div class="tab-pane" id="your-tickets">
 			<ul class="bbp-tickets">
-				<?php if( $assigned_tickets->have_posts() ) : ?>
-					<?php while( $assigned_tickets->have_posts() ) : $assigned_tickets->the_post(); ?>
+				<?php if ( $assigned_tickets->have_posts() ) : ?>
+					<?php while ( $assigned_tickets->have_posts() ) : $assigned_tickets->the_post(); ?>
 						<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
 						<li>
-							<?php if( $parent == 499 ) { ?>
-							<strong>Priority:</strong>
+							<?php if ( $parent == 499 ) { ?>
+							<strong><?php _e( 'Priority:', 'edd-bbpress-dashboard' ); ?></strong>
 							<?php } ?>
 							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 						</li>
 					<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
 				<?php else : ?>
-					<li>No unresolved tickets, yay! Now go grab some unresolved or unassigned tickets.</li>
+					<li><?php _e( 'No unresolved tickets, yay! Now go grab some unresolved or unassigned tickets.', 'edd-bbpress-dashboard' ); ?></li>
 				<?php endif; ?>
 			</ul>
 		</div>
@@ -171,14 +170,14 @@ function bbps_dashboard_shortcode( $atts, $content = null ) {
 						<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
 						<li>
 							<?php if( $parent == 499 ) { ?>
-							<strong>Priority:</strong>
+							<strong><?php _e( 'Priority:', 'edd-bbpress-dashboard' ); ?></strong>
 							<?php } ?>
 							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 						</li>
 					<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
 				<?php else : ?>
-					<li>No unassigned tickets, yay!</li>
+					<li><?php _e( 'No unassigned tickets, yay!', 'edd-bbpress-dashboard' ); ?></li>
 				<?php endif; ?>
 			</ul>
 		</div>
@@ -189,38 +188,35 @@ function bbps_dashboard_shortcode( $atts, $content = null ) {
 						<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
 						<li>
 							<?php if( $parent == 499 ) { ?>
-							<strong>Priority:</strong>
+							<strong><?php _e( 'Priority:', 'edd-bbpress-dashboard' ); ?></strong>
 							<?php } ?>
 							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 						</li>
 					<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
 				<?php else : ?>
-					<li>No unresolved tickets, yay!</li>
+					<li><?php _e( 'No unassigned tickets, yay!', 'edd-bbpress-dashboard' ); ?></li>
 				<?php endif; ?>
 			</ul>
 		</div>
 		<div class="tab-pane" id="feature-requests">
 			<ul class="bbp-tickets">
-				<?php if( $feature_requests->have_posts() ) : ?>
-					<?php while( $feature_requests->have_posts() ) : $feature_requests->the_post(); ?>
-						<li>
-							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-						</li>
+				<?php if ( $feature_requests->have_posts() ) : ?>
+					<?php while ( $feature_requests->have_posts() ) : $feature_requests->the_post(); ?>
+						<li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
 					<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
 				<?php endif; ?>
 			</ul>
-			<p><a href="https://easydigitaldownloads.com/support/forum/feature-requests/">View More</a></p>
 		</div>
 	</div>
 
 	<script>
-	jQuery(function($) {
+	jQuery( function($) {
 		$('#support-tabs a:first').tab('show');
 	})
 	</script>
 	<?php
 	return ob_get_clean();
 }
-add_shortcode( 'bbps_dashboard', 'bbps_dashboard_shortcode' );
+add_shortcode( 'bbps_dashboard', 'edd_bbp_d_dashboard_shortcode' );

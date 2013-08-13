@@ -3,28 +3,29 @@
  * Plugin Name: EDD bbPress Support Dashboard
  * Description: Support dashboard for sites running EDD and bbPress
  * Author: Pippin Williamson and Sunny Ratilal
+ * Author URI: https://easydigitaldownloads.com/
  * Version: 2.0
  */
 
-function bbps_activate() {
-	include_once plugin_dir_path( __FILE__ ).'includes/core-options.php';
-	do_action( 'bbps-activation' );
+function edd_bbp_d_activate() {
+	include_once plugin_dir_path( __FILE__ ) . 'includes/core-options.php';
+	do_action( 'edd_bbp_d_activation' );
 }
-register_activation_hook( __FILE__ , 'bbps_activate' );
+register_activation_hook( __FILE__ , 'edd_bbp_d_activate' );
 
 /**
  * Setup the plugin
  */
-function bbps_setup() {
-	bbps_define_constants();
-	bbps_includes();
+function edd_bbp_d_setup() {
+	edd_bbp_d_define_constants();
+	edd_bbp_d_includes();
 }
-add_action( 'plugins_loaded', 'bbps_setup' );
+add_action( 'plugins_loaded', 'edd_bbp_d_setup' );
 
 /**
  * Setup the globals
  */
-function bbps_define_constants() {
+function edd_bbp_d_define_constants() {
 	define( 'BBPS_PATH',          plugin_dir_path( __FILE__ ) );
 	define( 'BBPS_ADMIN_PATH',    BBPS_PATH .'admin/' );
 	define( 'BBPS_TEMPLATE_PATH', BBPS_PATH .'templates/' );
@@ -37,12 +38,12 @@ function bbps_define_constants() {
 /**
  * Includes all the files required for the plugin to run
  */
-function bbps_includes() {
+function edd_bbp_d_includes() {
 	// Load backend fles
 	if ( is_admin() ) {
 		$admin_files = array(
-			'bbps-admin',
-			'bbps-settings',
+			'admin-functions',
+			'settings',
 		);
 
 		foreach ( $admin_files as $file ) {
@@ -68,7 +69,7 @@ function bbps_includes() {
 /**
  * Register any widgets
  */
-function bbps_register_widgets() {
+function edd_bbp_d_register_widgets() {
 	register_widget( 'BBPS_Forum_Support_Hours' );
 }
-add_action( 'widgets_init', 'bbps_register_widgets' );
+add_action( 'widgets_init', 'edd_bbp_d_register_widgets' );
