@@ -4,13 +4,13 @@
  * Support Hours Widgets
  */
 class BBPS_Forum_Support_Hours extends WP_Widget {
-	public function __construct(){
+	public function __construct() {
 		$widget_ops = array(
 			'classname' => 'bbps_support_hours_widget',
 			'description' => 'Set your support times for your support forum - these will be displayed to your posters'
 		);
 
-		$this->WP_Widget( 'bbps_support_hours_widget', __( 'Forum Support Hours' ), $widget_ops );
+		$this->WP_Widget( 'bbps_support_hours_widget', __( 'Forum Support Hours', 'edd-bbpress-dashboard' ), $widget_ops );
 	}
 
 	public function form( $instance ) {
@@ -41,7 +41,7 @@ class BBPS_Forum_Support_Hours extends WP_Widget {
 		<p>Closed Text: <input class="widefat" name="<?php echo $this->get_field_name( 'forum_closed_text' ); ?>" type="text" value="<?php echo esc_attr($forum_closed_text); ?>" /> This will get displayed to your users when the forums are closed. This text has a class of "forum_text" if you would like to style it differently </p>
 		<p>Forum Closed on Weekends?: <input class="checkbox" type="checkbox" <?php checked( $instance['closed_weekends'], 'on' ); ?> name="<?php echo $this->get_field_name( 'closed_weekends' ); ?>" /></p><p> Select this if your forum is closed on the weekends </p>
 		<p>Forum Closed: <input class="checkbox" type="checkbox" <?php checked( $instance['forum_closed'], 'on' ); ?> name="<?php echo $this->get_field_name( 'forum_closed' ); ?>" /></p><p> Checking this box turns your widget into closed mode until you uncheck it - perfect if your away on holiday and not maintaining your forums. </p>
-	<?php
+		<?php
 	}
 
 	public function update( $new_instance, $old_instance ) {
@@ -78,8 +78,7 @@ class BBPS_Forum_Support_Hours extends WP_Widget {
 		if ( $forum_closed == 'on' || ( $closed_weekends == 'on' && 6 == date( 'N' ) ) || ( $closed_weekends == 'on' && 7 == date( 'N' ) ) ) {
 			$closed = true;
 		} else {
-			// if ( ( $open_time_raw < $close_time_raw ) && ( $time >= $open_time_raw && ! ( $time >= $close_time_raw ) ) || ( $open_time_raw > $close_time_raw ) && ( $time >= $open_time_raw && ! ( $time <= $close_time_raw ) ) )
-			if ( date( 'H', current_time( 'timestamp' ) ) >= 9 && date( 'H', current_time( 'timestamp' ) ) <= 17 )
+			if ( ( $open_time_raw < $close_time_raw ) && ( $time >= $open_time_raw && ! ( $time >= $close_time_raw ) ) || ( $open_time_raw > $close_time_raw ) && ( $time >= $open_time_raw && ! ( $time <= $close_time_raw ) ) )
 				$open = true;
 			else
 				$closed = true;
