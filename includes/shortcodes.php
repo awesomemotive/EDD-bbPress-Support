@@ -115,7 +115,7 @@ function bbps_dashboard_shortcode( $atts, $content = null ) {
 
 	ob_start(); ?>
 	<style>
-	#support-tabs li { list-style: none; margin-left: 0; }
+	#support-tabs li { list-style: none; margin-left: 0; font-size: 95%;}
 	</style>
 	<ul class="nav nav-tabs" id="support-tabs">
 		<li><a href="#your-waiting-tickets" data-toggle="tab">Awaiting Your Respose (<?php echo $waiting_tickets->post_count; ?>)</a></li>
