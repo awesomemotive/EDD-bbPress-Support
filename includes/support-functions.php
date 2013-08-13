@@ -1,0 +1,547 @@
+<?php
+/**
+ * Support Forum Functions
+ */
+
+/**
+ * Checks if current user can is a moderator
+ *
+ * @return [type] [description]
+ */
+function bbps_get_update_capabilities() {
+	if ( current_user_can( 'moderate' ) ) {
+		return true;
+	}
+}
+
+function bbps_add_support_forum_features() {
+	if ( bbps_is_support_forum( bbp_get_forum_id() ) ) {
+		$can_edit = bbps_get_update_capabilities();
+		$topic_id = bbp_get_topic_id();
+		$status = bbps_get_topic_status( $topic_id );
+		$forum_id = bbp_get_forum_id();
+		$user_id = get_current_user_id();
+?>
+	<div id="bbps_support_forum_options">
+		<?php
+		if ( current_user_can( 'moderate' ) ) {
+			bbps_generate_status_options( $topic_id, $status );
+		} else { ?>
+			This topic is: <?php echo $status; ?>
+		<?php } ?>
+	</div>
+	<?php
+	}
+}
+add_action( 'bbp_template_before_single_topic', 'bbps_add_support_forum_features' );
+
+function bbps_get_topic_status( $topic_id ) {
+	$default = get_option( '_bbps_default_status' );
+
+	$status = get_post_meta( $topic_id, '_bbps_topic_status', true );
+
+	if ( $status )
+		$switch = $status;
+	else
+		$switch = $default;
+
+	switch ( $switch ) {
+	case 1:
+		return "not resolved";
+		break;
+	case 2:
+		return "resolved";
+		break;
+	case 3:
+		return "not a support question";
+		break;
+	}
+}
+
+/**
+ * Generates a drop down list for administrators and moderators to change
+ * the status of a forum topic
+ */
+function bbps_generate_status_options( $topic_id ) {
+	$dropdown_options = get_option( '_bbps_used_status' );
+	$status = get_post_meta( $topic_id, '_bbps_topic_status', true );
+	$default = get_option( '_bbps_default_status' );
+
+	//only use the default value as selected if the topic doesnt ahve a status set
+	if ( $status )
+		$value = $status;
+	else
+		$value = $default;
+?>
+	<form id="bbps-topic-status" name="bbps_support" action="" method="post">
+		<label for="bbps_support_options">This topic is: </label>
+		<select name="bbps_support_option" id="bbps_support_options">
+		<?php
+			// we only want to display the options the user has selected. the long term goal is to let users add their own forum statuses
+			if ( $dropdown_options['res'] == 1 ) { ?> <option value="1" <?php selected( $value, 1 ) ; ?> >Not Resolved</option> <?php }
+			if ( $dropdown_options['notres'] == 1 ) {?> <option value="2" <?php selected( $value, 2 ) ; ?> >Resolved</option> <?php }
+			if ( $dropdown_options['notsup'] == 1 ) {?> <option value="3" <?php selected( $value, 3 ) ; ?> >Not a Support Question</option> <?php
+		} ?>
+		</select>
+		<input type="submit" value="Update" name="bbps_support_submit" />
+		<input type="hidden" value="bbps_update_status" name="bbps_action"/>
+		<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
+	</form>
+	<?php
+}
+
+function bbps_update_status() {
+	$topic_id = absint( $_POST['bbps_topic_id'] );
+	$status   = sanitize_text_field( $_POST['bbps_support_option'] );
+
+	//check if the topic already has resolved meta - if it does then delete it before readding
+	//we do this so that any topic updates will have a new meta id for sorting recently resolved etc
+	$has_status = get_post_meta( $topic_id, '_bbps_topic_status', true );
+	$is_urgent  = get_post_meta( $topic_id, '_bbps_urgent_topic', true );
+	$is_claimed = get_post_meta( $topic_id, '_bbps_topic_claimed', true );
+
+	if ( $has_status )
+		delete_post_meta( $topic_id, '_bbps_topic_status' );
+
+	//if the status is going to resolved we need to check for claimed and urgent meta and delete this to
+	// 2 == resolved status :)
+	if ( $status == 2 ) {
+		if ( $is_urgent )
+			delete_post_meta( $topic_id, '_bbps_urgent_topic' );
+		if ( $is_claimed )
+			delete_post_meta( $topic_id, '_bbps_topic_claimed' );
+	}
+
+	update_post_meta( $topic_id, '_bbps_topic_status', $status );
+}
+
+/**
+ * Mark a topic as urgent
+ */
+function bbps_urgent_topic_link() {
+	if ( ( get_option( '_bbps_status_permissions_urgent' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) && ( bbps_is_support_forum( bbp_get_forum_id() ) ) ) {
+		$topic_id = bbp_get_topic_id();
+		// 1 = urgent topic 0 or nothing is topic not urgent so we give the admin / mods the chance to make it urgent
+		if ( get_post_meta( $topic_id, '_bbps_urgent_topic', true ) != 1 ) {
+			$urgent_uri = add_query_arg( array( 'action' => 'bbps_make_topic_urgent', 'topic_id' => $topic_id ) );
+			echo '<span class="bbp-admin-links bbps-links"><a href="' . $urgent_uri . '">Urgent</a></span>';
+		}
+
+	}
+	return;
+}
+add_action( 'bbp_theme_after_reply_admin_links', 'bbps_urgent_topic_link' );
+
+/**
+ * Mark a topic as urgent
+ */
+function bbps_urgent_topic() {
+	$topic_id = $_GET['topic_id'];
+	update_post_meta( $topic_id, '_bbps_urgent_topic', 1 );
+}
+
+function bbps_not_urgent_topic() {
+	$topic_id = $_GET['topic_id'];
+	delete_post_meta( $topic_id, '_bbps_urgent_topic' );
+}
+
+/**
+ * Display a message to all administrators on the single topic view so they
+ * know a topic is urgent also give them a link to check it as not urgent
+ */
+function display_urgent_message() {
+	if ( ( get_option( '_bbps_status_permissions_urgent' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) && ( bbps_is_support_forum( bbp_get_forum_id() ) ) ) {
+		$topic_id = bbp_get_topic_id();
+		//topic is urgent so make a link
+		if ( get_post_meta( $topic_id, '_bbps_urgent_topic', true ) == 1 ) {
+			$urgent_uri = add_query_arg( array( 'action' => 'bbps_make_topic_not_urgent', 'topic_id' => $topic_id ) );
+			echo "<div class='bbps-support-forums-message'> This topic is currently marked as urgent. Change the status to " . '<a href="' . $urgent_uri . '">Not Urgent?</a></div>';
+		}
+	}
+}
+add_action( 'bbp_template_before_single_topic' , 'display_urgent_message' );
+
+/**
+ * Claiming a topic
+ */
+function bbps_claim_topic_link() {
+	if ( ( get_option( '_bbps_claim_topic' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) && ( bbps_is_support_forum( bbp_get_forum_id() ) ) ) {
+		$topic_id = bbp_get_topic_id();
+		global $current_user;
+		get_currentuserinfo();
+		$user_id = $current_user->ID;
+
+		//anything greater than one will be claimed as it saves the claimed user id and will set this back to 0 if a topic is unclaimed
+		if ( get_post_meta( $topic_id, '_bbps_topic_claimed', true ) < 1 ) {
+			$urgent_uri = add_query_arg( array( 'action' => 'bbps_claim_topic', 'topic_id' => $topic_id, 'user_id' => $user_id ) );
+			echo '<span class="bbp-admin-links bbps-links"><a href="' . $urgent_uri . '">Claim </a></span>';
+		}
+
+	}
+	return;
+}
+add_action( 'bbp_theme_after_reply_admin_links', 'bbps_claim_topic_link' );
+
+function bbps_claim_topic() {
+	$user_id  = absint( $_GET['user_id'] );
+	$topic_id = absint( $_GET['topic_id'] );
+
+	// Subscribe the user
+	bbp_add_user_subscription( $user_id, $topic_id );
+
+	// Record the User ID of the moderator who claimed the topic
+	update_post_meta( $topic_id, '_bbps_topic_claimed', $user_id );
+}
+
+function bbps_unclaim_topic() {
+	$user_id  = absint( $_GET['user_id'] );
+	$topic_id = absint( $_GET['topic_id'] );
+
+	// Unsubscribe the moderator who unclaimed from the topic
+	bbp_remove_user_subscription( $user_id, $topic_id );
+
+	delete_post_meta( $topic_id, '_bbps_topic_claimed' );
+}
+
+function bbps_display_claimed_message() {
+	$topic_author_id = bbp_get_topic_author_id();
+	global $current_user;
+	get_currentuserinfo();
+	$user_id = $current_user->ID;
+	//we want to display the claimed topic message to the topic owner to
+	if ( ( get_option( '_bbps_claim_topic' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) || $topic_author_id == $user_id ) && ( bbps_is_support_forum( bbp_get_forum_id() ) ) ) {
+
+		$topic_id = bbp_get_topic_id();
+		$claimed_user_id = get_post_meta( $topic_id, '_bbps_topic_claimed', true );
+		if ( $claimed_user_id > 0 ) {
+			$user_info = get_userdata ( $claimed_user_id );
+			$claimed_user_name = $user_info->user_login;
+		}
+		if ( $claimed_user_id > 0 && $claimed_user_id != $user_id ) {
+			echo "<div class='bbps-support-forums-message'>This topic is currently claimed by " .$claimed_user_name .", they will be working on it now. </div>";
+		}
+		//the person who claimed it can unclaim it this will also unsubscribe them when they do
+		if ( $claimed_user_id == $user_id ) {
+			$urgent_uri = add_query_arg( array( 'action' => 'bbps_unclaim_topic', 'topic_id' => $topic_id, 'user_id' => $user_id ) );
+			echo '<div class="bbps-support-forums-message"> You currently own this topic would you like to <a href="' . $urgent_uri . '">Unclame</a> it?</div>';
+		}
+	}
+}
+add_action( 'bbp_template_before_single_topic' , 'bbps_display_claimed_message' );
+
+function bbps_assign_topic_form() {
+	if ( ( get_option( '_bbps_topic_assign' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) ) {
+		$topic_id = bbp_get_topic_id();
+		$topic_assigned = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
+		global $current_user;
+		get_currentuserinfo();
+		$current_user_id = $current_user->ID;
+		?>	<div id="bbps_support_forum_options"> <?php
+
+		$user_login = $current_user->user_login;
+		if ( !empty( $topic_assigned ) ) {
+			if ( $topic_assigned == $current_user_id ) {
+				?> <div class='bbps-support-forums-message'>This topic is assigned to you.</div><?php
+			}
+			else {
+				$user_info = get_userdata( $topic_assigned );
+				$assigned_user_name = $user_info->user_firstname . ' ' . $user_info->user_lastname;
+				?> <div class='bbps-support-forums-message'> This topic is already assigned to: <?php echo $assigned_user_name; ?></div><?php
+			}
+		}
+
+?>
+		<div id ="bbps_support_topic_assign">
+			<form id="bbps-topic-assign" name="bbps_support_topic_assign" action="" method="post">
+			<?php bbps_user_assign_dropdown(); ?>
+				<input type="submit" value="Assign" name="bbps_support_topic_assign" />
+				<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
+				<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
+			</form>
+		</div></div>
+		<?php
+	}
+
+}
+add_action( 'bbp_template_before_single_topic' , 'bbps_assign_topic_form' );
+
+function bbps_user_assign_dropdown() {
+	$wp_user_search = new WP_User_Query( array( 'role' => 'administrator' ) );
+	$admins = $wp_user_search->get_results();
+
+	$wp_user_search = new WP_User_Query( array( 'role' => 'bbp_moderator' ) );
+	$moderators = $wp_user_search->get_results();
+
+	$all_users = array_merge( $moderators, $admins );
+	$topic_id = bbp_get_topic_id();
+	$claimed_user_id = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
+
+	if ( ! empty( $all_users ) ) {
+		if ( $claimed_user_id > 0 ) {
+			$text = "Reassign topic to: ";
+		} else {
+			$text = "Assign topic to: ";
+		}
+
+		echo $text;
+?>
+		<select name="bbps_assign_list" id="bbps_support_options">
+		<option value="">Unassigned</option><?php
+		foreach ( $all_users as $user ) {
+?>
+			<option value="<?php echo $user->ID; ?>"> <?php echo $user->user_firstname . ' ' . $user->user_lastname ; ?></option>
+		<?php
+		}
+		?> </select> <?php
+	}
+
+}
+
+function bbps_assign_topic() {
+	$user_id  = absint( $_POST['bbps_assign_list'] );
+	$topic_id = absint( $_POST['bbps_topic_id'] );
+
+	if ( $user_id > 0 ) {
+		$userinfo = get_userdata( $user_id );
+		$user_email = $userinfo->user_email;
+		$post_link = get_permalink( $topic_id );
+		//add the user as a subscriber to the topic and send them an email to let them know they have been assigned to a topic
+		bbp_add_user_subscription( $user_id, $topic_id );
+		/*update the post meta with the assigned users id*/
+		$assigned = update_post_meta( $topic_id, 'bbps_topic_assigned', $user_id );
+		if ( $user_id != get_current_user_id() ) {
+			$message = <<< EMAILMSG
+		You have been assigned to the following topic, by another forum moderator or the site administrator. Please take a look at it when you get a chance.
+		$post_link
+EMAILMSG;
+			if ( $assigned == true ) {
+				wp_mail( $user_email, 'A forum topic has been assigned to you', $message );
+			}
+		}
+	}
+}
+
+function bbps_ping_topic_assignee() {
+	$topic_id = absint( $_POST['bbps_topic_id'] );
+	$user_id  = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
+
+	if ( $user_id ) {
+		$userinfo = get_userdata( $user_id );
+		$user_email = $userinfo->user_email;
+		$post_link = get_permalink( $topic_id );
+		$message = <<< EMAILMSG
+		A ticket that has been assigned to you is in need of attention.
+		$post_link
+EMAILMSG;
+		wp_mail( $user_email, 'EDD Ticket Ping', $message );
+	}
+}
+
+function bbps_ping_asignee_button() {
+	if ( bbps_is_support_forum( bbp_get_forum_id() ) ) {
+		$can_edit = bbps_get_update_capabilities();
+		$topic_id = bbp_get_topic_id();
+		$status = bbps_get_topic_status( $topic_id );
+		$forum_id = bbp_get_forum_id();
+		$user_id = get_current_user_id();
+
+		if ( current_user_can( 'moderate' ) ) {
+?>
+		<div id ="bbps_support_forum_ping">
+			<form id="bbps-topic-ping" name="bbps_support_topic_ping" action="" method="post">
+				<input type="submit" class="edd-submit button" value="Ping Assignee" name="bbps_topic_ping_submit" />
+				<input type="hidden" value="bbps_ping_topic" name="bbps_action"/>
+				<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
+				<input type="hidden" value="<?php echo $forum_id ?>" name="bbp_old_forum_id" />
+			</form>
+		</div>
+		<?php
+		}
+	}
+}
+add_action( 'bbp_template_before_single_topic', 'bbps_ping_asignee_button' );
+
+// adds a class and status to the front of the topic title
+function bbps_modify_title( $title, $topic_id = 0 ) {
+	$topic_id = bbp_get_topic_id( $topic_id );
+	$title = "";
+	$topic_author_id = bbp_get_topic_author_id();
+	global $current_user;
+	get_currentuserinfo();
+	$user_id = $current_user->ID;
+
+	$claimed_user_id = get_post_meta( $topic_id, '_bbps_topic_claimed', true );
+	if ( $claimed_user_id > 0 ) {
+		$user_info = get_userdata ( $claimed_user_id );
+		$claimed_user_name = $user_info->user_login;
+	}
+
+	//2 is the resolved status ID
+	if ( get_post_meta( $topic_id, '_bbps_topic_status', true ) == 2 )
+		echo '<span class="resolved"> [Resolved] </span>';
+	//we only want to display the urgent topic status to admin and moderators
+	if ( get_post_meta( $topic_id, '_bbps_urgent_topic', true ) == 1 && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) )
+		echo '<span class="urgent"> [Urgent] </span>';
+	//claimed topics also only get shown to admin and moderators and the person who owns the topic
+	if ( get_post_meta( $topic_id, '_bbps_topic_claimed', true ) > 0 && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) || $topic_author_id == $user_id ) ) {
+		//if this option == 1 we display the users name not [claimed]
+		if ( get_option( '_bbps_claim_topic_display' ) == 1 )
+			echo '<span class="claimed">['. $claimed_user_name . ']</span>';
+		else
+			echo '<span class="claimed"> [Claimed] </span>';
+	}
+}
+add_action( 'bbp_theme_before_topic_title', 'bbps_modify_title' );
+
+
+function bbps_add_topic_status( $topic_id = 0, $topic ) {
+	if ( $topic->post_type != 'topic' )
+		return;
+
+	$status = get_post_meta( $topic_id, '_bbps_topic_status', true );
+
+	if ( ! $status )
+		add_post_meta( $topic_id, '_bbps_topic_status', 1 );
+}
+add_action( 'wp_insert_post', 'bbps_add_topic_status', 10, 2 );
+
+function bbps_set_as_pending( $post ) {
+	if ( $post->post_type != 'topic' )
+		return;
+
+	add_post_meta( $post->ID, '_bbps_topic_pending', 1 );
+}
+add_action( 'new_to_publish', 'bbps_set_as_pending' );
+add_action( 'draft_to_publish', 'bbps_set_as_pending' );
+add_action( 'pending_to_publish', 'bbps_set_as_pending' );
+
+function bbps_maybe_remove_pending( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author, $something, $reply_to ) {
+	if ( current_user_can( 'moderate' ) )
+		delete_post_meta( $topic_id, '_bbps_topic_pending' );
+	else
+		update_post_meta( $topic_id, '_bbps_topic_pending', '1' );
+}
+add_action( 'bbp_new_reply', 'bbps_maybe_remove_pending', 10, 7 );
+
+function bbps_force_remove_pending() {
+	if ( ! isset( $_GET['topic_id'] ) )
+		return;
+	if ( ! isset( $_GET['bbps_action'] ) || $_GET['bbps_action'] != 'remove_pending' )
+		return;
+	if ( ! current_user_can( 'moderate' ) )
+		return;
+
+	delete_post_meta( $_GET['topic_id'], '_bbps_topic_pending' );
+	wp_redirect( remove_query_arg( array( 'topic_id', 'bbps_action' ) ) ); exit;
+}
+add_action( 'init', 'bbps_force_remove_pending' );
+
+function bbps_add_user_purchases_link() {
+	if ( ! current_user_can( 'moderate' ) )
+		return;
+
+	if ( ! function_exists( 'edd_get_users_purchases' ) )
+		return;
+
+	$user_email = bbp_get_displayed_user_field( 'user_email' );
+
+	echo '<div class="edd_users_purchases">';
+	echo '<h4>User\'s Purchases:</h4>';
+	$purchases = edd_get_users_purchases( $user_email );
+	if ( $purchases ) :
+		echo '<ul>';
+	foreach ( $purchases as $purchase ) {
+		$downloads = edd_get_payment_meta_downloads( $purchase->ID );
+		foreach ( $downloads as $download ) {
+			echo '<li>' . get_the_title( $download['id'] ) . ' - ' . date( 'F j, Y', strtotime( $purchase->post_date ) ) . '</li>';
+		}
+	}
+	echo '</ul>';
+	else :
+		echo '<p>This user has never purchased anything.</p>';
+	endif;
+	echo '</div>';
+}
+add_action( 'bbp_template_after_user_profile', 'bbps_add_user_purchases_link' );
+
+function bbps_add_user_priority_support_status() {
+	if ( ! current_user_can( 'moderate' ) )
+		return;
+
+	if ( ! function_exists( 'rcp_get_status' ) )
+		return;
+
+	$user_id = bbp_get_displayed_user_field( 'ID' );
+
+	echo '<div class="rcp_support_status">';
+	echo '<h4>Priority Support Access</h4>';
+	if ( rcp_is_active( $user_id ) ) {
+		echo '<p>Has <strong>Priority Support</strong> access.</p>';
+	} elseif ( rcp_is_expired( $user_id ) ) {
+		echo '<p><strong>Priority Support</strong> access has <span style="color:red;">expired</span>.</p>';
+	} else {
+		echo '<p>Has no priority support accesss</p>';
+	}
+
+	echo '</div>';
+}
+add_action( 'bbp_template_after_user_profile', 'bbps_add_user_priority_support_status' );
+
+
+function bbps_reply_and_resolve( $reply_id = 0, $topic_id = 0, $forum_id = 0, $anonymous_data = false, $author_id = 0, $is_edit = false ) {
+	if ( isset( $_POST['bbp_reply_close'] ) ) {
+		update_post_meta( $topic_id, '_bbps_topic_status', 2 );
+	}
+}
+add_action( 'bbp_new_reply', 'bbps_reply_and_resolve', 0, 6 );
+
+/**
+ * Creates the toggle for the action links dropdown
+ */
+function bbps_action_links_dropdown() {
+	$reply_id = bbp_get_reply_id();
+
+	// If post is not a reply, return
+	if ( ! bbp_is_reply( $reply_id ) && ! bbp_is_topic( $reply_id ) )
+		return;
+
+	// Make sure user can edit this reply
+	if ( ! current_user_can( 'edit_reply', $reply_id ) )
+		return;
+
+	// If topic is trashed, do not show admin links
+	if ( bbp_is_topic_trash( bbp_get_reply_topic_id( $reply_id ) ) )
+		return;
+
+?>
+	<button class="bbp-action-links-dropdown-toggle" data-toggle="dropdown"><span class="filter-option pull-left">Actions</span> <i class="icon icon-angle-down"></i></button>
+	<i class="icon-caret-up icon"></i>
+	<?php
+}
+add_action( 'bbp_theme_before_reply_admin_links', 'bbps_action_links_dropdown' );
+
+function edd_bbp_d_sidebar() {
+	global $post;
+
+	$user_id = get_the_author_meta( 'ID' );
+
+?>
+	<div class="box">
+		<h3><?php echo get_the_author_meta( 'first_name' ) . '  ' . get_the_author_meta( 'last_name' ); ?></h3>
+		<p class="bbp-user-forum-role"><?php  printf( __( 'Forum Role: %s',      'bbpress' ), bbp_get_user_display_role( $user_id )    ); ?></p>
+		<p class="bbp-user-topic-count"><?php printf( __( 'Topics Started: %s',  'bbpress' ), bbp_get_user_topic_count_raw( $user_id ) ); ?></p>
+		<p class="bbp-user-reply-count"><?php printf( __( 'Replies Created: %s', 'bbpress' ), bbp_get_user_reply_count_raw( $user_id ) ); ?></p>
+
+		<div class="rcp_support_status">
+		<h4>Priority Support Access</h4>
+		<?php if ( function_exists( 'rcp_is_active' ) ) { if ( rcp_is_active( $user_id ) ) { ?>
+			<p>Has <strong>Priority Support</strong> access.</p>
+		<?php } elseif ( rcp_is_expired( $user_id ) ) { ?>
+			<p><strong>Priority Support</strong> access has <span style="color:red;">expired</span>.</p>
+		<?php } else { ?>
+			<p>Has no priority support accesss</p>
+		<?php } } ?>
+	</div>
+	</div>
+	<?php
+}
