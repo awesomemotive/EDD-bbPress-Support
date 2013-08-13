@@ -42,7 +42,8 @@ function bbps_dashboard_shortcode( $atts, $content = null ) {
 				'value' => $user_ID,
 			)
 		),
-		'posts_per_page' => -1
+		'posts_per_page' => -1,
+		'post_parent__not_in' => array( 318 )
 	);
 	$waiting_tickets = new WP_Query( $args );
 
@@ -61,7 +62,8 @@ function bbps_dashboard_shortcode( $atts, $content = null ) {
 				'value' => $user_ID,
 			)
 		),
-		'posts_per_page' => -1
+		'posts_per_page' => -1,
+		'post_parent__not_in' => array( 318 )
 	);
 	$assigned_tickets = new WP_Query( $args );
 
@@ -82,7 +84,8 @@ function bbps_dashboard_shortcode( $atts, $content = null ) {
 			),
 		),
 		'posts_per_page' => -1,
-		'post_status' => 'publish'
+		'post_status' => 'publish',
+		'post_parent__not_in' => array( 318 )
 	);
 	$unassigned_tickets = new WP_Query( $args );
 
@@ -91,10 +94,20 @@ function bbps_dashboard_shortcode( $atts, $content = null ) {
 		'post_type'  => 'topic',
 		'meta_key'   => '_bbps_topic_status',
 		'meta_value' => '1',
+		'post_parent__not_in' => array( 318 ),
 		'posts_per_page' => -1,
 		'post_status' => 'publish'
 	);
 	$unresolved_tickets = new WP_Query( $args );
+
+	// Get unresolved tickets
+	$args = array(
+		'post_type'  => 'topic',
+		'post_parent' => 318,
+		'posts_per_page' => 30,
+		'post_status' => 'publish'
+	);
+	$feature_requests = new WP_Query( $args );
 
 	$open_count       = 0;
 	$unassigned_count = 0;
@@ -109,6 +122,7 @@ function bbps_dashboard_shortcode( $atts, $content = null ) {
 		<li><a href="#your-tickets" data-toggle="tab">Your Open Tickets (<?php echo $assigned_tickets->post_count; ?>)</a></li>
 		<li><a href="#unassigned" data-toggle="tab">Unassigned Tickets (<?php echo $unassigned_tickets->post_count; ?>)</a></li>
 		<li><a href="#unresolved" data-toggle="tab">Unresolved Tickets (<?php echo $unresolved_tickets->post_count; ?>)</a></li>
+		<li><a href="#feature-requests" data-toggle="tab">Feature Requests</a></li>
 	</ul>
 	<div class="tab-content">
 		<div class="tab-pane active" id="your-waiting-tickets">
@@ -140,8 +154,6 @@ function bbps_dashboard_shortcode( $atts, $content = null ) {
 						<li>
 							<?php if( $parent == 499 ) { ?>
 							<strong>Priority:</strong>
-							<?php } elseif( $parent == 318 ) { ?>
-							<strong>Feature Request:</strong>
 							<?php } ?>
 							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 						</li>
@@ -157,14 +169,12 @@ function bbps_dashboard_shortcode( $atts, $content = null ) {
 				<?php if( $unassigned_tickets->have_posts() ) : ?>
 					<?php while( $unassigned_tickets->have_posts() ) : $unassigned_tickets->the_post(); ?>
 						<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
-						<?php if( $parent != 318 ) : ?>
 						<li>
 							<?php if( $parent == 499 ) { ?>
 							<strong>Priority:</strong>
 							<?php } ?>
 							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 						</li>
-						<?php endif; ?>
 					<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
 				<?php else : ?>
@@ -177,20 +187,31 @@ function bbps_dashboard_shortcode( $atts, $content = null ) {
 				<?php if( $unresolved_tickets->have_posts() ) : ?>
 					<?php while( $unresolved_tickets->have_posts() ) : $unresolved_tickets->the_post(); ?>
 						<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
-						<?php if( $parent != 318 ) : ?>
 						<li>
 							<?php if( $parent == 499 ) { ?>
 							<strong>Priority:</strong>
 							<?php } ?>
 							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 						</li>
-						<?php endif; ?>
 					<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
 				<?php else : ?>
 					<li>No unresolved tickets, yay!</li>
 				<?php endif; ?>
 			</ul>
+		</div>
+		<div class="tab-pane" id="feature-requests">
+			<ul class="bbp-tickets">
+				<?php if( $feature_requests->have_posts() ) : ?>
+					<?php while( $feature_requests->have_posts() ) : $feature_requests->the_post(); ?>
+						<li>
+							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+						</li>
+					<?php endwhile; ?>
+					<?php wp_reset_postdata(); ?>
+				<?php endif; ?>
+			</ul>
+			<p><a href="https://easydigitaldownloads.com/support/forum/feature-requests/">View More</a></p>
 		</div>
 	</div>
 
