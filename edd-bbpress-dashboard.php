@@ -26,13 +26,13 @@ add_action( 'plugins_loaded', 'edd_bbp_d_setup' );
  * Setup the globals
  */
 function edd_bbp_d_define_constants() {
-	define( 'BBPS_PATH',          plugin_dir_path( __FILE__ ) );
-	define( 'BBPS_ADMIN_PATH',    BBPS_PATH .'admin/' );
-	define( 'BBPS_TEMPLATE_PATH', BBPS_PATH .'templates/' );
-	define( 'BBPS_INCLUDES_PATH', BBPS_PATH .'includes/' );
-	define( 'BBPS_WIDGETS_PATH',  BBPS_PATH .'widgets/' );
-	define( 'BBPS_URL',           plugin_dir_url( dirname( __FILE__ ) ) . basename( dirname( __FILE__ ) ) . '/' );
-	define( 'BBPS_WIDGETS_URL',   plugins_url( 'widgets', __FILE__ ) );
+	define( 'EDD_BBP_D_PATH',          plugin_dir_path( __FILE__ )   );
+	define( 'EDD_BBP_D_ADMIN_PATH',    EDD_BBP_D_PATH . 'admin/'     );
+	define( 'EDD_BBP_D_TEMPLATE_PATH', EDD_BBP_D_PATH . 'templates/' );
+	define( 'EDD_BBP_D_INCLUDES_PATH', EDD_BBP_D_PATH . 'includes/'  );
+	define( 'EDD_BBP_D_WIDGETS_PATH',  EDD_BBP_D_PATH . 'widgets/'   );
+	define( 'EDD_BBP_D_URL',           plugin_dir_url( dirname( __FILE__ ) ) . basename( dirname( __FILE__ ) ) . '/' );
+	define( 'EDD_BBP_D_WIDGETS_URL',   plugins_url( 'widgets', __FILE__ ) );
 }
 
 /**
@@ -47,7 +47,7 @@ function edd_bbp_d_includes() {
 		);
 
 		foreach ( $admin_files as $file ) {
-			include BBPS_ADMIN_PATH . $file . '.php';
+			include EDD_BBP_D_ADMIN_PATH . $file . '.php';
 		}
 	}
 
@@ -62,7 +62,7 @@ function edd_bbp_d_includes() {
 	);
 
 	foreach ( $include_files as $file ) {
-		include_once BBPS_INCLUDES_PATH . $file . '.php';
+		include_once EDD_BBP_D_INCLUDES_PATH . $file . '.php';
 	}
 }
 

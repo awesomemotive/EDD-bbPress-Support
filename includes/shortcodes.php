@@ -19,8 +19,8 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 	if ( ! current_user_can( 'moderate' ) )
 		return;
 
-	wp_enqueue_script( 'bootstrap', BBPS_URL . 'bootstrap/js/bootstrap.min.js'   );
-	wp_enqueue_style(  'bootstrap', BBPS_URL . 'bootstrap/css/bootstrap.min.css' );
+	wp_enqueue_script( 'bootstrap', EDD_BBP_D_URL . 'bootstrap/js/bootstrap.min.js'   );
+	wp_enqueue_style(  'bootstrap', EDD_BBP_D_URL . 'bootstrap/css/bootstrap.min.css' );
 
 	// Get tickets awaiting answer
 	$args = array(
