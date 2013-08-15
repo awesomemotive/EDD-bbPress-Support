@@ -8,24 +8,24 @@
  *
  * @return [type] [description]
  */
-function bbps_get_update_capabilities() {
+function edd_bbp_d_get_update_capabilities() {
 	if ( current_user_can( 'moderate' ) ) {
 		return true;
 	}
 }
 
-function bbps_add_support_forum_features() {
-	if ( bbps_is_support_forum( bbp_get_forum_id() ) ) {
-		$can_edit = bbps_get_update_capabilities();
+function edd_bbp_d_add_support_forum_features() {
+	if ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) {
+		$can_edit = edd_bbp_d_get_update_capabilities();
 		$topic_id = bbp_get_topic_id();
-		$status = bbps_get_topic_status( $topic_id );
+		$status = edd_bbp_d_get_topic_status( $topic_id );
 		$forum_id = bbp_get_forum_id();
 		$user_id = get_current_user_id();
-?>
-	<div id="bbps_support_forum_options">
+	?>
+	<div id="edd_bbp_d_support_forum_options">
 		<?php
 		if ( current_user_can( 'moderate' ) ) {
-			bbps_generate_status_options( $topic_id, $status );
+			edd_bbp_d_generate_status_options( $topic_id, $status );
 		} else { ?>
 			This topic is: <?php echo $status; ?>
 		<?php } ?>
@@ -33,9 +33,9 @@ function bbps_add_support_forum_features() {
 	<?php
 	}
 }
-add_action( 'bbp_template_before_single_topic', 'bbps_add_support_forum_features' );
+add_action( 'bbp_template_before_single_topic', 'edd_bbp_d_add_support_forum_features' );
 
-function bbps_get_topic_status( $topic_id ) {
+function edd_bbp_d_get_topic_status( $topic_id ) {
 	$default = get_option( '_bbps_default_status' );
 
 	$status = get_post_meta( $topic_id, '_bbps_topic_status', true );
@@ -62,7 +62,7 @@ function bbps_get_topic_status( $topic_id ) {
  * Generates a drop down list for administrators and moderators to change
  * the status of a forum topic
  */
-function bbps_generate_status_options( $topic_id ) {
+function edd_bbp_d_generate_status_options( $topic_id ) {
 	$dropdown_options = get_option( '_bbps_used_status' );
 	$status = get_post_meta( $topic_id, '_bbps_topic_status', true );
 	$default = get_option( '_bbps_default_status' );
@@ -72,7 +72,7 @@ function bbps_generate_status_options( $topic_id ) {
 		$value = $status;
 	else
 		$value = $default;
-?>
+	?>
 	<form id="bbps-topic-status" name="bbps_support" action="" method="post">
 		<label for="bbps_support_options">This topic is: </label>
 		<select name="bbps_support_option" id="bbps_support_options">
@@ -90,7 +90,7 @@ function bbps_generate_status_options( $topic_id ) {
 	<?php
 }
 
-function bbps_update_status() {
+function edd_bbp_d_update_status() {
 	$topic_id = absint( $_POST['bbps_topic_id'] );
 	$status   = sanitize_text_field( $_POST['bbps_support_option'] );
 
@@ -118,8 +118,8 @@ function bbps_update_status() {
 /**
  * Mark a topic as urgent
  */
-function bbps_urgent_topic_link() {
-	if ( ( get_option( '_bbps_status_permissions_urgent' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) && ( bbps_is_support_forum( bbp_get_forum_id() ) ) ) {
+function edd_bbp_d_urgent_topic_link() {
+	if ( ( get_option( '_bbps_status_permissions_urgent' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) && ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) ) {
 		$topic_id = bbp_get_topic_id();
 		// 1 = urgent topic 0 or nothing is topic not urgent so we give the admin / mods the chance to make it urgent
 		if ( get_post_meta( $topic_id, '_bbps_urgent_topic', true ) != 1 ) {
@@ -130,17 +130,17 @@ function bbps_urgent_topic_link() {
 	}
 	return;
 }
-add_action( 'bbp_theme_after_reply_admin_links', 'bbps_urgent_topic_link' );
+add_action( 'bbp_theme_after_reply_admin_links', 'edd_bbp_d_urgent_topic_link' );
 
 /**
  * Mark a topic as urgent
  */
-function bbps_urgent_topic() {
+function edd_bbp_d_urgent_topic() {
 	$topic_id = $_GET['topic_id'];
 	update_post_meta( $topic_id, '_bbps_urgent_topic', 1 );
 }
 
-function bbps_not_urgent_topic() {
+function edd_bbp_d_not_urgent_topic() {
 	$topic_id = $_GET['topic_id'];
 	delete_post_meta( $topic_id, '_bbps_urgent_topic' );
 }
@@ -149,8 +149,8 @@ function bbps_not_urgent_topic() {
  * Display a message to all administrators on the single topic view so they
  * know a topic is urgent also give them a link to check it as not urgent
  */
-function display_urgent_message() {
-	if ( ( get_option( '_bbps_status_permissions_urgent' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) && ( bbps_is_support_forum( bbp_get_forum_id() ) ) ) {
+function edd_bbp_d_display_urgent_message() {
+	if ( ( get_option( '_bbps_status_permissions_urgent' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) && ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) ) {
 		$topic_id = bbp_get_topic_id();
 		//topic is urgent so make a link
 		if ( get_post_meta( $topic_id, '_bbps_urgent_topic', true ) == 1 ) {
@@ -159,13 +159,13 @@ function display_urgent_message() {
 		}
 	}
 }
-add_action( 'bbp_template_before_single_topic' , 'display_urgent_message' );
+add_action( 'bbp_template_before_single_topic' , 'edd_bbp_d_display_urgent_message' );
 
 /**
  * Claiming a topic
  */
-function bbps_claim_topic_link() {
-	if ( ( get_option( '_bbps_claim_topic' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) && ( bbps_is_support_forum( bbp_get_forum_id() ) ) ) {
+function edd_bbp_d_claim_topic_link() {
+	if ( ( get_option( '_bbps_claim_topic' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) && ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) ) {
 		$topic_id = bbp_get_topic_id();
 		global $current_user;
 		get_currentuserinfo();
@@ -180,9 +180,9 @@ function bbps_claim_topic_link() {
 	}
 	return;
 }
-add_action( 'bbp_theme_after_reply_admin_links', 'bbps_claim_topic_link' );
+add_action( 'bbp_theme_after_reply_admin_links', 'edd_bbp_d_claim_topic_link' );
 
-function bbps_claim_topic() {
+function edd_bbp_d_claim_topic() {
 	$user_id  = absint( $_GET['user_id'] );
 	$topic_id = absint( $_GET['topic_id'] );
 
@@ -193,7 +193,7 @@ function bbps_claim_topic() {
 	update_post_meta( $topic_id, '_bbps_topic_claimed', $user_id );
 }
 
-function bbps_unclaim_topic() {
+function edd_bbp_d_unclaim_topic() {
 	$user_id  = absint( $_GET['user_id'] );
 	$topic_id = absint( $_GET['topic_id'] );
 
@@ -203,69 +203,74 @@ function bbps_unclaim_topic() {
 	delete_post_meta( $topic_id, '_bbps_topic_claimed' );
 }
 
-function bbps_display_claimed_message() {
+function edd_bbp_d_display_claimed_message() {
 	$topic_author_id = bbp_get_topic_author_id();
 	global $current_user;
 	get_currentuserinfo();
 	$user_id = $current_user->ID;
-	//we want to display the claimed topic message to the topic owner to
-	if ( ( get_option( '_bbps_claim_topic' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) || $topic_author_id == $user_id ) && ( bbps_is_support_forum( bbp_get_forum_id() ) ) ) {
 
+	// We want to display the claimed topic message to the topic owner to
+	if ( ( get_option( '_bbps_claim_topic' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) || $topic_author_id == $user_id ) && ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) ) {
 		$topic_id = bbp_get_topic_id();
 		$claimed_user_id = get_post_meta( $topic_id, '_bbps_topic_claimed', true );
+
 		if ( $claimed_user_id > 0 ) {
 			$user_info = get_userdata ( $claimed_user_id );
 			$claimed_user_name = $user_info->user_login;
 		}
+
 		if ( $claimed_user_id > 0 && $claimed_user_id != $user_id ) {
 			echo "<div class='bbps-support-forums-message'>This topic is currently claimed by " .$claimed_user_name .", they will be working on it now. </div>";
 		}
-		//the person who claimed it can unclaim it this will also unsubscribe them when they do
+
+		// The person who claimed it can unclaim it this will also unsubscribe them when they do
 		if ( $claimed_user_id == $user_id ) {
 			$urgent_uri = add_query_arg( array( 'action' => 'bbps_unclaim_topic', 'topic_id' => $topic_id, 'user_id' => $user_id ) );
 			echo '<div class="bbps-support-forums-message"> You currently own this topic would you like to <a href="' . $urgent_uri . '">Unclame</a> it?</div>';
 		}
 	}
 }
-add_action( 'bbp_template_before_single_topic' , 'bbps_display_claimed_message' );
+add_action( 'bbp_template_before_single_topic' , 'edd_bbp_d_display_claimed_message' );
 
-function bbps_assign_topic_form() {
+function edd_bbp_d_assign_topic_form() {
 	if ( ( get_option( '_bbps_topic_assign' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) ) {
 		$topic_id = bbp_get_topic_id();
 		$topic_assigned = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
 		global $current_user;
 		get_currentuserinfo();
 		$current_user_id = $current_user->ID;
-		?>	<div id="bbps_support_forum_options"> <?php
-
-		$user_login = $current_user->user_login;
-		if ( !empty( $topic_assigned ) ) {
-			if ( $topic_assigned == $current_user_id ) {
-				?> <div class='bbps-support-forums-message'>This topic is assigned to you.</div><?php
+		?>
+		<div id="bbps_support_forum_options">
+			<?php
+			$user_login = $current_user->user_login;
+			if ( ! empty( $topic_assigned ) ) {
+				if ( $topic_assigned == $current_user_id ) {
+					?> <div class='bbps-support-forums-message'>This topic is assigned to you.</div><?php
+				}
+				else {
+					$user_info = get_userdata( $topic_assigned );
+					$assigned_user_name = $user_info->user_firstname . ' ' . $user_info->user_lastname;
+					?>
+					<div class='bbps-support-forums-message'> This topic is already assigned to: <?php echo $assigned_user_name; ?></div><?php
+				}
 			}
-			else {
-				$user_info = get_userdata( $topic_assigned );
-				$assigned_user_name = $user_info->user_firstname . ' ' . $user_info->user_lastname;
-				?> <div class='bbps-support-forums-message'> This topic is already assigned to: <?php echo $assigned_user_name; ?></div><?php
-			}
-		}
-
-?>
-		<div id ="bbps_support_topic_assign">
-			<form id="bbps-topic-assign" name="bbps_support_topic_assign" action="" method="post">
-			<?php bbps_user_assign_dropdown(); ?>
-				<input type="submit" value="Assign" name="bbps_support_topic_assign" />
-				<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
-				<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
-			</form>
-		</div></div>
+			?>
+			<div id ="bbps_support_topic_assign">
+				<form id="bbps-topic-assign" name="bbps_support_topic_assign" action="" method="post">
+				<?php edd_bbp_d_user_assign_dropdown(); ?>
+					<input type="submit" value="Assign" name="bbps_support_topic_assign" />
+					<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
+					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
+				</form>
+			</div>
+		</div><!-- /#bbps_support_forum_options -->
 		<?php
 	}
 
 }
-add_action( 'bbp_template_before_single_topic' , 'bbps_assign_topic_form' );
+add_action( 'bbp_template_before_single_topic' , 'edd_bbp_d_assign_topic_form' );
 
-function bbps_user_assign_dropdown() {
+function edd_bbp_d_user_assign_dropdown() {
 	$wp_user_search = new WP_User_Query( array( 'role' => 'administrator' ) );
 	$admins = $wp_user_search->get_results();
 
@@ -297,7 +302,7 @@ function bbps_user_assign_dropdown() {
 
 }
 
-function bbps_assign_topic() {
+function edd_bbp_d_assign_topic() {
 	$user_id  = absint( $_POST['bbps_assign_list'] );
 	$topic_id = absint( $_POST['bbps_topic_id'] );
 
@@ -321,7 +326,7 @@ EMAILMSG;
 	}
 }
 
-function bbps_ping_topic_assignee() {
+function edd_bbp_d_ping_topic_assignee() {
 	$topic_id = absint( $_POST['bbps_topic_id'] );
 	$user_id  = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
 
@@ -337,11 +342,11 @@ EMAILMSG;
 	}
 }
 
-function bbps_ping_asignee_button() {
-	if ( bbps_is_support_forum( bbp_get_forum_id() ) ) {
-		$can_edit = bbps_get_update_capabilities();
+function edd_bbp_d_ping_asignee_button() {
+	if ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) {
+		$can_edit = edd_bbp_d_get_update_capabilities();
 		$topic_id = bbp_get_topic_id();
-		$status = bbps_get_topic_status( $topic_id );
+		$status = edd_bbp_d_get_topic_status( $topic_id );
 		$forum_id = bbp_get_forum_id();
 		$user_id = get_current_user_id();
 
@@ -359,10 +364,10 @@ function bbps_ping_asignee_button() {
 		}
 	}
 }
-add_action( 'bbp_template_before_single_topic', 'bbps_ping_asignee_button' );
+add_action( 'bbp_template_before_single_topic', 'edd_bbp_d_ping_asignee_button' );
 
 // adds a class and status to the front of the topic title
-function bbps_modify_title( $title, $topic_id = 0 ) {
+function edd_bbp_d_modify_title( $title, $topic_id = 0 ) {
 	$topic_id = bbp_get_topic_id( $topic_id );
 	$title = "";
 	$topic_author_id = bbp_get_topic_author_id();
@@ -391,10 +396,10 @@ function bbps_modify_title( $title, $topic_id = 0 ) {
 			echo '<span class="claimed"> [Claimed] </span>';
 	}
 }
-add_action( 'bbp_theme_before_topic_title', 'bbps_modify_title' );
+add_action( 'bbp_theme_before_topic_title', 'edd_bbp_d_modify_title' );
 
 
-function bbps_add_topic_status( $topic_id = 0, $topic ) {
+function edd_bbp_d_add_topic_status( $topic_id = 0, $topic ) {
 	if ( $topic->post_type != 'topic' )
 		return;
 
@@ -403,27 +408,27 @@ function bbps_add_topic_status( $topic_id = 0, $topic ) {
 	if ( ! $status )
 		add_post_meta( $topic_id, '_bbps_topic_status', 1 );
 }
-add_action( 'wp_insert_post', 'bbps_add_topic_status', 10, 2 );
+add_action( 'wp_insert_post', 'edd_bbp_d_add_topic_status', 10, 2 );
 
-function bbps_set_as_pending( $post ) {
+function edd_bbp_d_set_as_pending( $post ) {
 	if ( $post->post_type != 'topic' )
 		return;
 
 	add_post_meta( $post->ID, '_bbps_topic_pending', 1 );
 }
-add_action( 'new_to_publish', 'bbps_set_as_pending' );
-add_action( 'draft_to_publish', 'bbps_set_as_pending' );
-add_action( 'pending_to_publish', 'bbps_set_as_pending' );
+add_action( 'new_to_publish',     'edd_bbp_d_set_as_pending' );
+add_action( 'draft_to_publish',   'edd_bbp_d_set_as_pending' );
+add_action( 'pending_to_publish', 'edd_bbp_d_set_as_pending' );
 
-function bbps_maybe_remove_pending( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author, $something, $reply_to ) {
+function edd_bbp_d_maybe_remove_pending( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author, $something, $reply_to ) {
 	if ( current_user_can( 'moderate' ) )
 		delete_post_meta( $topic_id, '_bbps_topic_pending' );
 	else
 		update_post_meta( $topic_id, '_bbps_topic_pending', '1' );
 }
-add_action( 'bbp_new_reply', 'bbps_maybe_remove_pending', 10, 7 );
+add_action( 'bbp_new_reply', 'edd_bbp_d_maybe_remove_pending', 10, 7 );
 
-function bbps_force_remove_pending() {
+function edd_bbp_d_force_remove_pending() {
 	if ( ! isset( $_GET['topic_id'] ) )
 		return;
 	if ( ! isset( $_GET['bbps_action'] ) || $_GET['bbps_action'] != 'remove_pending' )
@@ -434,9 +439,9 @@ function bbps_force_remove_pending() {
 	delete_post_meta( $_GET['topic_id'], '_bbps_topic_pending' );
 	wp_redirect( remove_query_arg( array( 'topic_id', 'bbps_action' ) ) ); exit;
 }
-add_action( 'init', 'bbps_force_remove_pending' );
+add_action( 'init', 'edd_bbp_d_force_remove_pending' );
 
-function bbps_add_user_purchases_link() {
+function edd_bbp_d_add_user_purchases_link() {
 	if ( ! current_user_can( 'moderate' ) )
 		return;
 
@@ -462,9 +467,9 @@ function bbps_add_user_purchases_link() {
 	endif;
 	echo '</div>';
 }
-add_action( 'bbp_template_after_user_profile', 'bbps_add_user_purchases_link' );
+add_action( 'bbp_template_after_user_profile', 'edd_bbp_d_add_user_purchases_link' );
 
-function bbps_add_user_priority_support_status() {
+function edd_bbp_d_add_user_priority_support_status() {
 	if ( ! current_user_can( 'moderate' ) )
 		return;
 
@@ -485,20 +490,20 @@ function bbps_add_user_priority_support_status() {
 
 	echo '</div>';
 }
-add_action( 'bbp_template_after_user_profile', 'bbps_add_user_priority_support_status' );
+add_action( 'bbp_template_after_user_profile', 'edd_bbp_d_add_user_priority_support_status' );
 
 
-function bbps_reply_and_resolve( $reply_id = 0, $topic_id = 0, $forum_id = 0, $anonymous_data = false, $author_id = 0, $is_edit = false ) {
+function edd_bbp_d_reply_and_resolve( $reply_id = 0, $topic_id = 0, $forum_id = 0, $anonymous_data = false, $author_id = 0, $is_edit = false ) {
 	if ( isset( $_POST['bbp_reply_close'] ) ) {
 		update_post_meta( $topic_id, '_bbps_topic_status', 2 );
 	}
 }
-add_action( 'bbp_new_reply', 'bbps_reply_and_resolve', 0, 6 );
+add_action( 'bbp_new_reply', 'edd_bbp_d_reply_and_resolve', 0, 6 );
 
 /**
  * Creates the toggle for the action links dropdown
  */
-function bbps_action_links_dropdown() {
+function edd_bbp_d_action_links_dropdown() {
 	$reply_id = bbp_get_reply_id();
 
 	// If post is not a reply, return
@@ -518,7 +523,7 @@ function bbps_action_links_dropdown() {
 	<i class="icon-caret-up icon"></i>
 	<?php
 }
-add_action( 'bbp_theme_before_reply_admin_links', 'bbps_action_links_dropdown' );
+add_action( 'bbp_theme_before_reply_admin_links', 'edd_bbp_d_action_links_dropdown' );
 
 function edd_bbp_d_sidebar() {
 	global $post;
@@ -533,15 +538,15 @@ function edd_bbp_d_sidebar() {
 		<p class="bbp-user-reply-count"><?php printf( __( 'Replies Created: %s', 'bbpress' ), bbp_get_user_reply_count_raw( $user_id ) ); ?></p>
 
 		<div class="rcp_support_status">
-		<h4>Priority Support Access</h4>
-		<?php if ( function_exists( 'rcp_is_active' ) ) { if ( rcp_is_active( $user_id ) ) { ?>
-			<p>Has <strong>Priority Support</strong> access.</p>
-		<?php } elseif ( rcp_is_expired( $user_id ) ) { ?>
-			<p><strong>Priority Support</strong> access has <span style="color:red;">expired</span>.</p>
-		<?php } else { ?>
-			<p>Has no priority support accesss</p>
-		<?php } } ?>
-	</div>
+			<h4>Priority Support Access</h4>
+			<?php if ( function_exists( 'rcp_is_active' ) ) { if ( rcp_is_active( $user_id ) ) { ?>
+				<p>Has <strong>Priority Support</strong> access.</p>
+			<?php } elseif ( rcp_is_expired( $user_id ) ) { ?>
+				<p><strong>Priority Support</strong> access has <span style="color:red;">expired</span>.</p>
+			<?php } else { ?>
+				<p>Has no priority support accesss</p>
+			<?php } } ?>
+		</div><!-- /.rcp_support_status -->
 	</div>
 	<?php
 }

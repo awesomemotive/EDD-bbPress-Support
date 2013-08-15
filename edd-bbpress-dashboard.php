@@ -3,50 +3,51 @@
  * Plugin Name: EDD bbPress Support Dashboard
  * Description: Support dashboard for sites running EDD and bbPress
  * Author: Pippin Williamson and Sunny Ratilal
+ * Author URI: https://easydigitaldownloads.com/
  * Version: 2.0
  */
 
-function bbps_activate() {
-	include_once plugin_dir_path( __FILE__ ).'includes/core-options.php';
-	do_action( 'bbps-activation' );
+function edd_bbp_d_activate() {
+	include_once plugin_dir_path( __FILE__ ) . 'includes/core-options.php';
+	do_action( 'edd_bbp_d_activation' );
 }
-register_activation_hook( __FILE__ , 'bbps_activate' );
+register_activation_hook( __FILE__ , 'edd_bbp_d_activate' );
 
 /**
  * Setup the plugin
  */
-function bbps_setup() {
-	bbps_define_constants();
-	bbps_includes();
+function edd_bbp_d_setup() {
+	edd_bbp_d_define_constants();
+	edd_bbp_d_includes();
 }
-add_action( 'plugins_loaded', 'bbps_setup' );
+add_action( 'plugins_loaded', 'edd_bbp_d_setup' );
 
 /**
  * Setup the globals
  */
-function bbps_define_constants() {
-	define( 'BBPS_PATH',          plugin_dir_path( __FILE__ ) );
-	define( 'BBPS_ADMIN_PATH',    BBPS_PATH .'admin/' );
-	define( 'BBPS_TEMPLATE_PATH', BBPS_PATH .'templates/' );
-	define( 'BBPS_INCLUDES_PATH', BBPS_PATH .'includes/' );
-	define( 'BBPS_WIDGETS_PATH',  BBPS_PATH .'widgets/' );
-	define( 'BBPS_URL',           plugin_dir_url( dirname( __FILE__ ) ) . basename( dirname( __FILE__ ) ) . '/' );
-	define( 'BBPS_WIDGETS_URL',   plugins_url( 'widgets', __FILE__ ) );
+function edd_bbp_d_define_constants() {
+	define( 'EDD_BBP_D_PATH',          plugin_dir_path( __FILE__ )   );
+	define( 'EDD_BBP_D_ADMIN_PATH',    EDD_BBP_D_PATH . 'admin/'     );
+	define( 'EDD_BBP_D_TEMPLATE_PATH', EDD_BBP_D_PATH . 'templates/' );
+	define( 'EDD_BBP_D_INCLUDES_PATH', EDD_BBP_D_PATH . 'includes/'  );
+	define( 'EDD_BBP_D_WIDGETS_PATH',  EDD_BBP_D_PATH . 'widgets/'   );
+	define( 'EDD_BBP_D_URL',           plugin_dir_url( dirname( __FILE__ ) ) . basename( dirname( __FILE__ ) ) . '/' );
+	define( 'EDD_BBP_D_WIDGETS_URL',   plugins_url( 'widgets', __FILE__ ) );
 }
 
 /**
  * Includes all the files required for the plugin to run
  */
-function bbps_includes() {
+function edd_bbp_d_includes() {
 	// Load backend fles
 	if ( is_admin() ) {
 		$admin_files = array(
-			'bbps-admin',
-			'bbps-settings',
+			'admin-functions',
+			'settings',
 		);
 
 		foreach ( $admin_files as $file ) {
-			include BBPS_ADMIN_PATH . $file . '.php';
+			include EDD_BBP_D_ADMIN_PATH . $file . '.php';
 		}
 	}
 
@@ -61,14 +62,14 @@ function bbps_includes() {
 	);
 
 	foreach ( $include_files as $file ) {
-		include_once BBPS_INCLUDES_PATH . $file . '.php';
+		include_once EDD_BBP_D_INCLUDES_PATH . $file . '.php';
 	}
 }
 
 /**
  * Register any widgets
  */
-function bbps_register_widgets() {
+function edd_bbp_d_register_widgets() {
 	register_widget( 'BBPS_Forum_Support_Hours' );
 }
-add_action( 'widgets_init', 'bbps_register_widgets' );
+add_action( 'widgets_init', 'edd_bbp_d_register_widgets' );
