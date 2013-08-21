@@ -23,7 +23,7 @@ function edd_bbp_d_increament_post_count(){
 		if ( empty($user_rank[0]) )
 			bbps_create_user_ranking_meta($user_id);
 
-		bbps_check_ranking($user_id);
+		edd_bbp_d_check_ranking($user_id);
 
 	}
 	return;
