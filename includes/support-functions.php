@@ -497,6 +497,10 @@ function edd_bbp_d_reply_and_resolve( $reply_id = 0, $topic_id = 0, $forum_id = 
 	if ( isset( $_POST['bbp_reply_close'] ) ) {
 		update_post_meta( $topic_id, '_bbps_topic_status', 2 );
 	}
+
+	if ( isset( $_POST['bbp_reply_open'] ) ) {
+		update_post_meta( $topic_id, '_bbps_topic_status', 1 );
+	}
 }
 add_action( 'bbp_new_reply', 'edd_bbp_d_reply_and_resolve', 0, 6 );
 
