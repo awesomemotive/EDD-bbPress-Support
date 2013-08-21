@@ -42,8 +42,8 @@ function edd_bbp_d_includes() {
 	// Load backend fles
 	if ( is_admin() ) {
 		$admin_files = array(
-			'admin-functions',
-			'settings',
+			'bbps-admin',
+			'bbps-settings',
 		);
 
 		foreach ( $admin_files as $file ) {
