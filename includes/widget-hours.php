@@ -68,10 +68,23 @@ class BBPS_Forum_Support_Hours extends WP_Widget {
 		$open_time = empty( $instance['open_time']) ? '' : $instance['open_time'];
 		$open_img = empty( $instance['open_img'] ) ? '' : $instance['open_img'];
 		$close_time = empty( $instance['close_time'] ) ? '' : $instance['close_time'];
+		$close_img = empty( $instance['close_img'] ) ? '' : $instance['close_img'];
+		$clock_html = empty( $instance['clock_html'] ) ? '&nbsp' : $instance['clock_html'];
 		$forum_closed = empty( $instance['forum_closed'] ) ? '&nbsp' : $instance['forum_closed'];
 		$forum_closed_text = empty( $instance['forum_closed_text'] ) ? '&nbsp' : $instance['forum_closed_text'];
 		$forum_open_text = empty( $instance['forum_open_text'] ) ? '&nbsp' : $instance['forum_open_text'];
+		$display_hours = empty( $instance['display_hours'] ) ? '&nbsp' : $instance['display_hours'];
 		$closed_weekends = empty( $instance['closed_weekends'] ) ? '&nbsp' : $instance['closed_weekends'];
+		$gmt = 0;
+		$closed ='';
+		$open = '';
+
+		// Format all the times ready to compare them
+		$time = $this->current_time_fixed( 'mysql', $gmt );
+		$day = $this->bbps_current_date( 'mysql', $gmt );
+		$time = str_replace( ':' , '', $time );
+		$open_time_raw = str_replace( ':' , '', $open_time );
+		$close_time_raw = str_replace( ':' , '', $close_time );
 
 		echo $before_title . $title . $after_title;
 
@@ -94,5 +107,22 @@ class BBPS_Forum_Support_Hours extends WP_Widget {
 		echo '<div class="forum_hours"> Our forum hours are: '. $open_time .' - '. $close_time . '</div>';
 
 		echo $after_widget;
+	}
+
+	private function current_time_fixed( $type, $gmt = 0 ) {
+		$t =  ( $gmt ) ? gmdate( 'Y-m-d H:i:s' ) : gmdate( 'H:i', ( time() + ( get_option( 'gmt_offset' ) * 3600 ) ) );
+		switch ( $type ) {
+			case 'mysql':
+				return $t;
+				break;
+			case 'timestamp':
+				return strtotime($t);
+				break;
+		}
+	}
+	private function bbps_current_date( $type, $gmt = 0 ) {
+		$t =  ( $gmt ) ? gmdate( 'Y-m-d H:i:s' ) : gmdate( 'H:i', ( time() + ( get_option( 'gmt_offset' ) * 3600 ) ) );
+		$current_time_stamp = strtotime($t);
+		return date('l', $current_time_stamp);
 	}
 }
