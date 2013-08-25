@@ -26,26 +26,13 @@ add_action( 'bbp_forum_attributes_metabox_save' , 'bbps_forum_attributes_mb_save
 function bbps_forum_attributes_mb_save($forum_id){
 
 	//get out the forum meta
-	$premium_forum = get_post_meta( $forum_id, '_bbps_is_premium' );
 	$support_forum = get_post_meta( $forum_id, '_bbps_is_support');
-
-	//if we have a value then save it
-	if ( !empty( $_POST['bbps-premium-forum'] ) )
-		update_post_meta($forum_id, '_bbps_is_premium', $_POST['bbps-premium-forum']);
-
-	//the forum used to be premium now its not
-	if ( !empty($premium_forum) && empty( $_POST['bbps-premium-forum'] ) )
-		update_post_meta($forum_id, '_bbps_is_premium', 0);
 
 	//support options
 	if ( !empty( $_POST['bbps-support-forum'] ) )
 		update_post_meta($forum_id, '_bbps_is_support', $_POST['bbps-support-forum']);
-
-	//the forum used to be premium now its not
-	if ( !empty($premium_forum) && empty( $_POST['bbps-support-forum'] ) )
-		update_post_meta($forum_id, '_bbps_is_support', 0);
-
-
+	else
+		delete_post_meta( $forum_id, '_bbps_is_support' );
 
 	return $forum_id;
 
