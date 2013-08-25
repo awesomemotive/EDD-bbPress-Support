@@ -81,16 +81,16 @@ function bbps_forum_attributes_mb_save($forum_id){
 function bbps_register_admin_settings() {
 
 	// Add getshopped forum section
-	add_settings_section( 'bbps-forum-setting',                __( 'User ranking system',           'bbps-forum' ), 'bbps_admin_setting_callback_getshopped_section',  'bbpress'             );
+	add_settings_section( 'bbps-forum-setting', __( 'User ranking system', 'bbps-forum' ), 'bbps_admin_setting_callback_getshopped_section',  'bbpress' );
 
 	register_setting  ( 'bbpress', '_bbps_reply_count', 'bbps_validate_options' );
 
 	// show post count
-	add_settings_field( '_bbps_enable_post_count', __( 'Show forum post count', 'bbps-forum' ), 'bbps_admin_setting_callback_post_count',      'bbpress', 'bbps-forum-setting' );
+	add_settings_field( '_bbps_enable_post_count', __( 'Show forum post count', 'bbps-forum' ), 'bbps_admin_setting_callback_post_count', 'bbpress', 'bbps-forum-setting' );
  	register_setting  ( 'bbpress', '_bbps_enable_post_count', 'intval');
 
 	// Add the forum status section
-	add_settings_section( 'bbps-status-setting',                __( 'Topic Status Settings',           'bbps-forum' ), 'bbps_admin_setting_callback_status_section',  'bbpress'             );
+	add_settings_section( 'bbps-status-setting',__( 'Topic Status Settings', 'bbps-forum' ), 'bbps_admin_setting_callback_status_section',  'bbpress' );
 
 	register_setting  ( 'bbpress', '_bbps_default_status', 'intval' );
 	add_settings_field( '_bbps_default_status', __( 'Default Status:', 'bbps-forum' ), 'bbps_admin_setting_callback_default_status', 'bbpress', 'bbps-status-setting' );
@@ -112,18 +112,18 @@ function bbps_register_admin_settings() {
 
 
 	/* support forum misc settings */
-	add_settings_section( 'bbps-topic_status-setting',                __( 'Support Froum Settings',           'bbps-forum' ), 'bbps_admin_setting_callback_support_forum_section',  'bbpress'             );
+	add_settings_section( 'bbps-topic_status-setting',__( 'Support Froum Settings', 'bbps-forum' ), 'bbps_admin_setting_callback_support_forum_section',  'bbpress' );
 
 	register_setting  ( 'bbpress', '_bbps_status_permissions_urgent', 'intval' );
 	// each drop down option for selection
 	add_settings_field( '_bbps_status_permissions_urgent', __( 'Urgent Topic Status', 'bbps-forum' ), 'bbps_admin_setting_callback_urgent', 'bbpress', 'bbps-topic_status-setting' );
 
 	//the ability to move topics
- 	add_settings_field( '_bbps_enable_topic_move', __( 'Move topics', 'bbps-forum' ), 'bbps_admin_setting_callback_move_topic',      'bbpress', 'bbps-topic_status-setting' );
+ 	add_settings_field( '_bbps_enable_topic_move', __( 'Move topics', 'bbps-forum' ), 'bbps_admin_setting_callback_move_topic', 'bbpress', 'bbps-topic_status-setting' );
  	register_setting  ( 'bbpress', '_bbps_enable_topic_move', 'intval');
 
  	//the ability to assign a topic to a mod or admin
- 	add_settings_field( '_bbps_topic_assign', __( 'Assign topics', 'bbps-forum' ), 'bbps_admin_setting_callback_assign_topic',      'bbpress', 'bbps-topic_status-setting' );
+ 	add_settings_field( '_bbps_topic_assign', __( 'Assign topics', 'bbps-forum' ), 'bbps_admin_setting_callback_assign_topic', 'bbpress', 'bbps-topic_status-setting' );
  	register_setting  ( 'bbpress', '_bbps_topic_assign', 'intval');
 
 
@@ -139,12 +139,12 @@ function bbps_validate_checkbox_group($input){
     return $newoptions;
 }
 
-function bbps_validate_options($input){
+function bbps_validate_options( $input ){
 
 	$options = get_option('_bbps_reply_count');
 
 	$i = 1;
-	foreach ($input as $array){
+	foreach ( $input as $array ){
 		foreach ($array as $key => $value){
 		      $options[$i][$key] = $value;
 
