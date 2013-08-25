@@ -14,8 +14,6 @@ function bbps_extend_forum_attributes_mb($forum_id){
 	<p>
 		<strong><?php _e( 'Support Forum:', 'bbps' ); ?></strong>
 		<input type="checkbox" name="bbps-support-forum" value="1"<?php checked( true, $support_forum ); ?>/>
-		<br />
-		<!-- <small>Click here To learn more about the support forum setting.</small> -->
 	</p>
 
 <?php
