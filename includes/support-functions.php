@@ -3,26 +3,14 @@
  * Support Forum Functions
  */
 
-/**
- * Checks if current user can is a moderator
- *
- * @return [type] [description]
- */
-function edd_bbp_d_get_update_capabilities() {
-	if ( current_user_can( 'moderate' ) ) {
-		return true;
-	}
-}
-
 function edd_bbp_d_add_support_forum_features() {
 	if ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) {
-		$can_edit = edd_bbp_d_get_update_capabilities();
 		$topic_id = bbp_get_topic_id();
 		$status = edd_bbp_d_get_topic_status( $topic_id );
 		$forum_id = bbp_get_forum_id();
 		$user_id = get_current_user_id();
 	?>
-	<div id="edd_bbp_d_support_forum_options">
+	<div id="edd_bbp_d_support_forum_options" style="width: 100%;clear:both;">
 		<?php
 		if ( current_user_can( 'moderate' ) ) {
 			edd_bbp_d_generate_status_options( $topic_id, $status );
@@ -344,7 +332,6 @@ EMAILMSG;
 
 function edd_bbp_d_ping_asignee_button() {
 	if ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) {
-		$can_edit = edd_bbp_d_get_update_capabilities();
 		$topic_id = bbp_get_topic_id();
 		$status = edd_bbp_d_get_topic_status( $topic_id );
 		$forum_id = bbp_get_forum_id();
