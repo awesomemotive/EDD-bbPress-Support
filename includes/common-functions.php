@@ -32,20 +32,6 @@ function edd_bbp_d_is_support_forum( $forum_id ) {
 		return false;
 }
 
-/**
- * Checks whether the topic is a premium topic
- *
- * @param int     $id
- * @return bool
- */
-function edd_bbp_d_is_topic_premium2( $id ) {
-	$is_premium = get_post_meta( $id, '_bbps_is_premium' );
-
-	if ( 1 == $is_premium[0] )
-		return true;
-	else
-		return false;
-}
 
 /**
  * Checks whether the topic is a premium topic
@@ -61,55 +47,6 @@ function edd_bbp_d_is_topic_premium() {
 		return false;
 }
 
-/**
- * Checks whether the reply is a premium
- *
- * @return bool
- */
-function edd_bbp_d_is_reply_premium() {
-	$is_premium = get_post_meta( bbp_get_reply_forum_id(), '_bbps_is_premium' );
-
-	if ( 1 == $is_premium[0] )
-		return true;
-	else
-		return false;
-}
-
-/**
- * Gets all the premium topic IDs
- *
- * @return object $premuim_topics
- */
-function edd_bbp_d_get_all_premium_topic_ids() {
-	global $wpdb;
-
-	$forum_query = "SELECT `post_id` FROM ". $wpdb->postmeta ." WHERE `meta_key` = '_bbps_is_premium'" ;
-	$premium_forums = $wpdb->get_col( $forum_query );
-
-	$exclude = implode( ',', $premium_forums );
-	$topics_query = "SELECT `id` FROM ". $wpdb->posts ." WHERE `post_parent` IN (".$exclude.")" ;
-	$premium_topics = $wpdb->get_col( $topics_query );
-
-	return $premium_topics;
-}
-
-/**
- * Displays a support forum drop down list of only forums that have been marked as premium
- */
-function edd_bbp_d_support_forum_ddl() {
-	global $wpdb;
-
-	$sql = "SELECT `post_id` FROM " . $wpdb->postmeta . " WHERE `meta_key` = '_bbps_is_premium' AND `meta_value` = '1'";
-	$premium_forum_ids = $wpdb->get_col( $sql );
-
-	$select = '<select id="bbp_forum_id" name="bbp_forum_id">';
-	foreach ( $premium_forum_ids as $id ) {
-		$select .= '<option value="' . $id . '">' . get_the_title( $id ) . '</option>';
-	}
-	$select .= '</select>';
-
-	echo $select;
-}
 
 /**
  * Checks if the topic has been marked as resolved

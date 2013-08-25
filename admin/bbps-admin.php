@@ -8,35 +8,12 @@ add_action('bbp_forum_metabox' , 'bbps_extend_forum_attributes_mb');
 /* The premium forum will create a support forum that can only be viewed by that user and admin users */
 function bbps_extend_forum_attributes_mb($forum_id){
 
-	//get out the forum meta
-	$premium_forum = edd_bbp_d_premium_forum( $forum_id );
-	if( $premium_forum )
-		$checked = "checked";
-	else
-		$checked = "";
-
-	$support_forum = edd_bbp_d_support_forum( $forum_id );
-	if( $support_forum )
-		$checked1 = "checked";
-	else
-		$checked1 = "";
-
+	$support_forum = edd_bbp_d_is_support_forum( $forum_id );
 	?>
-	<hr />
-
-<!--
-This is not tested enough for people to start using so for now we will only have support forums
-<p>
-		<strong> Premium Forum:</strong>
-		<input type="checkbox" name="bbps-premium-forum" value="1"  echo $checked; />
-		<br />
-		<small>Click here for more information about creating a premium forum.</small>
-	</p>
--->
 
 	<p>
 		<strong><?php _e( 'Support Forum:', 'bbps' ); ?></strong>
-		<input type="checkbox" name="bbps-support-forum" value="1" <?php echo $checked1; ?>/>
+		<input type="checkbox" name="bbps-support-forum" value="1"<?php checked( true, $support_forum ); ?>/>
 		<br />
 		<!-- <small>Click here To learn more about the support forum setting.</small> -->
 	</p>
