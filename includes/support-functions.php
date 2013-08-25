@@ -7,8 +7,6 @@ function edd_bbp_d_add_support_forum_features() {
 	if ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) {
 		$topic_id = bbp_get_topic_id();
 		$status = edd_bbp_d_get_topic_status( $topic_id );
-		$forum_id = bbp_get_forum_id();
-		$user_id = get_current_user_id();
 	?>
 	<div id="edd_bbp_d_support_forum_options" style="width: 100%;clear:both;">
 		<?php
