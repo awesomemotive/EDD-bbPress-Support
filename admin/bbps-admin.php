@@ -110,11 +110,8 @@ function bbps_register_admin_settings() {
 	add_settings_field( '_bbps_status_permissions_user', __( 'Topic Creator', 'bbps-forum' ), 'bbps_admin_setting_callback_permission_user', 'bbpress', 'bbps-status-setting' );
 	add_settings_field( '_bbps_status_permissions_moderator', __( 'Forum Moderator', 'bbps-forum' ), 'bbps_admin_setting_callback_permission_moderator', 'bbpress', 'bbps-status-setting' );
 
-/*
-	register_setting  ( 'bbpress', '_bbps_status_color_change', 'bbps_validate_status_permissions' );
-	add_settings_field( '_bbps_status_color_change', __( 'Change colour of resolved topics', 'bbps-forum' ), 'bbps_admin_setting_callback_color_change', 'bbpress', 'bbps-status-setting' );
-*/
-/* support forum misc settings */
+
+	/* support forum misc settings */
 	add_settings_section( 'bbps-topic_status-setting',                __( 'Support Froum Settings',           'bbps-forum' ), 'bbps_admin_setting_callback_support_forum_section',  'bbpress'             );
 
 	register_setting  ( 'bbpress', '_bbps_status_permissions_urgent', 'intval' );
@@ -128,14 +125,6 @@ function bbps_register_admin_settings() {
  	//the ability to assign a topic to a mod or admin
  	add_settings_field( '_bbps_topic_assign', __( 'Assign topics', 'bbps-forum' ), 'bbps_admin_setting_callback_assign_topic',      'bbpress', 'bbps-topic_status-setting' );
  	register_setting  ( 'bbpress', '_bbps_topic_assign', 'intval');
-
- 	//ability for admin and moderators to claim topics
- 	add_settings_field( '_bbps_claim_topic', __( 'Claim topics', 'bbps-forum' ), 'bbps_admin_setting_callback_claim_topic',      'bbpress', 'bbps-topic_status-setting' );
- 	register_setting  ( 'bbpress', '_bbps_claim_topic', 'intval');
-
- 	add_settings_field( '_bbps_claim_topic_display', __( 'Display Username:', 'bbps-forum' ), 'bbps_admin_setting_callback_claim_topic_display',      'bbpress', 'bbps-topic_status-setting' );
- 	register_setting  ( 'bbpress', '_bbps_claim_topic_display', 'intval');
-
 
 
 }
