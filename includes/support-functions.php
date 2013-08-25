@@ -220,7 +220,7 @@ function edd_bbp_d_modify_title( $title, $topic_id = 0 ) {
 	$topic_id = bbp_get_topic_id( $topic_id );
 	//2 is the resolved status ID
 	if ( get_post_meta( $topic_id, '_bbps_topic_status', true ) == 2 )
-		echo '<span class="resolved"> [Resolved] </span>';
+		echo '<span class="resolved">[Resolved] </span>';
 }
 add_action( 'bbp_theme_before_topic_title', 'edd_bbp_d_modify_title' );
 
