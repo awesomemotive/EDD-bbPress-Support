@@ -56,7 +56,6 @@ function edd_bbp_d_includes() {
 		'common-functions',
 		'support-functions',
 		'core-options',
-		'user-ranking-functions',
 		'shortcodes',
 		'widget-hours'
 	);

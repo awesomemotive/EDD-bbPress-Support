@@ -1,5 +1,38 @@
 <?php
 
+
+//register the settings
+function bbps_register_admin_settings() {
+
+	add_settings_section( 'bbps-status-setting',__( 'Support Froum Settings', 'bbps-forum' ), 'bbps_admin_setting_callback_status_section',  'bbpress' );
+
+	// Add the forum status section
+
+	register_setting  ( 'bbpress', '_bbps_default_status', 'intval' );
+	add_settings_field( '_bbps_default_status', __( 'Default Status:', 'bbps-forum' ), 'bbps_admin_setting_callback_default_status', 'bbpress', 'bbps-status-setting' );
+
+
+	// default topic option
+	register_setting  ( 'bbpress', '_bbps_used_status' );
+	// each drop down option for selection
+	add_settings_field( '_bbps_used_status_1', __( 'Display Status:', 'bbps-forum' ), 'bbps_admin_setting_callback_displayed_status_res', 'bbpress', 'bbps-status-setting' );
+	add_settings_field( '_bbps_used_status_2', __( 'Display Status:', 'bbps-forum' ), 'bbps_admin_setting_callback_displayed_status_notres', 'bbpress', 'bbps-status-setting' );
+	add_settings_field( '_bbps_used_status_3', __( 'Display Status:', 'bbps-forum' ), 'bbps_admin_setting_callback_displayed_status_notsup', 'bbpress', 'bbps-status-setting' );
+
+	// who can update the status
+	register_setting  ( 'bbpress', '_bbps_status_permissions' );
+
+	// each drop down option for selection
+	add_settings_field( '_bbps_status_permissions_user', __( 'Topic Creator', 'bbps-forum' ), 'bbps_admin_setting_callback_permission_user', 'bbpress', 'bbps-status-setting' );
+
+ 	//the ability to assign a topic to a mod or admin
+ 	add_settings_field( '_bbps_topic_assign', __( 'Assign topics', 'bbps-forum' ), 'bbps_admin_setting_callback_assign_topic', 'bbpress', 'bbps-status-setting' );
+ 	register_setting  ( 'bbpress', '_bbps_topic_assign', 'intval');
+
+
+}
+add_action( 'bbp_register_admin_settings' , 'bbps_register_admin_settings' );
+
 function bbps_admin_setting_callback_status_section(){
 ?>
 	<p><?php _e( 'Enable and configure the settings for topic statuses these will be displayed on each topic', 'bbps-forum' ); ?></p>
@@ -78,20 +111,6 @@ function bbps_admin_setting_callback_permission_moderator(){
 ?>
 	<input id="bbps_status_permissions" name="_bbps_status_permissions[mod]" <?php checked( edd_bbp_d_is_moderator_enabled(),1 ); ?> type="checkbox"  value="1" />
 	<label for="bbps_status_permissions"><?php _e( 'Allow the forum moderators to update the post status.', 'bbpress' ); ?></label>
-<?php
-}
-
-function bbps_admin_setting_callback_move_topic(){
-?>
-	<input id="bbps_enable_topic_move" name="_bbps_enable_topic_move" <?php checked( edd_bbp_d_is_topic_move_enabled(),1 ); ?> type="checkbox"  value="1" />
-	<label for="bbps_enable_topic_move"><?php _e( 'Allow the forum moderators and admin to move topics to other forums.', 'bbpress' ); ?></label>
-<?php
-}
-
-function bbps_admin_setting_callback_urgent(){
-?>
-	<input id="bbps_status_permissions_urgent" name="_bbps_status_permissions_urgent" <?php checked( edd_bbp_d_is_topic_urgent_enabled(),1 ); ?> type="checkbox"  value="1" />
-	<label for="bbps_status_permissions_urgent"><?php _e( 'Allow the forum moderators and admin to mark a topic as Urgent, this will mark the topic title with [urgent].', 'bbpress' ); ?></label>
 <?php
 }
 

@@ -82,39 +82,6 @@ function edd_bbp_d_update_status() {
 	update_post_meta( $topic_id, '_bbps_topic_status', $status );
 }
 
-/**
- * Mark a topic as urgent
- */
-function edd_bbp_d_urgent_topic_link() {
-	if ( ( get_option( '_bbps_status_permissions_urgent' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) && ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) ) {
-		$topic_id = bbp_get_topic_id();
-		// 1 = urgent topic 0 or nothing is topic not urgent so we give the admin / mods the chance to make it urgent
-		if ( get_post_meta( $topic_id, '_bbps_urgent_topic', true ) != 1 ) {
-			$urgent_uri = add_query_arg( array( 'action' => 'bbps_make_topic_urgent', 'topic_id' => $topic_id ) );
-			echo '<span class="bbp-admin-links bbps-links"><a href="' . $urgent_uri . '">Urgent</a></span>';
-		}
-
-	}
-	return;
-}
-add_action( 'bbp_theme_after_reply_admin_links', 'edd_bbp_d_urgent_topic_link' );
-
-/**
- * Display a message to all administrators on the single topic view so they
- * know a topic is urgent also give them a link to check it as not urgent
- */
-function edd_bbp_d_display_urgent_message() {
-	if ( ( get_option( '_bbps_status_permissions_urgent' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) && ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) ) {
-		$topic_id = bbp_get_topic_id();
-		//topic is urgent so make a link
-		if ( get_post_meta( $topic_id, '_bbps_urgent_topic', true ) == 1 ) {
-			$urgent_uri = add_query_arg( array( 'action' => 'bbps_make_topic_not_urgent', 'topic_id' => $topic_id ) );
-			echo "<div class='bbps-support-forums-message'> This topic is currently marked as urgent. Change the status to " . '<a href="' . $urgent_uri . '">Not Urgent?</a></div>';
-		}
-	}
-}
-add_action( 'bbp_template_before_single_topic' , 'edd_bbp_d_display_urgent_message' );
-
 function edd_bbp_d_assign_topic_form() {
 	if ( ( get_option( '_bbps_topic_assign' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) ) {
 		$topic_id = bbp_get_topic_id();

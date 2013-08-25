@@ -7,8 +7,6 @@ function edd_bbp_d_add_options() {
 	// Default options
 	$options = array (
 		'_bbps_default_status'            => '1',
-		'_bbps_enable_post_count'         => '1',
-		'_bbps_reply_count'               => '',
 		'_bbps_used_status'               => '',
 		'_bbps_enable_topic_move'         => '1',
 		'_bbps_status_permissions_urgent' => '',
@@ -19,11 +17,6 @@ function edd_bbp_d_add_options() {
 		add_option( $key, $value );
 }
 add_action( 'edd_bbp_d_activation', 'edd_bbp_d_add_options' );
-
-function edd_bbp_d_is_post_count_enabled(){
-	return get_option( '_bbps_enable_post_count' );
-}
-
 
 function edd_bbp_d_is_resolved_enabled(){
 	$options = get_option( '_bbps_used_status' );
@@ -52,15 +45,9 @@ function edd_bbp_d_is_admin_enabled(){
 
 function edd_bbp_d_is_user_enabled(){
 	$options = get_option( '_bbps_status_permissions' );
-	return isset( $options['user'] ) ? $options['user'] : false;}
-
-function edd_bbp_d_is_topic_move_enabled(){
-	return get_option( '_bbps_enable_topic_move' );
+	return isset( $options['user'] ) ? $options['user'] : false;
 }
 
-function edd_bbp_d_is_topic_claim_display_enabled(){
-	return get_option( '_bbps_claim_topic_display' );
-}
 
 function edd_bbp_d_is_topic_assign_enabled(){
 	return get_option( '_bbps_topic_assign' );
