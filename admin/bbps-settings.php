@@ -101,21 +101,6 @@ function bbps_admin_setting_callback_urgent(){
 <?php
 }
 
-function bbps_admin_setting_callback_claim_topic(){
-?>
-	<input id="bbps_claim_topic" name="_bbps_claim_topic" <?php checked( edd_bbp_d_is_topic_claim_enabled(),1 ); ?> type="checkbox"  value="1" />
-	<label for="bbps_claim_topic"><?php _e( 'Allow the forum moderators and admin to claim a topic, this will mark the topic title with [claimed] but will only show to forum moderators and admin users', 'bbpress' ); ?></label>
-<?php
-}
-
-function bbps_admin_setting_callback_claim_topic_display(){
-?>
-	<input id="bbps_claim_topic_display" name="_bbps_claim_topic_display" <?php checked( edd_bbp_d_is_topic_claim_display_enabled(),1 ); ?> type="checkbox"  value="1" />
-	<label for="bbps_claim_topic_display"><?php _e( 'By selecting this option if a topic is claimed the claimed persons username will be displayed next to the topic title instead of the words [claimed], leaving this unchecked will default to [claimed]', 'bbpress' ); ?></label>
-<?php
-
-}
-
 function bbps_admin_setting_callback_assign_topic(){
 ?>
 	<input id="bbps_topic_assign" name="_bbps_topic_assign" <?php checked( edd_bbp_d_is_topic_assign_enabled(),1 ); ?> type="checkbox"  value="1" />
