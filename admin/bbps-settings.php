@@ -108,5 +108,3 @@ function bbps_admin_setting_callback_assign_topic(){
 <?php
 
 }
-
-?>
