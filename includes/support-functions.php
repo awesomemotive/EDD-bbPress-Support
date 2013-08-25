@@ -83,7 +83,7 @@ function edd_bbp_d_update_status() {
 }
 
 function edd_bbp_d_assign_topic_form() {
-	if ( ( get_option( '_bbps_topic_assign' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) ) {
+	if ( get_option( '_bbps_topic_assign' ) == 1 && current_user_can( 'moderate' ) ) {
 		$topic_id = bbp_get_topic_id();
 		$topic_assigned = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
 		global $current_user;
