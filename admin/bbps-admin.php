@@ -83,9 +83,7 @@ function bbps_register_admin_settings() {
 	// Add getshopped forum section
 	add_settings_section( 'bbps-forum-setting',                __( 'User ranking system',           'bbps-forum' ), 'bbps_admin_setting_callback_getshopped_section',  'bbpress'             );
 
-
 	register_setting  ( 'bbpress', '_bbps_reply_count', 'bbps_validate_options' );
-	// user title setting start - this is the start number of the post
 
 	// show post count
 	add_settings_field( '_bbps_enable_post_count', __( 'Show forum post count', 'bbps-forum' ), 'bbps_admin_setting_callback_post_count',      'bbpress', 'bbps-forum-setting' );
