@@ -330,31 +330,6 @@ function edd_bbp_d_reply_and_resolve( $reply_id = 0, $topic_id = 0, $forum_id = 
 }
 add_action( 'bbp_new_reply', 'edd_bbp_d_reply_and_resolve', 0, 6 );
 
-/**
- * Creates the toggle for the action links dropdown
- */
-function edd_bbp_d_action_links_dropdown() {
-	$reply_id = bbp_get_reply_id();
-
-	// If post is not a reply, return
-	if ( ! bbp_is_reply( $reply_id ) && ! bbp_is_topic( $reply_id ) )
-		return;
-
-	// Make sure user can edit this reply
-	if ( ! current_user_can( 'edit_reply', $reply_id ) )
-		return;
-
-	// If topic is trashed, do not show admin links
-	if ( bbp_is_topic_trash( bbp_get_reply_topic_id( $reply_id ) ) )
-		return;
-
-?>
-	<button class="bbp-action-links-dropdown-toggle" data-toggle="dropdown"><span class="filter-option pull-left">Actions</span> <i class="icon icon-angle-down"></i></button>
-	<i class="icon-caret-up icon"></i>
-	<?php
-}
-add_action( 'bbp_theme_before_reply_admin_links', 'edd_bbp_d_action_links_dropdown' );
-
 function edd_bbp_d_sidebar() {
 	global $post;
 
