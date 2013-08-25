@@ -64,9 +64,9 @@ function edd_bbp_d_generate_status_options( $topic_id ) {
 		<select name="bbps_support_option" id="bbps_support_options">
 		<?php
 			// we only want to display the options the user has selected. the long term goal is to let users add their own forum statuses
-			if ( isset( $dropdown_options['res'] ) ) { ?> <option value="1" <?php selected( $value, 1 ) ; ?> >Not Resolved</option> <?php }
-			if ( isset( $dropdown_options['notres'] ) ) {?> <option value="2" <?php selected( $value, 2 ) ; ?> >Resolved</option> <?php }
-			if ( isset( $dropdown_options['notsup'] ) ) {?> <option value="3" <?php selected( $value, 3 ) ; ?> >Not a Support Question</option> <?php
+			if ( isset( $dropdown_options['res'] ) ) { ?><option value="1" <?php selected( $value, 1 ) ; ?> >Not Resolved</option><?php }
+			if ( isset( $dropdown_options['notres'] ) ) {?><option value="2" <?php selected( $value, 2 ) ; ?> >Resolved</option><?php }
+			if ( isset( $dropdown_options['notsup'] ) ) {?><option value="3" <?php selected( $value, 3 ) ; ?> >Not a Support Question</option><?php
 		} ?>
 		</select>
 		<input type="submit" value="Update" name="bbps_support_submit" />
