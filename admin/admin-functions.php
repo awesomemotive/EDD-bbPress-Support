@@ -65,30 +65,8 @@ add_action( 'bbp_forum_attributes_metabox_save' , 'bbps_forum_attributes_mb_save
  * Register all the settings
  */
 function edd_bbp_d_register_admin_settings() {
-	add_settings_section( 'bbps-forum-setting',                __( 'User ranking system',           'bbps-forum' ), 'edd_bbp_d_admin_setting_callback_getshopped_section',  'bbpress'             );
 
 	register_setting  ( 'bbpress', '_bbps_reply_count', 'edd_bbp_d_validate_options' );
-
- 	add_settings_field( '_bbps_reply_count_title1', 'User ranking level 1', 'edd_bbp_d_admin_setting_callback_reply_count_title1',      'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_start1', '', 'edd_bbp_d_admin_setting_callback_reply_count_start1', 'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_end1','' , 'edd_bbp_d_admin_setting_callback_reply_count_end1', 'bbpress', 'bbps-forum-setting' );
-
-
- 	add_settings_field( '_bbps_reply_count_title2', 'User ranking level 2', 'edd_bbp_d_admin_setting_callback_reply_count_title2',      'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_start2',  '', 'edd_bbp_d_admin_setting_callback_reply_count_start2', 'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_end2', '', 'edd_bbp_d_admin_setting_callback_reply_count_end2', 'bbpress', 'bbps-forum-setting' );
-
- 	add_settings_field( '_bbps_reply_count_title3', 'User ranking level 3', 'edd_bbp_d_admin_setting_callback_reply_count_title3',      'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_start3', '', 'edd_bbp_d_admin_setting_callback_reply_count_start3', 'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_end3', '', 'edd_bbp_d_admin_setting_callback_reply_count_end3', 'bbpress', 'bbps-forum-setting' );
-
- 	add_settings_field( '_bbps_reply_count_title4','User ranking level 4', 'edd_bbp_d_admin_setting_callback_reply_count_title4',      'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_start4', '', 'edd_bbp_d_admin_setting_callback_reply_count_start4', 'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_end4','', 'edd_bbp_d_admin_setting_callback_reply_count_end4', 'bbpress', 'bbps-forum-setting' );
-
- 	add_settings_field( '_bbps_reply_count_title5', 'User ranking level 5', 'edd_bbp_d_admin_setting_callback_reply_count_title5',      'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_start5', '', 'edd_bbp_d_admin_setting_callback_reply_count_start5', 'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_end5', '', 'edd_bbp_d_admin_setting_callback_reply_count_end5', 'bbpress', 'bbps-forum-setting' );
 
 	add_settings_field( '_bbps_enable_post_count', __( 'Show forum post count', 'bbps-forum' ), 'edd_bbp_d_admin_setting_callback_post_count',      'bbpress', 'bbps-forum-setting' );
  	register_setting  ( 'bbpress', '_bbps_enable_post_count', 'intval');
