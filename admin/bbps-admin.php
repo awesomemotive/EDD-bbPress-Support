@@ -80,10 +80,7 @@ function bbps_forum_attributes_mb_save($forum_id){
 //register the settings
 function bbps_register_admin_settings() {
 
-	// Add getshopped forum section
-	add_settings_section( 'bbps-forum-setting', __( 'User ranking system', 'bbps-forum' ), 'bbps_admin_setting_callback_getshopped_section',  'bbpress' );
-
-	register_setting  ( 'bbpress', '_bbps_reply_count', 'bbps_validate_options' );
+	register_setting  ( 'bbpress', '_bbps_reply_count' );
 
 	// show post count
 	add_settings_field( '_bbps_enable_post_count', __( 'Show forum post count', 'bbps-forum' ), 'bbps_admin_setting_callback_post_count', 'bbpress', 'bbps-forum-setting' );
@@ -97,14 +94,15 @@ function bbps_register_admin_settings() {
 
 
 	// default topic option
-	register_setting  ( 'bbpress', '_bbps_used_status', 'bbps_validate_checkbox_group' );
+	register_setting  ( 'bbpress', '_bbps_used_status' );
 	// each drop down option for selection
 	add_settings_field( '_bbps_used_status_1', __( 'Display Status:', 'bbps-forum' ), 'bbps_admin_setting_callback_displayed_status_res', 'bbpress', 'bbps-status-setting' );
 	add_settings_field( '_bbps_used_status_2', __( 'Display Status:', 'bbps-forum' ), 'bbps_admin_setting_callback_displayed_status_notres', 'bbpress', 'bbps-status-setting' );
 	add_settings_field( '_bbps_used_status_3', __( 'Display Status:', 'bbps-forum' ), 'bbps_admin_setting_callback_displayed_status_notsup', 'bbpress', 'bbps-status-setting' );
 
 	// who can update the status
-	register_setting  ( 'bbpress', '_bbps_status_permissions', 'bbps_validate_checkbox_group' );
+	register_setting  ( 'bbpress', '_bbps_status_permissions' );
+
 	// each drop down option for selection
 	add_settings_field( '_bbps_status_permissions_admin', __( 'Admin', 'bbps-forum' ), 'bbps_admin_setting_callback_permission_admin', 'bbpress', 'bbps-status-setting' );
 	add_settings_field( '_bbps_status_permissions_user', __( 'Topic Creator', 'bbps-forum' ), 'bbps_admin_setting_callback_permission_user', 'bbpress', 'bbps-status-setting' );
@@ -129,27 +127,3 @@ function bbps_register_admin_settings() {
 
 }
 add_action( 'bbp_register_admin_settings' , 'bbps_register_admin_settings' );
-
-function bbps_validate_checkbox_group($input){
-    //update only the needed options
-    foreach ($input as $key => $value){
-        $newoptions[$key] = $value;
-    }
-    //return all options
-    return $newoptions;
-}
-
-function bbps_validate_options( $input ){
-
-	$options = get_option('_bbps_reply_count');
-
-	$i = 1;
-	foreach ( $input as $array ){
-		foreach ($array as $key => $value){
-		      $options[$i][$key] = $value;
-
-		    }
-			$i++;
-		}
-    return $options;
-}
