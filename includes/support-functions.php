@@ -81,25 +81,6 @@ function edd_bbp_d_generate_status_options( $topic_id ) {
 function edd_bbp_d_update_status() {
 	$topic_id = absint( $_POST['bbps_topic_id'] );
 	$status   = sanitize_text_field( $_POST['bbps_support_option'] );
-
-	//check if the topic already has resolved meta - if it does then delete it before readding
-	//we do this so that any topic updates will have a new meta id for sorting recently resolved etc
-	$has_status = get_post_meta( $topic_id, '_bbps_topic_status', true );
-	$is_urgent  = get_post_meta( $topic_id, '_bbps_urgent_topic', true );
-	$is_claimed = get_post_meta( $topic_id, '_bbps_topic_claimed', true );
-
-	if ( $has_status )
-		delete_post_meta( $topic_id, '_bbps_topic_status' );
-
-	//if the status is going to resolved we need to check for claimed and urgent meta and delete this to
-	// 2 == resolved status :)
-	if ( $status == 2 ) {
-		if ( $is_urgent )
-			delete_post_meta( $topic_id, '_bbps_urgent_topic' );
-		if ( $is_claimed )
-			delete_post_meta( $topic_id, '_bbps_topic_claimed' );
-	}
-
 	update_post_meta( $topic_id, '_bbps_topic_status', $status );
 }
 
