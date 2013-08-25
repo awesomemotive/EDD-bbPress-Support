@@ -104,17 +104,10 @@ function bbps_register_admin_settings() {
 	register_setting  ( 'bbpress', '_bbps_status_permissions' );
 
 	// each drop down option for selection
-	add_settings_field( '_bbps_status_permissions_admin', __( 'Admin', 'bbps-forum' ), 'bbps_admin_setting_callback_permission_admin', 'bbpress', 'bbps-status-setting' );
 	add_settings_field( '_bbps_status_permissions_user', __( 'Topic Creator', 'bbps-forum' ), 'bbps_admin_setting_callback_permission_user', 'bbpress', 'bbps-status-setting' );
-	add_settings_field( '_bbps_status_permissions_moderator', __( 'Forum Moderator', 'bbps-forum' ), 'bbps_admin_setting_callback_permission_moderator', 'bbpress', 'bbps-status-setting' );
-
 
 	/* support forum misc settings */
 	add_settings_section( 'bbps-topic_status-setting',__( 'Support Froum Settings', 'bbps-forum' ), 'bbps_admin_setting_callback_support_forum_section',  'bbpress' );
-
-	register_setting  ( 'bbpress', '_bbps_status_permissions_urgent', 'intval' );
-	// each drop down option for selection
-	add_settings_field( '_bbps_status_permissions_urgent', __( 'Urgent Topic Status', 'bbps-forum' ), 'bbps_admin_setting_callback_urgent', 'bbpress', 'bbps-topic_status-setting' );
 
 	//the ability to move topics
  	add_settings_field( '_bbps_enable_topic_move', __( 'Move topics', 'bbps-forum' ), 'bbps_admin_setting_callback_move_topic', 'bbpress', 'bbps-topic_status-setting' );
