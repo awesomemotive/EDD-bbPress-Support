@@ -86,35 +86,6 @@ function bbps_register_admin_settings() {
 
 	register_setting  ( 'bbpress', '_bbps_reply_count', 'bbps_validate_options' );
 	// user title setting start - this is the start number of the post
-/*
-	add_settings_field( '_bbps_reply_count_start', __( 'Replies Between', 'bbps-forum' ), 'bbps_admin_setting_callback_reply_count_start', 'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_end', __( 'and', 'bbps-forum' ), 'bbps_admin_setting_callback_reply_count_end', 'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_title', __( 'Custom title', 'bbps-forum' ), 'bbps_admin_setting_callback_reply_count_title',      'bbpress', 'bbps-forum-setting' );
-*/
-
- 	//worst code ever starting now
- 	add_settings_field( '_bbps_reply_count_title1', 'User ranking level 1', 'bbps_admin_setting_callback_reply_count_title1',      'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_start1', '', 'bbps_admin_setting_callback_reply_count_start1', 'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_end1','' , 'bbps_admin_setting_callback_reply_count_end1', 'bbpress', 'bbps-forum-setting' );
-
-
- 	add_settings_field( '_bbps_reply_count_title2', 'User ranking level 2', 'bbps_admin_setting_callback_reply_count_title2',      'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_start2',  '', 'bbps_admin_setting_callback_reply_count_start2', 'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_end2', '', 'bbps_admin_setting_callback_reply_count_end2', 'bbpress', 'bbps-forum-setting' );
-
- 	add_settings_field( '_bbps_reply_count_title3', 'User ranking level 3', 'bbps_admin_setting_callback_reply_count_title3',      'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_start3', '', 'bbps_admin_setting_callback_reply_count_start3', 'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_end3', '', 'bbps_admin_setting_callback_reply_count_end3', 'bbpress', 'bbps-forum-setting' );
-
- 	add_settings_field( '_bbps_reply_count_title4','User ranking level 4', 'bbps_admin_setting_callback_reply_count_title4',      'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_start4', '', 'bbps_admin_setting_callback_reply_count_start4', 'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_end4','', 'bbps_admin_setting_callback_reply_count_end4', 'bbpress', 'bbps-forum-setting' );
-
- 	add_settings_field( '_bbps_reply_count_title5', 'User ranking level 5', 'bbps_admin_setting_callback_reply_count_title5',      'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_start5', '', 'bbps_admin_setting_callback_reply_count_start5', 'bbpress', 'bbps-forum-setting' );
- 	add_settings_field( '_bbps_reply_count_end5', '', 'bbps_admin_setting_callback_reply_count_end5', 'bbpress', 'bbps-forum-setting' );
-
- 	///worst code ever ends now
 
 	// show post count
 	add_settings_field( '_bbps_enable_post_count', __( 'Show forum post count', 'bbps-forum' ), 'bbps_admin_setting_callback_post_count',      'bbpress', 'bbps-forum-setting' );
