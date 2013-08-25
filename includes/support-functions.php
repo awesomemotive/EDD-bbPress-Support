@@ -102,19 +102,6 @@ function edd_bbp_d_urgent_topic_link() {
 add_action( 'bbp_theme_after_reply_admin_links', 'edd_bbp_d_urgent_topic_link' );
 
 /**
- * Mark a topic as urgent
- */
-function edd_bbp_d_urgent_topic() {
-	$topic_id = $_GET['topic_id'];
-	update_post_meta( $topic_id, '_bbps_urgent_topic', 1 );
-}
-
-function edd_bbp_d_not_urgent_topic() {
-	$topic_id = $_GET['topic_id'];
-	delete_post_meta( $topic_id, '_bbps_urgent_topic' );
-}
-
-/**
  * Display a message to all administrators on the single topic view so they
  * know a topic is urgent also give them a link to check it as not urgent
  */
@@ -129,77 +116,6 @@ function edd_bbp_d_display_urgent_message() {
 	}
 }
 add_action( 'bbp_template_before_single_topic' , 'edd_bbp_d_display_urgent_message' );
-
-/**
- * Claiming a topic
- */
-function edd_bbp_d_claim_topic_link() {
-	if ( ( get_option( '_bbps_claim_topic' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) && ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) ) {
-		$topic_id = bbp_get_topic_id();
-		global $current_user;
-		get_currentuserinfo();
-		$user_id = $current_user->ID;
-
-		//anything greater than one will be claimed as it saves the claimed user id and will set this back to 0 if a topic is unclaimed
-		if ( get_post_meta( $topic_id, '_bbps_topic_claimed', true ) < 1 ) {
-			$urgent_uri = add_query_arg( array( 'action' => 'bbps_claim_topic', 'topic_id' => $topic_id, 'user_id' => $user_id ) );
-			echo '<span class="bbp-admin-links bbps-links"><a href="' . $urgent_uri . '">Claim </a></span>';
-		}
-
-	}
-	return;
-}
-add_action( 'bbp_theme_after_reply_admin_links', 'edd_bbp_d_claim_topic_link' );
-
-function edd_bbp_d_claim_topic() {
-	$user_id  = absint( $_GET['user_id'] );
-	$topic_id = absint( $_GET['topic_id'] );
-
-	// Subscribe the user
-	bbp_add_user_subscription( $user_id, $topic_id );
-
-	// Record the User ID of the moderator who claimed the topic
-	update_post_meta( $topic_id, '_bbps_topic_claimed', $user_id );
-}
-
-function edd_bbp_d_unclaim_topic() {
-	$user_id  = absint( $_GET['user_id'] );
-	$topic_id = absint( $_GET['topic_id'] );
-
-	// Unsubscribe the moderator who unclaimed from the topic
-	bbp_remove_user_subscription( $user_id, $topic_id );
-
-	delete_post_meta( $topic_id, '_bbps_topic_claimed' );
-}
-
-function edd_bbp_d_display_claimed_message() {
-	$topic_author_id = bbp_get_topic_author_id();
-	global $current_user;
-	get_currentuserinfo();
-	$user_id = $current_user->ID;
-
-	// We want to display the claimed topic message to the topic owner to
-	if ( ( get_option( '_bbps_claim_topic' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) || $topic_author_id == $user_id ) && ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) ) {
-		$topic_id = bbp_get_topic_id();
-		$claimed_user_id = get_post_meta( $topic_id, '_bbps_topic_claimed', true );
-
-		if ( $claimed_user_id > 0 ) {
-			$user_info = get_userdata ( $claimed_user_id );
-			$claimed_user_name = $user_info->user_login;
-		}
-
-		if ( $claimed_user_id > 0 && $claimed_user_id != $user_id ) {
-			echo "<div class='bbps-support-forums-message'>This topic is currently claimed by " .$claimed_user_name .", they will be working on it now. </div>";
-		}
-
-		// The person who claimed it can unclaim it this will also unsubscribe them when they do
-		if ( $claimed_user_id == $user_id ) {
-			$urgent_uri = add_query_arg( array( 'action' => 'bbps_unclaim_topic', 'topic_id' => $topic_id, 'user_id' => $user_id ) );
-			echo '<div class="bbps-support-forums-message"> You currently own this topic would you like to <a href="' . $urgent_uri . '">Unclame</a> it?</div>';
-		}
-	}
-}
-add_action( 'bbp_template_before_single_topic' , 'edd_bbp_d_display_claimed_message' );
 
 function edd_bbp_d_assign_topic_form() {
 	if ( ( get_option( '_bbps_topic_assign' ) == 1 ) && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) ) {
@@ -337,32 +253,9 @@ add_action( 'bbp_template_before_single_topic', 'edd_bbp_d_ping_asignee_button' 
 // adds a class and status to the front of the topic title
 function edd_bbp_d_modify_title( $title, $topic_id = 0 ) {
 	$topic_id = bbp_get_topic_id( $topic_id );
-	$title = "";
-	$topic_author_id = bbp_get_topic_author_id();
-	global $current_user;
-	get_currentuserinfo();
-	$user_id = $current_user->ID;
-
-	$claimed_user_id = get_post_meta( $topic_id, '_bbps_topic_claimed', true );
-	if ( $claimed_user_id > 0 ) {
-		$user_info = get_userdata ( $claimed_user_id );
-		$claimed_user_name = $user_info->user_login;
-	}
-
 	//2 is the resolved status ID
 	if ( get_post_meta( $topic_id, '_bbps_topic_status', true ) == 2 )
 		echo '<span class="resolved"> [Resolved] </span>';
-	//we only want to display the urgent topic status to admin and moderators
-	if ( get_post_meta( $topic_id, '_bbps_urgent_topic', true ) == 1 && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) ) )
-		echo '<span class="urgent"> [Urgent] </span>';
-	//claimed topics also only get shown to admin and moderators and the person who owns the topic
-	if ( get_post_meta( $topic_id, '_bbps_topic_claimed', true ) > 0 && ( current_user_can( 'administrator' ) || current_user_can( 'bbp_moderator' ) || $topic_author_id == $user_id ) ) {
-		//if this option == 1 we display the users name not [claimed]
-		if ( get_option( '_bbps_claim_topic_display' ) == 1 )
-			echo '<span class="claimed">['. $claimed_user_name . ']</span>';
-		else
-			echo '<span class="claimed"> [Claimed] </span>';
-	}
 }
 add_action( 'bbp_theme_before_topic_title', 'edd_bbp_d_modify_title' );
 
