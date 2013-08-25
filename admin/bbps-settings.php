@@ -1,10 +1,4 @@
 <?php
-//The GetShopped Section
-function bbps_admin_setting_callback_getshopped_section(){
-?>
-	<p><?php _e( 'User ranking allows you to differentiate and reward your forum users with Custom Titles based on the number of topics and replies they have contributed to.', 'bbps-forum' ); ?></p>
-<?php
-}
 
 function bbps_admin_setting_callback_status_section(){
 ?>
@@ -47,22 +41,22 @@ function bbps_admin_setting_callback_default_status(){
 
 function bbps_admin_setting_callback_displayed_status_res(){
 ?>
-	<input id="bbps_used_status" name="_bbps_used_status[res]" <?php checked( edd_bbp_d_is_resolved_enabled(),1 ); ?> type="checkbox"  value="1" />
-	<label for="bbps_used_status"><?php _e( 'Resolved', 'bbpress' ); ?></label>
+	<input id="_bbps_used_status[res]" name="_bbps_used_status[res]" <?php checked( edd_bbp_d_is_resolved_enabled(),1 ); ?> type="checkbox"  value="1" />
+	<label for="_bbps_used_status[res]"><?php _e( 'Resolved', 'bbpress' ); ?></label>
 <?php
 }
 
 function bbps_admin_setting_callback_displayed_status_notres(){
 ?>
-	<input id="bbps_used_status" name="_bbps_used_status[notres]" <?php checked( edd_bbp_d_is_not_resolved_enabled(),1 ); ?> type="checkbox"  value="1" />
-	<label for="bbps_used_status"><?php _e( 'Not Resolved', 'bbpress' ); ?></label>
+	<input id="_bbps_used_status[notres]" name="_bbps_used_status[notres]" <?php checked( edd_bbp_d_is_not_resolved_enabled(),1 ); ?> type="checkbox"  value="1" />
+	<label for="_bbps_used_status[notres]"><?php _e( 'Not Resolved', 'bbpress' ); ?></label>
 <?php
 }
 
 function bbps_admin_setting_callback_displayed_status_notsup(){
 ?>
-	<input id="bbps_used_status" name="_bbps_used_status[notsup]" <?php checked( edd_bbp_d_is_not_support_enabled(),1 ); ?> type="checkbox"  value="1" />
-	<label for="bbps_used_status"><?php _e( 'Not a support question', 'bbpress' ); ?></label>
+	<input id="_bbps_used_status[notsup]" name="_bbps_used_status[notsup]" <?php checked( edd_bbp_d_is_not_support_enabled(),1 ); ?> type="checkbox"  value="1" />
+	<label for="_bbps_used_status[notsup]"><?php _e( 'Not a support question', 'bbpress' ); ?></label>
 <?php
 }
 
