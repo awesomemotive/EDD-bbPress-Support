@@ -53,6 +53,7 @@ function edd_bbp_d_includes() {
 
 	$include_files = array(
 		'actions',
+		'filters',
 		'common-functions',
 		'support-functions',
 		'core-options',
