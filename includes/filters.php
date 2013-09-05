@@ -10,4 +10,4 @@ function edd_bbp_get_subforums( $args ) {
 	$args['nopaging'] = true;
 	return $args;
 }
-add_filter( 'bbp_after_forum_get_subforums_parse_args', 'edd_bbp_list_all_forums' );
+add_filter( 'bbp_after_forum_get_subforums_parse_args', 'edd_bbp_get_subforums' );
