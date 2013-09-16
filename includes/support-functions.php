@@ -278,16 +278,17 @@ function edd_bbp_d_add_user_purchases_link() {
 
 	echo '<div class="edd_users_purchases">';
 	echo '<h4>User\'s Purchases:</h4>';
-	$purchases = edd_get_users_purchases( $user_email );
+	$purchases = edd_get_users_purchases( $user_email, $number, false, 'any' );
 	if ( $purchases ) :
 		echo '<ul>';
-	foreach ( $purchases as $purchase ) {
-		$downloads = edd_get_payment_meta_downloads( $purchase->ID );
-		foreach ( $downloads as $download ) {
-			echo '<li>' . get_the_title( $download['id'] ) . ' - ' . date( 'F j, Y', strtotime( $purchase->post_date ) ) . '</li>';
+		foreach ( $purchases as $purchase ) {
+			echo '<li><strong>' . edd_get_payment_status( $purchase, true ) . ':</strong></li>';
+			$downloads = edd_get_payment_meta_downloads( $purchase->ID );
+			foreach ( $downloads as $download ) {
+				echo '<li>' . get_the_title( $download['id'] ) . ' - ' . date( 'F j, Y', strtotime( $purchase->post_date ) ) . '</li>';
+			}
 		}
-	}
-	echo '</ul>';
+		echo '</ul>';
 	else :
 		echo '<p>This user has never purchased anything.</p>';
 	endif;
