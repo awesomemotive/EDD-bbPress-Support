@@ -88,6 +88,26 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 	);
 	$unassigned_tickets = new WP_Query( $args );
 
+
+	// Get tickets with no replies
+	$args = array(
+		'post_type'  => 'topic',
+		'meta_query' => array(
+			'relation' => 'AND',
+			array(
+				'key'     => '_bbp_voice_count',
+				'value'   => '1'
+			),
+			array(
+				'key'   => '_bbps_topic_status',
+				'value' => '1',
+			),
+		),
+		'posts_per_page' => -1,
+		'post_status' => 'publish'
+	);
+	$no_reply_tickets = new WP_Query( $args );
+
 	// Get unresolved tickets
 	$args = array(
 		'post_type'  => 'topic',
@@ -114,12 +134,15 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 
 	ob_start(); ?>
 	<style>
+	#support-tabs { padding-left: 0; }
 	#support-tabs li { list-style: none; margin-left: 0; font-size: 95%;}
+	#support-tabs li a { padding: 4px; }
 	</style>
 	<ul class="nav nav-tabs" id="support-tabs">
 		<li><a href="#your-waiting-tickets" data-toggle="tab">Awaiting Your Respose (<?php echo $waiting_tickets->post_count; ?>)</a></li>
 		<li><a href="#your-tickets" data-toggle="tab">Your Open Tickets (<?php echo $assigned_tickets->post_count; ?>)</a></li>
 		<li><a href="#unassigned" data-toggle="tab">Unassigned Tickets (<?php echo $unassigned_tickets->post_count; ?>)</a></li>
+		<li><a href="#no-replies" data-toggle="tab">No Replies (<?php echo $no_reply_tickets->post_count; ?>)</a></li>
 		<li><a href="#unresolved" data-toggle="tab">Unresolved Tickets (<?php echo $unresolved_tickets->post_count; ?>)</a></li>
 		<li><a href="#feature-requests" data-toggle="tab">Feature Requests</a></li>
 	</ul>
@@ -178,6 +201,24 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 					<?php wp_reset_postdata(); ?>
 				<?php else : ?>
 					<li><?php _e( 'No unassigned tickets, yay!', 'edd-bbpress-dashboard' ); ?></li>
+				<?php endif; ?>
+			</ul>
+		</div>
+		<div class="tab-pane" id="no-replies">
+			<ul class="bbp-tickets">
+				<?php if( $no_reply_tickets->have_posts() ) : ?>
+					<?php while( $no_reply_tickets->have_posts() ) : $no_reply_tickets->the_post(); ?>
+						<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
+						<li>
+							<?php if( $parent == 499 ) { ?>
+							<strong><?php _e( 'Priority:', 'edd-bbpress-dashboard' ); ?></strong>
+							<?php } ?>
+							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+						</li>
+					<?php endwhile; ?>
+					<?php wp_reset_postdata(); ?>
+				<?php else : ?>
+					<li><?php _e( 'No tickets without replies, yay!', 'edd-bbpress-dashboard' ); ?></li>
 				<?php endif; ?>
 			</ul>
 		</div>
