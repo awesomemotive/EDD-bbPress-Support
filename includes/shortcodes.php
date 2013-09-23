@@ -139,7 +139,7 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 	#support-tabs li a { padding: 4px; }
 	</style>
 	<ul class="nav nav-tabs" id="support-tabs">
-		<li><a href="#your-waiting-tickets" data-toggle="tab">Awaiting Your Respose (<?php echo $waiting_tickets->post_count; ?>)</a></li>
+		<li><a href="#your-waiting-tickets" data-toggle="tab">Awaiting Your Response (<?php echo $waiting_tickets->post_count; ?>)</a></li>
 		<li><a href="#your-tickets" data-toggle="tab">Your Open Tickets (<?php echo $assigned_tickets->post_count; ?>)</a></li>
 		<li><a href="#unassigned" data-toggle="tab">Unassigned Tickets (<?php echo $unassigned_tickets->post_count; ?>)</a></li>
 		<li><a href="#no-replies" data-toggle="tab">No Replies (<?php echo $no_reply_tickets->post_count; ?>)</a></li>
