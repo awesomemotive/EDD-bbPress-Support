@@ -314,7 +314,24 @@ function edd_bbp_d_add_user_priority_support_status() {
 	} else {
 		echo '<p>Has no priority support accesss</p>';
 	}
+	echo '</div>';
 
+	echo '<div class="edd_users_purchases">';
+	echo '<h4>User\'s Purchases:</h4>';
+	$purchases = edd_get_users_purchases( $user_email, $number, false, 'any' );
+	if ( $purchases ) :
+		echo '<ul>';
+		foreach ( $purchases as $purchase ) {
+			echo '<li><strong>' . edd_get_payment_status( $purchase, true ) . ':</strong></li>';
+			$downloads = edd_get_payment_meta_downloads( $purchase->ID );
+			foreach ( $downloads as $download ) {
+				echo '<li>' . get_the_title( $download['id'] ) . ' - ' . date( 'F j, Y', strtotime( $purchase->post_date ) ) . '</li>';
+			}
+		}
+		echo '</ul>';
+	else :
+		echo '<p>This user has never purchased anything.</p>';
+	endif;
 	echo '</div>';
 }
 add_action( 'bbp_template_after_user_profile', 'edd_bbp_d_add_user_priority_support_status' );
