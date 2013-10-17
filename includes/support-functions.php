@@ -346,6 +346,7 @@ function edd_bbp_d_sidebar() {
 	global $post;
 
 	$user_id = get_the_author_meta( 'ID' );
+	$user_data = get_userdata( $user_id );
 
 ?>
 	<div class="box">
@@ -368,7 +369,7 @@ function edd_bbp_d_sidebar() {
 		<div class="edd_users_purchases">
 			<h4>User's Purchases:</h4>
 			<?php
-			$purchases = edd_get_users_purchases( $user_email, 100, false, 'any' );
+			$purchases = edd_get_users_purchases( $user_data->user_email, 100, false, 'any' );
 			if ( $purchases ) :
 				echo '<ul>';
 				foreach ( $purchases as $purchase ) {
