@@ -382,9 +382,9 @@ function edd_bbp_d_sidebar() {
 						}
 
 						if( function_exists( 'edd_software_licensing' ) ) {
-							echo '<strong>Licenses:</strong><br/>';
 							$licenses  = edd_software_licensing()->get_licenses_of_purchase( $purchase->ID );
 							if( $licenses ) {
+								echo '<strong>Licenses:</strong><br/>';
 								foreach ( $licenses as $license ) {
 									echo get_the_title( $license->ID ) . ' - ' . edd_software_licensing()->get_license_status( $license->ID ) . '<br/>';
 								}
