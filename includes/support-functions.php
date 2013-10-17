@@ -278,14 +278,26 @@ function edd_bbp_d_add_user_purchases_link() {
 
 	echo '<div class="edd_users_purchases">';
 	echo '<h4>User\'s Purchases:</h4>';
-	$purchases = edd_get_users_purchases( $user_email, $number, false, 'any' );
+	$purchases = edd_get_users_purchases( $user_email, 100, false, 'any' );
 	if ( $purchases ) :
 		echo '<ul>';
 		foreach ( $purchases as $purchase ) {
-			echo '<li><strong>' . edd_get_payment_status( $purchase, true ) . ':</strong></li>';
+
+			echo '<li><strong>' . edd_get_payment_status( $purchase, true ) . ':</strong> - <strong>Downloads:</strong></li>';
 			$downloads = edd_get_payment_meta_downloads( $purchase->ID );
 			foreach ( $downloads as $download ) {
 				echo '<li>' . get_the_title( $download['id'] ) . ' - ' . date( 'F j, Y', strtotime( $purchase->post_date ) ) . '</li>';
+			}
+
+			if( function_exists( 'edd_software_licensing' ) ) {
+				echo '<li><strong>Licenses:</strong></li>';
+				$licenses  = edd_software_licensing()->get_licenses_of_purchase( $purchase->ID );
+				if( $licenses ) {
+					foreach ( $licenses as $license ) {
+						echo '<li>' . get_the_title( $license->ID ) . ' - ' . edd_software_licensing()->get_license_status( $license->ID ) . '</li>';
+					}
+				}
+				echo '<li><hr/></li>';
 			}
 		}
 		echo '</ul>';
@@ -314,24 +326,6 @@ function edd_bbp_d_add_user_priority_support_status() {
 	} else {
 		echo '<p>Has no priority support accesss</p>';
 	}
-	echo '</div>';
-
-	echo '<div class="edd_users_purchases">';
-	echo '<h4>User\'s Purchases:</h4>';
-	$purchases = edd_get_users_purchases( $user_email, $number, false, 'any' );
-	if ( $purchases ) :
-		echo '<ul>';
-		foreach ( $purchases as $purchase ) {
-			echo '<li><strong>' . edd_get_payment_status( $purchase, true ) . ':</strong></li>';
-			$downloads = edd_get_payment_meta_downloads( $purchase->ID );
-			foreach ( $downloads as $download ) {
-				echo '<li>' . get_the_title( $download['id'] ) . ' - ' . date( 'F j, Y', strtotime( $purchase->post_date ) ) . '</li>';
-			}
-		}
-		echo '</ul>';
-	else :
-		echo '<p>This user has never purchased anything.</p>';
-	endif;
 	echo '</div>';
 }
 add_action( 'bbp_template_after_user_profile', 'edd_bbp_d_add_user_priority_support_status' );
@@ -370,6 +364,39 @@ function edd_bbp_d_sidebar() {
 				<p>Has no priority support accesss</p>
 			<?php } } ?>
 		</div><!-- /.rcp_support_status -->
+
+		<div class="edd_users_purchases">
+			<h4>User's Purchases:</h4>
+			<?php
+			$purchases = edd_get_users_purchases( $user_email, 100, false, 'any' );
+			if ( $purchases ) :
+				echo '<ul>';
+				foreach ( $purchases as $purchase ) {
+
+					echo '<li>';
+						echo '<strong>' . edd_get_payment_status( $purchase, true ) . ':</strong><br/>';
+						echo '<strong>Downloads:</strong><br/>';
+						$downloads = edd_get_payment_meta_downloads( $purchase->ID );
+						foreach ( $downloads as $download ) {
+							echo get_the_title( $download['id'] ) . ' - ' . date( 'F j, Y', strtotime( $purchase->post_date ) ) . '<br/>';
+						}
+
+						if( function_exists( 'edd_software_licensing' ) ) {
+							echo '<strong>Licenses:</strong><br/>';
+							$licenses  = edd_software_licensing()->get_licenses_of_purchase( $purchase->ID );
+							if( $licenses ) {
+								foreach ( $licenses as $license ) {
+									echo get_the_title( $license->ID ) . ' - ' . edd_software_licensing()->get_license_status( $license->ID ) . '<br/>';
+								}
+							}
+							echo '<hr/>';
+						}
+					echo '</li>';				}
+				echo '</ul>';
+			else :
+				echo '<p>This user has never purchased anything.</p>';
+			endif; ?>
+		</div>
 	</div>
 	<?php
 }
