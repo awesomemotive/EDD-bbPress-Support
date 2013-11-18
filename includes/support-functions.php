@@ -21,6 +21,18 @@ function edd_bbp_d_add_support_forum_features() {
 }
 add_action( 'bbp_template_before_single_topic', 'edd_bbp_d_add_support_forum_features' );
 
+function edd_bbp_d_get_all_mods() {
+	$wp_user_search = new WP_User_Query( array( 'role' => 'administrator' ) );
+	$admins = $wp_user_search->get_results();
+
+	$wp_user_search = new WP_User_Query( array( 'role' => 'bbp_moderator' ) );
+	$moderators = $wp_user_search->get_results();
+
+	return array_merge( $moderators, $admins );
+
+}
+
+
 function edd_bbp_d_get_topic_status( $topic_id ) {
 	$default = get_option( '_bbps_default_status' );
 
@@ -82,6 +94,28 @@ function edd_bbp_d_update_status() {
 	update_post_meta( $topic_id, '_bbps_topic_status', $status );
 }
 
+function edd_bbp_d_count_tickets_of_mod( $mod_id = 0 ) {
+	$args = array(
+		'post_type' => 'topic',
+		'meta_query' => array(
+			array(
+				'key' => 'bbps_topic_assigned',
+				'value' => $mod_id,
+			),
+			array(
+				'key' => '_bbps_topic_status',
+				'value' => '1'
+			)
+		),
+		'nopaging' => true
+	);
+
+	$query = new WP_Query( $args );
+
+	return $query->post_count;
+}
+
+
 function edd_bbp_d_assign_topic_form() {
 	if ( get_option( '_bbps_topic_assign' ) == 1 && current_user_can( 'moderate' ) ) {
 		$topic_id = bbp_get_topic_id();
@@ -121,13 +155,9 @@ function edd_bbp_d_assign_topic_form() {
 add_action( 'bbp_template_before_single_topic' , 'edd_bbp_d_assign_topic_form' );
 
 function edd_bbp_d_user_assign_dropdown() {
-	$wp_user_search = new WP_User_Query( array( 'role' => 'administrator' ) );
-	$admins = $wp_user_search->get_results();
 
-	$wp_user_search = new WP_User_Query( array( 'role' => 'bbp_moderator' ) );
-	$moderators = $wp_user_search->get_results();
+	$all_users = edd_bbp_d_get_all_mods();
 
-	$all_users = array_merge( $moderators, $admins );
 	$topic_id = bbp_get_topic_id();
 	$claimed_user_id = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
 

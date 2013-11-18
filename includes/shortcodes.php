@@ -22,6 +22,72 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 	wp_enqueue_script( 'bootstrap', EDD_BBP_D_URL . 'bootstrap/js/bootstrap.min.js'   );
 	wp_enqueue_style(  'bootstrap', EDD_BBP_D_URL . 'bootstrap/css/bootstrap.min.css' );
 
+
+	// Show ticket overview for all mods
+	$mods = edd_bbp_d_get_all_mods(); ?>
+
+	<?php if( $mods ) : ?>
+		<div class="row" id="mods-grid">
+		<?php foreach( $mods as $mod ) : ?>
+
+			<?php $ticket_count = edd_bbp_d_count_tickets_of_mod( $mod->ID ); ?>
+
+			<div class="mod col-xs-6 col-sm-3">
+				<div class="mod-name"><?php echo $mod->display_name; ?></div>
+				<div class="mod-gravatar"><?php echo get_avatar( $mod->ID, 45 ); ?></div>
+				<div class="mod-ticket-count">
+					<a href="<?php echo add_query_arg( 'mod', $mod->ID ); ?>">Tickets: <strong><?php echo $ticket_count; ?></strong></div></a>
+			</div>
+
+		<?php endforeach; ?>
+		</div>
+	<?php endif;
+
+	if( ! empty( $_GET['mod'] ) ) {
+		// Get open, assigned tickets
+		$args = array(
+			'post_type'  => 'topic',
+			'meta_query' => array(
+				'relation' => 'AND',
+				array(
+					'key'   => '_bbps_topic_status',
+					'value' => '1',
+				),
+				array(
+					'key'   => 'bbps_topic_assigned',
+					'value' => $_GET['mod'],
+				)
+			),
+			'posts_per_page' => -1,
+			'post_parent__not_in' => array( 318 )
+		);
+		$assigned_tickets = new WP_Query( $args );
+		$mod = get_userdata( $_GET['mod'] );
+		ob_start(); ?>
+		<div class="bbp-tickets">
+			<?php if ( $assigned_tickets->have_posts() ) : ?>
+				<h4>Tickets assigned to <?php echo $mod->display_name; ?></h4>
+				<?php while ( $assigned_tickets->have_posts() ) : $assigned_tickets->the_post(); ?>
+					<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
+					<?php if ( $parent != 318 ) : ?>
+					<?php $remove_url = add_query_arg( array( 'topic_id' => get_the_ID(), 'bbps_action' => 'remove_pending' ) ); ?>
+					<div>
+						<?php if ( $parent == 499 ) { ?>
+						<strong>Priority:</strong>
+						<?php } ?>
+						<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a> - <a href="<?php echo $remove_url; ?>"><?php _e( 'Remove Pending Status', 'edd-bbpress-dashboard' ); ?></a>
+					</div>
+					<?php endif; ?>
+				<?php endwhile; ?>
+				<?php wp_reset_postdata(); ?>
+			<?php else : ?>
+				<div><?php _e( 'This mod has no assigned tickets.', 'edd-bbpress-dashboard' ); ?></div>
+			<?php endif; ?>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
 	// Get tickets awaiting answer
 	$args = array(
 		'post_type'  => 'topic',
@@ -137,6 +203,7 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 	#support-tabs { padding-left: 0; }
 	#support-tabs li { list-style: none; margin-left: 0; font-size: 95%;}
 	#support-tabs li a { padding: 4px; }
+	#mods-grid { margin-bottom: 20px; }
 	</style>
 	<ul class="nav nav-tabs" id="support-tabs">
 		<li><a href="#your-waiting-tickets" data-toggle="tab">Awaiting Your Response (<?php echo $waiting_tickets->post_count; ?>)</a></li>
