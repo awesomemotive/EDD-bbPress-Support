@@ -431,3 +431,31 @@ function edd_bbp_d_sidebar() {
 	</div>
 	<?php
 }
+
+function edd_bbp_send_priority_to_hall( $topic_id = 0, $forum_id = 0, $anonymous_data = false, $topic_author = 0 ) {
+
+	// Bail if topic is not published
+	if ( ! bbp_is_topic_published( $topic_id ) )
+		return;
+
+	if( $forum_id != 499 )
+		return;
+
+	$json = json_encode( array(
+		'title'   => 'A new priority ticket has been posted',
+		'message' => esc_html( get_the_title( $topic_id ) ) . ' - ' . esc_url( get_permalink( $topic_id ) )
+	) );
+
+	$args = array(
+		'headers' => array(
+			'content-type' => 'application/json'
+		),
+		'body' => $json,
+		'timeout' => 15,
+		'sslverify' => false
+	);
+
+	wp_remote_post( 'https://hall.com/api/1/services/generic/7a4672fbb62a48920058d7cc0c1da6c8', $args );
+
+}
+add_action( 'bbp_new_topic', 'edd_bbp_send_priority_to_hall', 10, 4 );
