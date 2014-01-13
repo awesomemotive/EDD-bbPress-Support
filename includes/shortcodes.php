@@ -107,6 +107,9 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 				'value' => $user_ID,
 			)
 		),
+		'order' => 'ASC',
+		'orderby' => 'meta_value',
+		'meta_key' => '_bbp_last_active_time',
 		'posts_per_page' => -1,
 		'post_parent__not_in' => array( 318 )
 	);
@@ -127,6 +130,9 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 				'value' => $user_ID,
 			)
 		),
+		'order' => 'ASC',
+		'orderby' => 'meta_value',
+		'meta_key' => '_bbp_last_active_time',
 		'posts_per_page' => -1,
 		'post_parent__not_in' => array( 318 )
 	);
@@ -148,6 +154,9 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 				'value' => '1',
 			),
 		),
+		'order' => 'ASC',
+		'orderby' => 'meta_value',
+		'meta_key' => '_bbp_last_active_time',
 		'posts_per_page' => -1,
 		'post_status' => 'publish',
 		'post_parent__not_in' => array( 318 )
