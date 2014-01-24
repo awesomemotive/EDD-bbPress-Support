@@ -98,6 +98,7 @@ function edd_bbp_d_count_tickets_of_mod( $mod_id = 0 ) {
 	$args = array(
 		'post_type' => 'topic',
 		'meta_query' => array(
+			'relation' => 'AND',
 			array(
 				'key' => 'bbps_topic_assigned',
 				'value' => $mod_id,
@@ -107,7 +108,8 @@ function edd_bbp_d_count_tickets_of_mod( $mod_id = 0 ) {
 				'value' => '1'
 			)
 		),
-		'nopaging' => true
+		'nopaging' => true,
+		'post_parent__not_in' => array( 318 )
 	);
 
 	$query = new WP_Query( $args );
