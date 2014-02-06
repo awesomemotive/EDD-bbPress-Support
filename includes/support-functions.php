@@ -382,6 +382,9 @@ function edd_bbp_d_sidebar() {
 
 ?>
 	<div class="box">
+
+		<?php do_action( 'edd_bbp_d_sidebar' ); ?>
+
 		<h3><?php echo get_the_author_meta( 'first_name' ) . '  ' . get_the_author_meta( 'last_name' ); ?></h3>
 		<p class="bbp-user-forum-role"><?php  printf( __( 'Forum Role: %s',      'bbpress' ), bbp_get_user_display_role( $user_id )    ); ?></p>
 		<p class="bbp-user-topic-count"><?php printf( __( 'Topics Started: %s',  'bbpress' ), bbp_get_user_topic_count_raw( $user_id ) ); ?></p>
@@ -461,3 +464,53 @@ function edd_bbp_send_priority_to_hall( $topic_id = 0, $forum_id = 0, $anonymous
 
 }
 add_action( 'bbp_new_topic', 'edd_bbp_send_priority_to_hall', 10, 4 );
+
+function edd_bbp_d_connect_forum_to_docs() {
+    p2p_register_connection_type( array(
+        'name' => 'forums_to_docs',
+        'from' => 'forum',
+        'to' => 'docs'
+    ) );
+}
+add_action( 'p2p_init', 'edd_bbp_d_connect_forum_to_docs' );
+
+function edd_bbp_d_display_connected_docs() {
+    if ( ! current_user_can( 'moderate' ) )
+        return;
+
+	$item_id = bbp_get_forum_id();
+    
+    // Find connected pages
+    $connected = new WP_Query( array(
+      'connected_type' => 'forums_to_docs',
+      'connected_items' => $item_id,
+      'nopaging' => true,
+    ) );
+
+    // Display connected pages
+    if ( $connected->have_posts() ) :
+    ?>
+    <div class="edd_bbp_d_support_forum_options">
+    <?php if( bbp_is_single_topic() ) : ?>
+        <h3><?php _e( 'Related Documentation', 'edd_bbp_d' ); ?>:</h3>
+    <?php else : ?>
+        <strong><?php _e( 'Related Documentation', 'edd_bbp_d' ); ?>:</strong>
+    <?php endif; ?>
+        <?php while ( $connected->have_posts() ) : $connected->the_post(); ?>
+            <div><a href="<?php the_permalink(); ?>" target="_blank"><?php the_title(); ?></a></div>
+        <?php endwhile; ?>
+    </div><br/>
+    <?php 
+    // Prevent weirdness
+    wp_reset_postdata();
+
+    endif;
+}
+add_action( 'bbp_template_before_single_forum', 'edd_bbp_d_display_connected_docs' );
+add_action( 'edd_bbp_d_sidebar', 'edd_bbp_d_display_connected_docs' );
+
+function edd_bbp_d_new_topic_notice() {
+	if( bbp_is_single_forum() )
+		echo '<div class="bbp-template-notice"><p>Please search the forums for existing questions before posting a new one.</p></div>';
+}
+add_action( 'bbp_template_notices', 'edd_bbp_d_new_topic_notice');
