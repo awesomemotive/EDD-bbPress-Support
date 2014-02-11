@@ -280,7 +280,7 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 								</td>
 								<td><?php the_author_meta( 'display_name', $last_reply_data->post_author ); ?></td>
-								<td><?php bbp_topic_freshness_link(); ?></td>
+								<td><?php bbp_topic_freshness_link( get_the_ID() ); ?></td>
 							</tr>
 						<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
@@ -309,7 +309,7 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 								</td>
 								<td><?php the_author_meta( 'display_name', $last_reply_data->post_author ); ?></td>
-								<td><?php bbp_topic_freshness_link(); ?></td>
+								<td><?php bbp_topic_freshness_link( get_the_ID() ); ?></td>
 							</tr>
 						<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
@@ -338,7 +338,7 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 								<td>
 								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 								</td>
-								<td><?php bbp_topic_freshness_link(); ?></td>
+								<td><?php bbp_topic_freshness_link( get_the_ID() ); ?></td>
 								<td><?php echo ( !empty( $assignee_name ) ) ? $assignee_name : __( 'Unassigned', 'edd-bbpress-dashboard' ); ?></td>
 							</tr>
 						<?php endwhile; ?>
@@ -369,7 +369,7 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 								<td>
 								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 								</td>
-								<td><?php bbp_topic_freshness_link(); ?></td>
+								<td><?php bbp_topic_freshness_link( get_the_ID() ); ?></td>
 								<td><?php echo ( !empty( $assignee_name ) ) ? $assignee_name : __( 'Unassigned', 'edd-bbpress-dashboard' ); ?></td>
 								<td><?php bbp_topic_post_count( get_the_ID() ); ?></td>
 							</tr>
