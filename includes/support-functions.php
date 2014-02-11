@@ -131,12 +131,10 @@ function edd_bbp_d_assign_topic_form() {
 			<?php
 			$user_login = $current_user->user_login;
 			if ( ! empty( $topic_assigned ) ) {
-				if ( $topic_assigned == $current_user_id ) {
-					?> <div class='bbps-support-forums-message'>This topic is assigned to you.</div><?php
-				}
-				else {
-					$assigned_user_name = edd_bbp_get_assignee_name( $topic_assigned );
-					?>
+				if ( $topic_assigned == $current_user_id ) { ?>
+					<div class='bbps-support-forums-message'>This topic is assigned to you.</div><?php
+				} else {
+					$assigned_user_name = edd_bbp_get_topic_assignee_name( $topic_assigned ); ?>
 					<div class='bbps-support-forums-message'> This topic is already assigned to: <?php echo $assigned_user_name; ?></div><?php
 				}
 			}
