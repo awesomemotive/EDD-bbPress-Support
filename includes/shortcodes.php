@@ -67,19 +67,29 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 		<div class="bbp-tickets">
 			<?php if ( $assigned_tickets->have_posts() ) : ?>
 				<h4>Tickets assigned to <?php echo $mod->display_name; ?></h4>
-				<?php while ( $assigned_tickets->have_posts() ) : $assigned_tickets->the_post(); ?>
-					<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
-					<?php if ( $parent != 318 ) : ?>
-					<?php $remove_url = add_query_arg( array( 'topic_id' => get_the_ID(), 'bbps_action' => 'remove_pending' ) ); ?>
-					<div>
-						<?php if ( $parent == 499 ) { ?>
-						<strong>Priority:</strong>
-						<?php } ?>
-						<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a> - <a href="<?php echo $remove_url; ?>"><?php _e( 'Remove Pending Status', 'edd-bbpress-dashboard' ); ?></a>
-					</div>
-					<?php endif; ?>
-				<?php endwhile; ?>
-				<?php wp_reset_postdata(); ?>
+					<table class="table table-striped" width="100%">
+						<tr>
+							<th width="35%"><?php _e( 'Topic Title', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="25%"><?php _e( 'Last Post By', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="25%"><?php _e( 'Last Updated', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="15%"><?php _e( 'Post Count', 'edd-bbpress-dashboard' ); ?></th>
+						</tr>
+						<?php while( $assigned_tickets->have_posts() ) : $assigned_tickets->the_post(); ?>
+							<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
+							<?php $row_class = ( $parent == 499 ) ? 'danger' : ''; ?>
+							<?php $last_reply_id = bbp_get_topic_last_reply_id( get_the_ID() ); ?>
+							<?php $last_reply_data = get_post( $last_reply_id ); ?>
+							<tr class = "<?php echo $row_class; ?>">
+								<td>
+								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+								</td>
+								<td><?php the_author_meta( 'display_name', $last_reply_data->post_author ); ?></td>
+								<td><?php bbp_topic_freshness_link(); ?></td>
+								<td><?php bbp_topic_post_count( get_the_ID() ); ?></td>
+							</tr>
+						<?php endwhile; ?>
+					<?php wp_reset_postdata(); ?>
+					</table>
 			<?php else : ?>
 				<div><?php _e( 'This mod has no assigned tickets.', 'edd-bbpress-dashboard' ); ?></div>
 			<?php endif; ?>
@@ -226,19 +236,23 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 		<div class="tab-pane active" id="your-waiting-tickets">
 			<ul class="bbp-tickets">
 				<?php if ( $waiting_tickets->have_posts() ) : ?>
-					<?php while ( $waiting_tickets->have_posts() ) : $waiting_tickets->the_post(); ?>
-						<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
-						<?php if ( $parent != 318 ) : ?>
-						<?php $remove_url = add_query_arg( array( 'topic_id' => get_the_ID(), 'bbps_action' => 'remove_pending' ) ); ?>
-						<li>
-							<?php if ( $parent == 499 ) { ?>
-							<strong>Priority:</strong>
-							<?php } ?>
-							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a> - <a href="<?php echo $remove_url; ?>"><?php _e( 'Remove Pending Status', 'edd-bbpress-dashboard' ); ?></a>
-						</li>
-						<?php endif; ?>
-					<?php endwhile; ?>
+					<table class="table table-striped" width="100%">
+						<tr>
+							<th width="40%"><?php _e( 'Topic Title', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="30%"><?php _e( 'Last Updated', 'edd-bbpress-dashboard' ); ?></th>
+						</tr>
+						<?php while( $waiting_tickets->have_posts() ) : $waiting_tickets->the_post(); ?>
+							<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
+							<?php $row_class = ( $parent == 499 ) ? 'danger' : ''; ?>
+							<tr class = "<?php echo $row_class; ?>">
+								<td>
+								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+								</td>
+								<td><?php bbp_topic_freshness_link(); ?></td>
+							</tr>
+						<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
+					</table>
 				<?php else : ?>
 					<li><?php _e( 'No tickets awaiting your reply. Excellent, now go grab some unresolved or unassigned tickets.', 'edd-bbpress-dashboard' ); ?></li>
 				<?php endif; ?>
@@ -247,16 +261,27 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 		<div class="tab-pane" id="your-tickets">
 			<ul class="bbp-tickets">
 				<?php if ( $assigned_tickets->have_posts() ) : ?>
-					<?php while ( $assigned_tickets->have_posts() ) : $assigned_tickets->the_post(); ?>
-						<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
-						<li>
-							<?php if ( $parent == 499 ) { ?>
-							<strong><?php _e( 'Priority:', 'edd-bbpress-dashboard' ); ?></strong>
-							<?php } ?>
-							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-						</li>
-					<?php endwhile; ?>
+					<table class="table table-striped" width="100%">
+						<tr>
+							<th width="40%"><?php _e( 'Topic Title', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="30%"><?php _e( 'Last Post By', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="30%"><?php _e( 'Last Updated', 'edd-bbpress-dashboard' ); ?></th>
+						</tr>
+						<?php while( $assigned_tickets->have_posts() ) : $assigned_tickets->the_post(); ?>
+							<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
+							<?php $row_class = ( $parent == 499 ) ? 'danger' : ''; ?>
+							<?php $last_reply_id = bbp_get_topic_last_reply_id( get_the_ID() ); ?>
+							<?php $last_reply_data = get_post( $last_reply_id ); ?>
+							<tr class = "<?php echo $row_class; ?>">
+								<td>
+								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+								</td>
+								<td><?php the_author_meta( 'display_name', $last_reply_data->post_author ); ?></td>
+								<td><?php bbp_topic_freshness_link(); ?></td>
+							</tr>
+						<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
+					</table>
 				<?php else : ?>
 					<li><?php _e( 'No unresolved tickets, yay! Now go grab some unresolved or unassigned tickets.', 'edd-bbpress-dashboard' ); ?></li>
 				<?php endif; ?>
@@ -265,16 +290,27 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 		<div class="tab-pane" id="unassigned">
 			<ul class="bbp-tickets">
 				<?php if( $unassigned_tickets->have_posts() ) : ?>
-					<?php while( $unassigned_tickets->have_posts() ) : $unassigned_tickets->the_post(); ?>
-						<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
-						<li>
-							<?php if( $parent == 499 ) { ?>
-							<strong><?php _e( 'Priority:', 'edd-bbpress-dashboard' ); ?></strong>
-							<?php } ?>
-							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-						</li>
-					<?php endwhile; ?>
+					<table class="table table-striped" width="100%">
+						<tr>
+							<th width="40%"><?php _e( 'Topic Title', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="30%"><?php _e( 'Last Post By', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="30%"><?php _e( 'Last Updated', 'edd-bbpress-dashboard' ); ?></th>
+						</tr>
+						<?php while( $unassigned_tickets->have_posts() ) : $unassigned_tickets->the_post(); ?>
+							<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
+							<?php $row_class = ( $parent == 499 ) ? 'danger' : ''; ?>
+							<?php $last_reply_id = bbp_get_topic_last_reply_id( get_the_ID() ); ?>
+							<?php $last_reply_data = get_post( $last_reply_id ); ?>
+							<tr class = "<?php echo $row_class; ?>">
+								<td>
+								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+								</td>
+								<td><?php the_author_meta( 'display_name', $last_reply_data->post_author ); ?></td>
+								<td><?php bbp_topic_freshness_link(); ?></td>
+							</tr>
+						<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
+					</table>
 				<?php else : ?>
 					<li><?php _e( 'No unassigned tickets, yay!', 'edd-bbpress-dashboard' ); ?></li>
 				<?php endif; ?>
@@ -283,16 +319,28 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 		<div class="tab-pane" id="no-replies">
 			<ul class="bbp-tickets">
 				<?php if( $no_reply_tickets->have_posts() ) : ?>
-					<?php while( $no_reply_tickets->have_posts() ) : $no_reply_tickets->the_post(); ?>
-						<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
-						<li>
-							<?php if( $parent == 499 ) { ?>
-							<strong><?php _e( 'Priority:', 'edd-bbpress-dashboard' ); ?></strong>
-							<?php } ?>
-							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-						</li>
-					<?php endwhile; ?>
+					<table class="table table-striped" width="100%">
+						<tr>
+							<th width="40%"><?php _e( 'Topic Title', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="30%"><?php _e( 'Posted', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="30%"><?php _e( 'Assignee', 'edd-bbpress-dashboard' ); ?></th>
+						</tr>
+						<?php while( $no_reply_tickets->have_posts() ) : $no_reply_tickets->the_post(); ?>
+							<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
+							<?php $row_class = ( $parent == 499 ) ? 'danger' : ''; ?>
+
+							<?php $assignee_id = edd_bbp_get_topic_assignee_id( get_the_ID() ); ?>
+							<?php $assignee_name = edd_bbp_get_topic_assignee_name( $assignee_id ); ?>
+							<tr class = "<?php echo $row_class; ?>">
+								<td>
+								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+								</td>
+								<td><?php bbp_topic_freshness_link(); ?></td>
+								<td><?php echo ( !empty( $assignee_name ) ) ? $assignee_name : __( 'Unassigned', 'edd-bbpress-dashboard' ); ?></td>
+							</tr>
+						<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
+					</table>
 				<?php else : ?>
 					<li><?php _e( 'No tickets without replies, yay!', 'edd-bbpress-dashboard' ); ?></li>
 				<?php endif; ?>
@@ -301,16 +349,30 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 		<div class="tab-pane" id="unresolved">
 			<ul class="bbp-tickets">
 				<?php if( $unresolved_tickets->have_posts() ) : ?>
-					<?php while( $unresolved_tickets->have_posts() ) : $unresolved_tickets->the_post(); ?>
-						<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
-						<li>
-							<?php if( $parent == 499 ) { ?>
-							<strong><?php _e( 'Priority:', 'edd-bbpress-dashboard' ); ?></strong>
-							<?php } ?>
-							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-						</li>
-					<?php endwhile; ?>
+					<table class="table table-striped" width="100%">
+						<tr>
+							<th width="35%"><?php _e( 'Topic Title', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="25%"><?php _e( 'Last Updated', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="25%"><?php _e( 'Assignee', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="15%"><?php _e( 'Post Count', 'edd-bbpress-dashboard' ); ?></th>
+						</tr>
+						<?php while( $unresolved_tickets->have_posts() ) : $unresolved_tickets->the_post(); ?>
+							<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
+							<?php $row_class = ( $parent == 499 ) ? 'danger' : ''; ?>
+
+							<?php $assignee_id = edd_bbp_get_topic_assignee_id( get_the_ID() ); ?>
+							<?php $assignee_name = edd_bbp_get_topic_assignee_name( $assignee_id ); ?>
+							<tr class = "<?php echo $row_class; ?>">
+								<td>
+								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+								</td>
+								<td><?php bbp_topic_freshness_link(); ?></td>
+								<td><?php echo ( !empty( $assignee_name ) ) ? $assignee_name : __( 'Unassigned', 'edd-bbpress-dashboard' ); ?></td>
+								<td><?php bbp_topic_post_count( get_the_ID() ); ?></td>
+							</tr>
+						<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
+					</table>
 				<?php else : ?>
 					<li><?php _e( 'No unassigned tickets, yay!', 'edd-bbpress-dashboard' ); ?></li>
 				<?php endif; ?>
