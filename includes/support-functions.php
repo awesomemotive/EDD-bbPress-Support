@@ -121,7 +121,8 @@ function edd_bbp_d_count_tickets_of_mod( $mod_id = 0 ) {
 function edd_bbp_d_assign_topic_form() {
 	if ( get_option( '_bbps_topic_assign' ) == 1 && current_user_can( 'moderate' ) ) {
 		$topic_id = bbp_get_topic_id();
-		$topic_assigned = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
+		$topic_assigned = edd_bbp_get_topic_assignee_id( $topic_id );
+
 		global $current_user;
 		get_currentuserinfo();
 		$current_user_id = $current_user->ID;
@@ -134,8 +135,7 @@ function edd_bbp_d_assign_topic_form() {
 					?> <div class='bbps-support-forums-message'>This topic is assigned to you.</div><?php
 				}
 				else {
-					$user_info = get_userdata( $topic_assigned );
-					$assigned_user_name = $user_info->user_firstname . ' ' . $user_info->user_lastname;
+					$assigned_user_name = edd_bbp_get_assignee_name( $topic_assigned );
 					?>
 					<div class='bbps-support-forums-message'> This topic is already assigned to: <?php echo $assigned_user_name; ?></div><?php
 				}
@@ -432,6 +432,31 @@ function edd_bbp_d_sidebar() {
 		</div>
 	</div>
 	<?php
+}
+
+function edd_bbp_get_topic_assignee_id( $topic_id = NULL ) {
+	if ( empty( $topic_id ) )
+		$topic_id = get_the_ID();
+
+	if ( empty( $topic_id ) )
+		return false;
+
+	$topic_assignee_id = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
+
+	return $topic_assignee_id;
+}
+
+function edd_bbp_get_topic_assignee_name( $user_id = NULL ) {
+	if ( empty( $user_id ) )
+		return false;
+
+	$user_info = get_userdata( $user_id );
+	$topic_assignee_name = trim( $user_info->user_firstname . ' ' . $user_info->user_lastname );
+
+	if ( empty( $topic_assignee_name ) )
+		$topic_assignee_name = $user_info->user_nicename;
+
+	return $topic_assignee_name;
 }
 
 function edd_bbp_send_priority_to_hall( $topic_id = 0, $forum_id = 0, $anonymous_data = false, $topic_author = 0 ) {
