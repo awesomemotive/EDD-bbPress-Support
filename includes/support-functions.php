@@ -146,6 +146,12 @@ function edd_bbp_d_assign_topic_form() {
 					<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
 					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
 				</form>
+				<form id="bbs-topic-assign-me" name="bbps_support_topic_assign" action="" method="post">
+					<input type="submit" value="Assign To Me" name="bbps_support_topic_assign" />
+					<input type="hidden" value="<?php echo get_current_user_id(); ?>" name="bbps_assign_list" />
+					<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
+					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
+				</form>
 			</div>
 		</div><!-- /#bbps_support_forum_options -->
 		<?php
@@ -223,13 +229,14 @@ EMAILMSG;
 }
 
 function edd_bbp_d_ping_asignee_button() {
-	if ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) {
+	if ( get_option( '_bbps_topic_assign' ) == 1 && edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) {
 		$topic_id = bbp_get_topic_id();
+		$topic_assigned = edd_bbp_get_topic_assignee_id( $topic_id );
 		$status = edd_bbp_d_get_topic_status( $topic_id );
 		$forum_id = bbp_get_forum_id();
 		$user_id = get_current_user_id();
 
-		if ( current_user_can( 'moderate' ) ) {
+		if ( current_user_can( 'moderate' ) && $topic_assigned ) {
 ?>
 		<div id ="bbps_support_forum_ping">
 			<form id="bbps-topic-ping" name="bbps_support_topic_ping" action="" method="post">
