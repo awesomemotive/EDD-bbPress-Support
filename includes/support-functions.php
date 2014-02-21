@@ -148,6 +148,12 @@ function edd_bbp_d_assign_topic_form() {
 					<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
 					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
 				</form>
+				<form id="bbs-topic-assign-me" name="bbps_support_topic_assign" action="" method="post">
+					<input type="submit" value="Assign To Me" name="bbps_support_topic_assign" />
+					<input type="hidden" value="<?php echo get_current_user_id(); ?>" name="bbps_assign_list" />
+					<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
+					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
+				</form>
 			</div>
 		</div><!-- /#bbps_support_forum_options -->
 		<?php
