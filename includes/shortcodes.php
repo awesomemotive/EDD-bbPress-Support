@@ -104,13 +104,11 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 		'meta_query' => array(
 			'relation' => 'AND',
 			array(
-				'key'   => '_bbps_topic_pending',
-				'value' => '1',
+				'key'   => '_bbps_topic_pending'
 			),
 			array(
 				'key'   => '_bbps_topic_status',
-				'value' => '1',
-				'compare' => '!='
+				'value' => '1'
 			),
 			array(
 				'key'   => 'bbps_topic_assigned',

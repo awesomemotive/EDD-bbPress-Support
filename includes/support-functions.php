@@ -262,34 +262,31 @@ function edd_bbp_d_modify_title( $title, $topic_id = 0 ) {
 add_action( 'bbp_theme_before_topic_title', 'edd_bbp_d_modify_title' );
 
 
-function edd_bbp_d_add_topic_status( $topic_id = 0, $topic ) {
+function edd_bbp_add_topic_meta( $topic_id = 0, $topic ) {
 	if ( $topic->post_type != 'topic' )
 		return;
 
 	$status = get_post_meta( $topic_id, '_bbps_topic_status', true );
 
 	if ( ! $status )
-		add_post_meta( $topic_id, '_bbps_topic_status', 1 );
+		add_post_meta( $topic_id, '_bbps_topic_status', '1' );
+
+	add_post_meta( $topic_id, '_bbps_topic_pending', '1' );
+
 }
-add_action( 'wp_insert_post', 'edd_bbp_d_add_topic_status', 10, 2 );
+add_action( 'wp_insert_post', 'edd_bbp_add_topic_meta', 10, 2 );
 
-function edd_bbp_d_set_as_pending( $post ) {
-	if ( $post->post_type != 'topic' )
-		return;
-
-	add_post_meta( $post->ID, '_bbps_topic_pending', 1 );
-}
-add_action( 'new_to_publish',     'edd_bbp_d_set_as_pending' );
-add_action( 'draft_to_publish',   'edd_bbp_d_set_as_pending' );
-add_action( 'pending_to_publish', 'edd_bbp_d_set_as_pending' );
-
-function edd_bbp_d_maybe_remove_pending( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author, $something, $reply_to ) {
-	if ( current_user_can( 'moderate' ) )
+function edd_bbp_d_maybe_remove_pending( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author ) {
+	
+	if ( edd_bbp_get_topic_assignee_id( $topic_id ) == $reply_author ) {
+		// If the new reply is posted by the assignee, remove the pending flag
 		delete_post_meta( $topic_id, '_bbps_topic_pending' );
-	else
+	} else {
+		// If the reply is posted by anyone else, add the pending reply
 		update_post_meta( $topic_id, '_bbps_topic_pending', '1' );
+	}
 }
-add_action( 'bbp_new_reply', 'edd_bbp_d_maybe_remove_pending', 10, 7 );
+add_action( 'bbp_new_reply', 'edd_bbp_d_maybe_remove_pending', 20, 5 );
 
 function edd_bbp_d_force_remove_pending() {
 	if ( ! isset( $_GET['topic_id'] ) )
