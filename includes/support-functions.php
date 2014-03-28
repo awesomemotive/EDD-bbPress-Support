@@ -288,6 +288,14 @@ function edd_bbp_d_maybe_remove_pending( $reply_id, $topic_id, $forum_id, $anony
 }
 add_action( 'bbp_new_reply', 'edd_bbp_d_maybe_remove_pending', 20, 5 );
 
+function edd_bbp_d_assign_on_reply( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author ) {
+	
+	if ( ! edd_bbp_get_topic_assignee_id( $topic_id ) && user_can( $reply_author, 'moderate' ) ) {
+		update_post_meta( $topic_id, 'bbps_topic_assigned', $reply_author );
+	}
+}
+add_action( 'bbp_new_reply', 'edd_bbp_d_assign_on_reply', 20, 5 );
+
 function edd_bbp_d_force_remove_pending() {
 	if ( ! isset( $_GET['topic_id'] ) )
 		return;
