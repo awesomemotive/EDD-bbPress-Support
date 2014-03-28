@@ -194,11 +194,18 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 	// Get unresolved tickets
 	$args = array(
 		'post_type'  => 'topic',
-		'meta_key'   => '_bbps_topic_status',
-		'meta_value' => '1',
 		'post_parent__not_in' => array( 318 ),
 		'posts_per_page' => -1,
-		'post_status' => 'publish'
+		'post_status' => 'publish',
+		'order' => 'ASC',
+		'orderby' => 'meta_value',
+		'meta_key' => '_bbp_last_active_time',
+		'meta_query' => array(
+			array(
+				'key'   => '_bbps_topic_status',
+				'value' => '1',
+			),
+		),
 	);
 	$unresolved_tickets = new WP_Query( $args );
 
