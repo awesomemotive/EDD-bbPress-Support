@@ -98,6 +98,7 @@ function edd_bbp_d_count_tickets_of_mod( $mod_id = 0 ) {
 	$args = array(
 		'post_type' => 'topic',
 		'meta_query' => array(
+			'relation' => 'AND',
 			array(
 				'key' => 'bbps_topic_assigned',
 				'value' => $mod_id,
@@ -107,7 +108,8 @@ function edd_bbp_d_count_tickets_of_mod( $mod_id = 0 ) {
 				'value' => '1'
 			)
 		),
-		'nopaging' => true
+		'nopaging' => true,
+		'post_parent__not_in' => array( 318 )
 	);
 
 	$query = new WP_Query( $args );
@@ -119,7 +121,8 @@ function edd_bbp_d_count_tickets_of_mod( $mod_id = 0 ) {
 function edd_bbp_d_assign_topic_form() {
 	if ( get_option( '_bbps_topic_assign' ) == 1 && current_user_can( 'moderate' ) ) {
 		$topic_id = bbp_get_topic_id();
-		$topic_assigned = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
+		$topic_assigned = edd_bbp_get_topic_assignee_id( $topic_id );
+
 		global $current_user;
 		get_currentuserinfo();
 		$current_user_id = $current_user->ID;
@@ -128,13 +131,10 @@ function edd_bbp_d_assign_topic_form() {
 			<?php
 			$user_login = $current_user->user_login;
 			if ( ! empty( $topic_assigned ) ) {
-				if ( $topic_assigned == $current_user_id ) {
-					?> <div class='bbps-support-forums-message'>This topic is assigned to you.</div><?php
-				}
-				else {
-					$user_info = get_userdata( $topic_assigned );
-					$assigned_user_name = $user_info->user_firstname . ' ' . $user_info->user_lastname;
-					?>
+				if ( $topic_assigned == $current_user_id ) { ?>
+					<div class='bbps-support-forums-message'>This topic is assigned to you.</div><?php
+				} else {
+					$assigned_user_name = edd_bbp_get_topic_assignee_name( $topic_assigned ); ?>
 					<div class='bbps-support-forums-message'> This topic is already assigned to: <?php echo $assigned_user_name; ?></div><?php
 				}
 			}
@@ -143,6 +143,12 @@ function edd_bbp_d_assign_topic_form() {
 				<form id="bbps-topic-assign" name="bbps_support_topic_assign" action="" method="post">
 				<?php edd_bbp_d_user_assign_dropdown(); ?>
 					<input type="submit" value="Assign" name="bbps_support_topic_assign" />
+					<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
+					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
+				</form>
+				<form id="bbs-topic-assign-me" name="bbps_support_topic_assign" action="" method="post">
+					<input type="submit" value="Assign To Me" name="bbps_support_topic_assign" />
+					<input type="hidden" value="<?php echo get_current_user_id(); ?>" name="bbps_assign_list" />
 					<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
 					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
 				</form>
@@ -223,13 +229,14 @@ EMAILMSG;
 }
 
 function edd_bbp_d_ping_asignee_button() {
-	if ( edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) {
+	if ( get_option( '_bbps_topic_assign' ) == 1 && edd_bbp_d_is_support_forum( bbp_get_forum_id() ) ) {
 		$topic_id = bbp_get_topic_id();
+		$topic_assigned = edd_bbp_get_topic_assignee_id( $topic_id );
 		$status = edd_bbp_d_get_topic_status( $topic_id );
 		$forum_id = bbp_get_forum_id();
 		$user_id = get_current_user_id();
 
-		if ( current_user_can( 'moderate' ) ) {
+		if ( current_user_can( 'moderate' ) && $topic_assigned ) {
 ?>
 		<div id ="bbps_support_forum_ping">
 			<form id="bbps-topic-ping" name="bbps_support_topic_ping" action="" method="post">
@@ -255,34 +262,39 @@ function edd_bbp_d_modify_title( $title, $topic_id = 0 ) {
 add_action( 'bbp_theme_before_topic_title', 'edd_bbp_d_modify_title' );
 
 
-function edd_bbp_d_add_topic_status( $topic_id = 0, $topic ) {
+function edd_bbp_add_topic_meta( $topic_id = 0, $topic ) {
 	if ( $topic->post_type != 'topic' )
 		return;
 
 	$status = get_post_meta( $topic_id, '_bbps_topic_status', true );
 
 	if ( ! $status )
-		add_post_meta( $topic_id, '_bbps_topic_status', 1 );
+		add_post_meta( $topic_id, '_bbps_topic_status', '1' );
+
+	add_post_meta( $topic_id, '_bbps_topic_pending', '1' );
+
 }
-add_action( 'wp_insert_post', 'edd_bbp_d_add_topic_status', 10, 2 );
+add_action( 'wp_insert_post', 'edd_bbp_add_topic_meta', 10, 2 );
 
-function edd_bbp_d_set_as_pending( $post ) {
-	if ( $post->post_type != 'topic' )
-		return;
-
-	add_post_meta( $post->ID, '_bbps_topic_pending', 1 );
-}
-add_action( 'new_to_publish',     'edd_bbp_d_set_as_pending' );
-add_action( 'draft_to_publish',   'edd_bbp_d_set_as_pending' );
-add_action( 'pending_to_publish', 'edd_bbp_d_set_as_pending' );
-
-function edd_bbp_d_maybe_remove_pending( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author, $something, $reply_to ) {
-	if ( current_user_can( 'moderate' ) )
+function edd_bbp_d_maybe_remove_pending( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author ) {
+	
+	if ( edd_bbp_get_topic_assignee_id( $topic_id ) == $reply_author ) {
+		// If the new reply is posted by the assignee, remove the pending flag
 		delete_post_meta( $topic_id, '_bbps_topic_pending' );
-	else
+	} else {
+		// If the reply is posted by anyone else, add the pending reply
 		update_post_meta( $topic_id, '_bbps_topic_pending', '1' );
+	}
 }
-add_action( 'bbp_new_reply', 'edd_bbp_d_maybe_remove_pending', 10, 7 );
+add_action( 'bbp_new_reply', 'edd_bbp_d_maybe_remove_pending', 20, 5 );
+
+function edd_bbp_d_assign_on_reply( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author ) {
+	
+	if ( ! edd_bbp_get_topic_assignee_id( $topic_id ) && user_can( $reply_author, 'moderate' ) ) {
+		update_post_meta( $topic_id, 'bbps_topic_assigned', $reply_author );
+	}
+}
+add_action( 'bbp_new_reply', 'edd_bbp_d_assign_on_reply', 20, 5 );
 
 function edd_bbp_d_force_remove_pending() {
 	if ( ! isset( $_GET['topic_id'] ) )
@@ -380,6 +392,9 @@ function edd_bbp_d_sidebar() {
 
 ?>
 	<div class="box">
+
+		<?php do_action( 'edd_bbp_d_sidebar' ); ?>
+
 		<h3><?php echo get_the_author_meta( 'first_name' ) . '  ' . get_the_author_meta( 'last_name' ); ?></h3>
 		<p class="bbp-user-forum-role"><?php  printf( __( 'Forum Role: %s',      'bbpress' ), bbp_get_user_display_role( $user_id )    ); ?></p>
 		<p class="bbp-user-topic-count"><?php printf( __( 'Topics Started: %s',  'bbpress' ), bbp_get_user_topic_count_raw( $user_id ) ); ?></p>
@@ -432,6 +447,31 @@ function edd_bbp_d_sidebar() {
 	<?php
 }
 
+function edd_bbp_get_topic_assignee_id( $topic_id = NULL ) {
+	if ( empty( $topic_id ) )
+		$topic_id = get_the_ID();
+
+	if ( empty( $topic_id ) )
+		return false;
+
+	$topic_assignee_id = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
+
+	return $topic_assignee_id;
+}
+
+function edd_bbp_get_topic_assignee_name( $user_id = NULL ) {
+	if ( empty( $user_id ) )
+		return false;
+
+	$user_info = get_userdata( $user_id );
+	$topic_assignee_name = trim( $user_info->user_firstname . ' ' . $user_info->user_lastname );
+
+	if ( empty( $topic_assignee_name ) )
+		$topic_assignee_name = $user_info->user_nicename;
+
+	return $topic_assignee_name;
+}
+
 function edd_bbp_send_priority_to_hall( $topic_id = 0, $forum_id = 0, $anonymous_data = false, $topic_author = 0 ) {
 
 	// Bail if topic is not published
@@ -459,3 +499,53 @@ function edd_bbp_send_priority_to_hall( $topic_id = 0, $forum_id = 0, $anonymous
 
 }
 add_action( 'bbp_new_topic', 'edd_bbp_send_priority_to_hall', 10, 4 );
+
+function edd_bbp_d_connect_forum_to_docs() {
+    p2p_register_connection_type( array(
+        'name' => 'forums_to_docs',
+        'from' => 'forum',
+        'to' => 'docs'
+    ) );
+}
+add_action( 'p2p_init', 'edd_bbp_d_connect_forum_to_docs' );
+
+function edd_bbp_d_display_connected_docs() {
+    if ( ! current_user_can( 'moderate' ) )
+        return;
+
+	$item_id = bbp_get_forum_id();
+    
+    // Find connected pages
+    $connected = new WP_Query( array(
+      'connected_type' => 'forums_to_docs',
+      'connected_items' => $item_id,
+      'nopaging' => true,
+    ) );
+
+    // Display connected pages
+    if ( $connected->have_posts() ) :
+    ?>
+    <div class="edd_bbp_d_support_forum_options">
+    <?php if( bbp_is_single_topic() ) : ?>
+        <h3><?php _e( 'Related Documentation', 'edd_bbp_d' ); ?>:</h3>
+    <?php else : ?>
+        <strong><?php _e( 'Related Documentation', 'edd_bbp_d' ); ?>:</strong>
+    <?php endif; ?>
+        <?php while ( $connected->have_posts() ) : $connected->the_post(); ?>
+            <div><a href="<?php the_permalink(); ?>" target="_blank"><?php the_title(); ?></a></div>
+        <?php endwhile; ?>
+    </div><br/>
+    <?php 
+    // Prevent weirdness
+    wp_reset_postdata();
+
+    endif;
+}
+add_action( 'bbp_template_before_single_forum', 'edd_bbp_d_display_connected_docs' );
+add_action( 'edd_bbp_d_sidebar', 'edd_bbp_d_display_connected_docs' );
+
+function edd_bbp_d_new_topic_notice() {
+	if( bbp_is_single_forum() )
+		echo '<div class="bbp-template-notice"><p>Please search the forums for existing questions before posting a new one.</p></div>';
+}
+add_action( 'bbp_template_notices', 'edd_bbp_d_new_topic_notice');
