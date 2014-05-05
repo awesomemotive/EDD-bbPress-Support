@@ -241,26 +241,34 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 		<div class="tab-pane active" id="your-waiting-tickets">
 			<ul class="bbp-tickets">
 				<?php if ( $waiting_tickets->have_posts() ) : ?>
-					<table class="table table-striped" width="100%">
-						<tr>
-							<th width="40%"><?php _e( 'Topic Title', 'edd-bbpress-dashboard' ); ?></th>
-							<th width="25%"><?php _e( 'Last Updated', 'edd-bbpress-dashboard' ); ?></th>
-							<th width="25%"><?php _e( 'Actions', 'edd-bbpress-dashboard' ); ?></th>
-						</tr>
-						<?php while( $waiting_tickets->have_posts() ) : $waiting_tickets->the_post(); ?>
-							<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
-							<?php $row_class = ( $parent == 499 ) ? 'danger' : ''; ?>
-							<?php $remove_url = add_query_arg( array( 'topic_id' => get_the_ID(), 'bbps_action' => 'remove_pending' ) ); ?>
-							<tr class = "<?php echo $row_class; ?>">
-								<td>
-									<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-								</td>
-								<td><?php bbp_topic_freshness_link( get_the_ID() ); ?></td>
-								<td><a href="<?php echo $remove_url; ?>"><?php _e( 'Remove Pending Status', 'edd-bbpress-dashboard' ); ?></a></td>
+					<form class="form-table" method="post">
+						<table class="table table-striped" width="100%">
+							<tr>
+								<th></th>
+								<th width="40%"><?php _e( 'Topic Title', 'edd-bbpress-dashboard' ); ?></th>
+								<th width="25%"><?php _e( 'Last Updated', 'edd-bbpress-dashboard' ); ?></th>
+								<th width="25%"><?php _e( 'Actions', 'edd-bbpress-dashboard' ); ?></th>
 							</tr>
-						<?php endwhile; ?>
-					<?php wp_reset_postdata(); ?>
-					</table>
+							<?php while( $waiting_tickets->have_posts() ) : $waiting_tickets->the_post(); ?>
+								<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
+								<?php $row_class = ( $parent == 499 ) ? 'danger' : ''; ?>
+								<?php $remove_url = add_query_arg( array( 'topic_id' => get_the_ID(), 'bbps_action' => 'remove_pending' ) ); ?>
+								<tr class = "<?php echo $row_class; ?>">
+									<td>
+										<input type="checkbox" name="tickets[]" value="<?php echo esc_attr( get_the_ID() ); ?>"/>
+									</td>
+									<td>
+										<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+									</td>
+									<td><?php bbp_topic_freshness_link( get_the_ID() ); ?></td>
+									<td><a href="<?php echo $remove_url; ?>"><?php _e( 'Remove Pending Status', 'edd-bbpress-dashboard' ); ?></a></td>
+								</tr>
+							<?php endwhile; ?>
+						</table>
+						<input type="hidden" name="edd_action" value="remove_ticket_pending_status"/>
+						<input type="submit" value="Remove Pending Status"/>
+						<?php wp_reset_postdata(); ?>
+					</form>
 				<?php else : ?>
 					<li><?php _e( 'No tickets awaiting your reply. Excellent, now go grab some unresolved or unassigned tickets.', 'edd-bbpress-dashboard' ); ?></li>
 				<?php endif; ?>

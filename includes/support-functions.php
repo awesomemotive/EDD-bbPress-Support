@@ -288,6 +288,26 @@ function edd_bbp_d_maybe_remove_pending( $reply_id, $topic_id, $forum_id, $anony
 }
 add_action( 'bbp_new_reply', 'edd_bbp_d_maybe_remove_pending', 20, 5 );
 
+function edd_bbp_d_bulk_remove_pending() {
+
+	if( ! current_user_can( 'moderate' ) ) {
+		return;
+	}
+
+	if( empty( $_POST['tickets'] ) ) {
+		return;
+	}
+
+	$tickets = array_map( 'absint', $_POST['tickets'] );
+
+	foreach( $tickets as $ticket ) {
+		delete_post_meta( $ticket, '_bbps_topic_pending' );
+	}
+
+	
+}
+add_action( 'edd_remove_ticket_pending_status', 'edd_bbp_d_bulk_remove_pending', 20, 5 );
+
 function edd_bbp_d_assign_on_reply( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author ) {
 	
 	if ( ! edd_bbp_get_topic_assignee_id( $topic_id ) && user_can( $reply_author, 'moderate' ) ) {
