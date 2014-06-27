@@ -277,7 +277,7 @@ function edd_bbp_add_topic_meta( $topic_id = 0, $topic ) {
 add_action( 'wp_insert_post', 'edd_bbp_add_topic_meta', 10, 2 );
 
 function edd_bbp_d_maybe_remove_pending( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author ) {
-	
+
 	if ( edd_bbp_get_topic_assignee_id( $topic_id ) == $reply_author ) {
 		// If the new reply is posted by the assignee, remove the pending flag
 		delete_post_meta( $topic_id, '_bbps_topic_pending' );
@@ -304,12 +304,12 @@ function edd_bbp_d_bulk_remove_pending() {
 		delete_post_meta( $ticket, '_bbps_topic_pending' );
 	}
 
-	
+
 }
 add_action( 'edd_remove_ticket_pending_status', 'edd_bbp_d_bulk_remove_pending', 20, 5 );
 
 function edd_bbp_d_assign_on_reply( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author ) {
-	
+
 	if ( ! edd_bbp_get_topic_assignee_id( $topic_id ) && user_can( $reply_author, 'moderate' ) ) {
 		update_post_meta( $topic_id, 'bbps_topic_assigned', $reply_author );
 	}
@@ -534,7 +534,7 @@ function edd_bbp_d_display_connected_docs() {
         return;
 
 	$item_id = bbp_get_forum_id();
-    
+
     // Find connected pages
     $connected = new WP_Query( array(
       'connected_type' => 'forums_to_docs',
@@ -555,7 +555,7 @@ function edd_bbp_d_display_connected_docs() {
             <div><a href="<?php the_permalink(); ?>" target="_blank"><?php the_title(); ?></a></div>
         <?php endwhile; ?>
     </div><br/>
-    <?php 
+    <?php
     // Prevent weirdness
     wp_reset_postdata();
 
