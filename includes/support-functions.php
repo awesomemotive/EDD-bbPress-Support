@@ -278,7 +278,7 @@ add_action( 'wp_insert_post', 'edd_bbp_add_topic_meta', 10, 2 );
 
 function edd_bbp_d_maybe_remove_pending( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author ) {
 
-	if ( edd_bbp_get_topic_assignee_id( $topic_id ) == $reply_author ) {
+	if ( user_can( $reply_author, 'moderate' ) ) {
 		// If the new reply is posted by the assignee, remove the pending flag
 		delete_post_meta( $topic_id, '_bbps_topic_pending' );
 	} else {
