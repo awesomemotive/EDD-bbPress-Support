@@ -540,6 +540,7 @@ function edd_bbp_d_display_connected_docs() {
       'connected_type' => 'forums_to_docs',
       'connected_items' => $item_id,
       'nopaging' => true,
+      'post_status' => 'publish'
     ) );
 
     // Display connected pages
