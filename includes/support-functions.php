@@ -131,17 +131,13 @@ function edd_bbp_d_assign_topic_form() {
 			<?php
 			$user_login = $current_user->user_login;
 			if ( ! empty( $topic_assigned ) ) {
-				if ( $topic_assigned == $current_user_id ) { ?>
-					<div class='bbps-support-forums-message'>This topic is assigned to you.</div><?php
-				} else {
-					$assigned_user_name = edd_bbp_get_topic_assignee_name( $topic_assigned ); ?>
-					<div class='bbps-support-forums-message'> This topic is already assigned to: <?php echo $assigned_user_name; ?></div><?php
-				}
+				$assigned_user_name = edd_bbp_get_topic_assignee_name( $topic_assigned ); ?>
+				<div class='bbps-support-forums-message'> Topic assigned to: <?php echo $assigned_user_name; ?></div><?php
 			}
 			?>
 			<div id ="bbps_support_topic_assign">
 				<form id="bbps-topic-assign" name="bbps_support_topic_assign" action="" method="post">
-				<?php edd_bbp_d_user_assign_dropdown(); ?>
+					<?php edd_bbp_d_user_assign_dropdown(); ?>
 					<input type="submit" value="Assign" name="bbps_support_topic_assign" />
 					<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
 					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
@@ -180,7 +176,7 @@ function edd_bbp_d_user_assign_dropdown() {
 		<option value="">Unassigned</option><?php
 		foreach ( $all_users as $user ) {
 ?>
-			<option value="<?php echo $user->ID; ?>"> <?php echo $user->user_firstname . ' ' . $user->user_lastname ; ?></option>
+			<option value="<?php echo $user->ID; ?>"<?php selected( $user->ID, $claimed_user_id ); ?>> <?php echo $user->user_firstname . ' ' . $user->user_lastname ; ?></option>
 		<?php
 		}
 		?> </select> <?php
@@ -345,7 +341,7 @@ function edd_bbp_d_add_user_purchases_link() {
 		echo '<ul>';
 		foreach ( $purchases as $purchase ) {
 
-			echo '<li><strong>' . edd_get_payment_status( $purchase, true ) . ':</strong> - <strong>Downloads:</strong></li>';
+			echo '<li><strong><a href="' . admin_url( 'edit.php?post_type=download&page=edd-payment-history&view=view-order-details&id=' . $purchase->ID ) . '">#' . $purchase->ID . ' - ' . edd_get_payment_status( $purchase, true ) . '</a></strong></li>';
 			$downloads = edd_get_payment_meta_downloads( $purchase->ID );
 			foreach ( $downloads as $download ) {
 				echo '<li>' . get_the_title( $download['id'] ) . ' - ' . date( 'F j, Y', strtotime( $purchase->post_date ) ) . '</li>';
@@ -440,8 +436,9 @@ function edd_bbp_d_sidebar() {
 				foreach ( $purchases as $purchase ) {
 
 					echo '<li>';
-						echo '<strong>' . edd_get_payment_status( $purchase, true ) . ':</strong><br/>';
-						echo '<strong>Downloads:</strong><br/>';
+
+						echo '<strong><a href="' . admin_url( 'edit.php?post_type=download&page=edd-payment-history&view=view-order-details&id=' . $purchase->ID ) . '">#' . $purchase->ID . ' - ' . edd_get_payment_status( $purchase, true ) . '</a></strong><br/>';
+
 						$downloads = edd_get_payment_meta_downloads( $purchase->ID );
 						foreach ( $downloads as $download ) {
 							echo get_the_title( $download['id'] ) . ' - ' . date( 'F j, Y', strtotime( $purchase->post_date ) ) . '<br/>';
@@ -452,7 +449,10 @@ function edd_bbp_d_sidebar() {
 							if( $licenses ) {
 								echo '<strong>Licenses:</strong><br/>';
 								foreach ( $licenses as $license ) {
-									echo get_the_title( $license->ID ) . ' - ' . edd_software_licensing()->get_license_status( $license->ID ) . '<br/>';
+									$key = edd_software_licensing()->get_license_key( $license->ID );
+									echo '<a href="' . admin_url( 'edit.php?post_type=download&page=edd-licenses&s=' . $key ) . '">' . $key . '</a>';
+									echo ' - ' . edd_software_licensing()->get_license_status( $license->ID );
+									echo '<br/>';
 								}
 							}
 							echo '<hr/>';
