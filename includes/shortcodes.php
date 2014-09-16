@@ -16,6 +16,10 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 	*/
 	global $user_ID;
 
+	if( ! is_user_logged_in() ) {
+		return edd_login_form();
+	}
+
 	if ( ! current_user_can( 'moderate' ) )
 		return;
 
