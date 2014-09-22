@@ -1,6 +1,6 @@
 <?php
 /**
- * Mist Functions
+ * Misc Functions
  *
  * @package		EDD\BBP\Functions
  * @since		2.1
