@@ -78,6 +78,7 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 		private function includes() {
 			require_once EDD_BBP_DIR . 'includes/actions.php';
 			require_once EDD_BBP_DIR . 'includes/functions.php';
+			require_once EDD_BBP_DIR . 'includes/option-functions.php';
 		}
 
 
