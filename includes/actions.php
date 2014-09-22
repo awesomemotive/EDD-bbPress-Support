@@ -2,27 +2,40 @@
 /**
  * Actions
  *
- * Copyright (c) 2013, Sunny Ratilal.
+ * @package		EDD\BBP\Actions
+ * @since		1.0.0
  */
 
-function edd_bbp_d_process_actions() {
+
+// Exit if accessed directly
+if( ! defined( 'ABSPATH' ) ) exit;
+
+
+/**
+ * Process actions
+ *
+ * @since		1.0.0
+ * @return		void
+ */
+function edd_bbp_actions() {
 	if ( ! empty( $_POST['bbps_support_topic_assign'] ) ) {
-		edd_bbp_d_assign_topic( $_POST );
+		edd_bbp_assign_topic( $_POST );
 	}
 
 	if ( ! empty( $_POST['bbps_support_submit'] ) ) {
-		edd_bbp_d_update_status( $_POST );
+		edd_bbp_update_status( $_POST );
 	}
-
 
 	if ( ! empty( $_POST['bbps_topic_ping_submit'] ) ) {
-		edd_bbp_d_ping_topic_assignee( $_POST );
+		edd_bbp_ping_topic_assignee( $_POST );
 	}
 
-	if ( ( isset( $_GET['action'] ) && isset( $_GET['topic_id'] ) && $_GET['action'] == 'bbps_make_topic_urgent' )  )
-		edd_bbp_d_urgent_topic();
+	if ( ( isset( $_GET['action'] ) && isset( $_GET['topic_id'] ) && $_GET['action'] == 'bbps_make_topic_urgent' ) ) {
+		edd_bbp_urgent_topic();
+	}
 
-	if ( ( isset( $_GET['action'] ) && isset( $_GET['topic_id'] ) && $_GET['action'] == 'bbps_make_topic_not_urgent' )  )
-		edd_bbp_d_not_urgent_topic();
+	if ( ( isset( $_GET['action'] ) && isset( $_GET['topic_id'] ) && $_GET['action'] == 'bbps_make_topic_not_urgent' ) ) {
+		edd_bbp_not_urgent_topic();
+	}
 }
-add_action( 'init', 'edd_bbp_d_process_actions' );
+add_action( 'init', 'edd_bbp_actions' );
