@@ -95,6 +95,9 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 
 			// Setup options
 			add_action( 'edd_bbp_activation', array( $this, 'add_options' ) );
+
+			// Tweak subforum paging
+			add_filter( 'bbp_after_forum_get_subforums_parse_args', array( $this, 'subforum_args' ) );
 		}
 
 
@@ -161,6 +164,21 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 			foreach( $options as $key => $value ) {
 				add_option( $key, $value );
 			}
+		}
+
+
+		/**
+		 * Tweak args for subforums
+		 *
+		 * @access		public
+		 * @since		2.1
+		 * @param		array $args The current arguments
+		 * @return		array $args The modified arguments
+		 */
+		function subforum_args( $args ) {
+			$args['nopaging'] = true;
+
+			return $args;
 		}
 	}
 }
