@@ -114,22 +114,22 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 			$lang_dir = apply_filters( 'edd_bbp_dashboard_languages_directory', $lang_dir );
 
 			// Traditional WordPress plugin locale filter
-			$locale = apply_filters( 'plugin_locale', get_locale(), 'edd-bbp-dashboard' );
-			$mofile = sprintf( '%1$s-%2$s.mo', 'edd-bbp-dashboard', $locale );
+			$locale = apply_filters( 'plugin_locale', get_locale(), 'edd-bbpress-dashboard' );
+			$mofile = sprintf( '%1$s-%2$s.mo', 'edd-bbpress-dashboard', $locale );
 
 			// Setup paths to current locale file
 			$mofile_local	= $lang_dir . $mofile;
-			$mofile_global	= WP_LANG_DIR . '/edd-bbp-dashboard/' . $mofile;
+			$mofile_global	= WP_LANG_DIR . '/edd-bbpress-dashboard/' . $mofile;
 
 			if( file_exists( $mofile_global ) ) {
-				// Look in global /wp-content/languages/edd-bbp-dashboard/ folder
-				load_textdomain( 'edd-bbp-dashboard', $mofile_global );
+				// Look in global /wp-content/languages/edd-bbpress-dashboard/ folder
+				load_textdomain( 'edd-bbpress-dashboard', $mofile_global );
 			} elseif( file_exists( $mofile_local ) ) {
-				// Look in local /wp-content/plugins/edd-bbp-dashboard/languages/ folder
-				load_textdomain( 'edd-bbp-dashboard', $mofile_local );
+				// Look in local /wp-content/plugins/edd-bbpress-dashboard/languages/ folder
+				load_textdomain( 'edd-bbpress-dashboard', $mofile_local );
 			} else {
 				// Load the default language files
-				load_plugin_textdomain( 'edd-bbp-dashboard', false, $lang_dir );
+				load_plugin_textdomain( 'edd-bbpress-dashboard', false, $lang_dir );
 			}
 		}
 
