@@ -78,7 +78,15 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 		private function includes() {
 			require_once EDD_BBP_DIR . 'includes/actions.php';
 			require_once EDD_BBP_DIR . 'includes/functions.php';
+			require_once EDD_BBP_DIR . 'includes/shortcodes.php';
 			require_once EDD_BBP_DIR . 'includes/option-functions.php';
+			require_once EDD_BBP_DIR . 'includes/support-functions.php';
+
+			if( is_admin() ) {
+				require_once EDD_BBP_DIR . 'includes/admin/functions.php';
+				require_once EDD_BBP_DIR . 'includes/admin/bbps-admin.php';
+				require_once EDD_BBP_DIR . 'includes/admin/bbps-settings.php';
+			}
 		}
 
 
