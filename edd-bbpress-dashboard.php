@@ -59,7 +59,7 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 		 * @since		2.1
 		 * @return		void
 		 */
-		private function set_constants() {
+		private function setup_constants() {
 			// Plugin path
 			define( 'EDD_BBP_DIR', plugin_dir_path( __FILE__ ) );
 
