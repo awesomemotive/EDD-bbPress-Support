@@ -743,9 +743,9 @@ function edd_bbp_display_connected_docs() {
     ?>
     <div class="edd_bbp_support_forum_options">
     <?php if( bbp_is_single_topic() ) : ?>
-        <h3><?php _e( 'Related Documentation', 'edd_bbp_d' ); ?>:</h3>
+        <h3><?php _e( 'Related Documentation', 'edd-bbpress-dashboard' ); ?>:</h3>
     <?php else : ?>
-        <strong><?php _e( 'Related Documentation', 'edd_bbp_d' ); ?>:</strong>
+        <strong><?php _e( 'Related Documentation', 'edd-bbpress-dashboard' ); ?>:</strong>
     <?php endif; ?>
         <?php while ( $connected->have_posts() ) : $connected->the_post(); ?>
             <div><a href="<?php the_permalink(); ?>" target="_blank"><?php the_title(); ?></a></div>
