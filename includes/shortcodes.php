@@ -1,40 +1,56 @@
 <?php
 /**
  * Shortcodes
+ *
+ * @package		EDD\BBP\Shortcodes
+ * @since		1.0.0
  */
+
+
+// Exit if accessed directly
+if( ! defined( 'ABSPATH' ) ) exit;
+
 
 /**
  * Support Dashboard Shortcode Callback
+ *
+ * Show:
+ *  - open tickets
+ *  - assigned tickets
+ *  - unassigned tickets
+ *  - tickets awaiting answer
+ *
+ * @since		1.0.0
+ * @param		array $atts Shortcode attributes
+ * @param		string $content The shortcode content
+ * @global		int $user_ID The ID of the current user
+ * @return
  */
-function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
-	/*
-	 Show:
-	 - open tickets
-	 - assigned tickets
-	 - unassigned tickets
-	 - tickets awaiting answer
-	*/
+function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 	global $user_ID;
 
+	// Bail if not logged in
 	if( ! is_user_logged_in() ) {
 		return edd_login_form();
 	}
 
-	if ( ! current_user_can( 'moderate' ) )
+	// Bail if current user isn't a moderator
+	if( ! current_user_can( 'moderate' ) ) {
 		return;
+	}
 
-	wp_enqueue_script( 'bootstrap', EDD_BBP_D_URL . 'bootstrap/js/bootstrap.min.js'   );
-	wp_enqueue_style(  'bootstrap', EDD_BBP_D_URL . 'bootstrap/css/bootstrap.min.css' );
-
+	// Enqueue our styles
+	wp_enqueue_script( 'bootstrap', EDD_BBP_URL . 'assets/js/bootstrap.min.js'   );
+	wp_enqueue_style(  'bootstrap', EDD_BBP_URL . 'assets/css/bootstrap.min.css' );
 
 	// Show ticket overview for all mods
-	$mods = edd_bbp_d_get_all_mods(); ?>
+	$mods = edd_bbp_get_all_mods(); ?>
 
 	<?php if( $mods ) : ?>
 		<div class="row" id="mods-grid">
 		<?php foreach( $mods as $mod ) : ?>
 
-			<?php $ticket_count = edd_bbp_d_count_tickets_of_mod( $mod->ID ); ?>
+			<?php $ticket_count = edd_bbp_count_tickets_of_mod( $mod->ID ); ?>
 
 			<div class="mod col-xs-6 col-sm-3">
 				<div class="mod-name"><?php echo $mod->display_name; ?></div>
@@ -418,4 +434,4 @@ function edd_bbp_d_dashboard_shortcode( $atts, $content = null ) {
 	<?php
 	return ob_get_clean();
 }
-add_shortcode( 'bbps_dashboard', 'edd_bbp_d_dashboard_shortcode' );
+add_shortcode( 'bbps_dashboard', 'edd_bbp_dashboard_shortcode' );
