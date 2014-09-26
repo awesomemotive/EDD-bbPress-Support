@@ -40,7 +40,7 @@ function edd_bbp_extend_forum_attributes_mb( $forum_id ) {
 	<hr />
 
 	<p>
-		<strong><?php _e( 'Support Forum:', 'edd-bbpress-dashboard' ); ?></strong>
+		<strong>Support Forum:</strong>
 		<input type="checkbox" name="bbps-support-forum" value="1" <?php echo $checked1; ?>/>
 		<br />
 	</p>
@@ -96,24 +96,24 @@ function edd_bbp_register_admin_settings() {
 
 	register_setting  ( 'bbpress', '_bbps_reply_count', 'edd_bbp_validate_options' );
 
-	add_settings_field( '_bbps_enable_post_count', __( 'Show forum post count', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_post_count', 'bbpress', 'bbps-forum-setting' );
+	add_settings_field( '_bbps_enable_post_count', 'Show forum post count', 'edd_bbp_admin_setting_callback_post_count', 'bbpress', 'bbps-forum-setting' );
  	register_setting  ( 'bbpress', '_bbps_enable_post_count', 'intval');
 
 	// Add the forum status section
-	add_settings_section( 'bbps-status-setting', __( 'Topic Status Settings', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_status_section', 'bbpress' );
+	add_settings_section( 'bbps-status-setting', 'Topic Status Settings', 'edd_bbp_admin_setting_callback_status_section', 'bbpress' );
 
 	/* support forum misc settings */
-	add_settings_section( 'bbps-topic_status-setting', __( 'Support Froum Settings', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_support_forum_section', 'bbpress' );
+	add_settings_section( 'bbps-topic_status-setting', 'Support Froum Settings', 'edd_bbp_admin_setting_callback_support_forum_section', 'bbpress' );
 
 	// the ability to move topics
- 	add_settings_field( '_bbps_enable_topic_move', __( 'Move topics', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_move_topic', 'bbpress', 'bbps-topic_status-setting' );
+ 	add_settings_field( '_bbps_enable_topic_move', 'Move topics', 'edd_bbp_admin_setting_callback_move_topic', 'bbpress', 'bbps-topic_status-setting' );
  	register_setting  ( 'bbpress', '_bbps_enable_topic_move', 'intval');
 
  	// ability for admin and moderators to claim topics
- 	add_settings_field( '_bbps_claim_topic', __( 'Claim topics', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_claim_topic', 'bbpress', 'bbps-topic_status-setting' );
+ 	add_settings_field( '_bbps_claim_topic', 'Claim topics', 'edd_bbp_admin_setting_callback_claim_topic', 'bbpress', 'bbps-topic_status-setting' );
  	register_setting  ( 'bbpress', '_bbps_claim_topic', 'intval');
 
- 	add_settings_field( '_bbps_claim_topic_display', __( 'Display Username:', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_claim_topic_display', 'bbpress', 'bbps-topic_status-setting' );
+ 	add_settings_field( '_bbps_claim_topic_display', 'Display Username:', 'edd_bbp_admin_setting_callback_claim_topic_display', 'bbpress', 'bbps-topic_status-setting' );
  	register_setting  ( 'bbpress', '_bbps_claim_topic_display', 'intval');
 }
 add_action( 'bbp_register_admin_settings' , 'edd_bbp_register_admin_settings' );
