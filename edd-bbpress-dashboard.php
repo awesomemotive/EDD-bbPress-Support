@@ -6,7 +6,6 @@
  * Version:			2.1
  * Author:			Pippin Williamson, Daniel J Griffiths and Sunny Ratilal
  * Author URI:		https://easydigitaldownloads.com/
- * Text Domain:		edd-bbp-dashboard
  *
  * @package			EDD\BBP
  */
@@ -44,7 +43,6 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 				self::$instance = new EDD_BBP();
 				self::$instance->setup_constants();
 				self::$instance->includes();
-				self::$instance->load_textdomain();
 				self::$instance->hooks();
 			}
 
@@ -101,39 +99,6 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 
 			// Tweak subforum paging
 			add_filter( 'bbp_after_forum_get_subforums_parse_args', array( $this, 'subforum_args' ) );
-		}
-
-
-		/**
-		 * Internationalization
-		 *
-		 * @access		public
-		 * @since		2.1
-		 * @return		void
-		 */
-		public function load_textdomain() {
-			// Set filter for language directory
-			$lang_dir = EDD_BBP_DIR . '/languages/';
-			$lang_dir = apply_filters( 'edd_bbp_dashboard_languages_directory', $lang_dir );
-
-			// Traditional WordPress plugin locale filter
-			$locale = apply_filters( 'plugin_locale', get_locale(), 'edd-bbpress-dashboard' );
-			$mofile = sprintf( '%1$s-%2$s.mo', 'edd-bbpress-dashboard', $locale );
-
-			// Setup paths to current locale file
-			$mofile_local	= $lang_dir . $mofile;
-			$mofile_global	= WP_LANG_DIR . '/edd-bbpress-dashboard/' . $mofile;
-
-			if( file_exists( $mofile_global ) ) {
-				// Look in global /wp-content/languages/edd-bbpress-dashboard/ folder
-				load_textdomain( 'edd-bbpress-dashboard', $mofile_global );
-			} elseif( file_exists( $mofile_local ) ) {
-				// Look in local /wp-content/plugins/edd-bbpress-dashboard/languages/ folder
-				load_textdomain( 'edd-bbpress-dashboard', $mofile_local );
-			} else {
-				// Load the default language files
-				load_plugin_textdomain( 'edd-bbpress-dashboard', false, $lang_dir );
-			}
 		}
 
 
