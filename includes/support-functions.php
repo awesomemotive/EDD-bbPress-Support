@@ -32,6 +32,19 @@ function edd_bbp_get_all_mods( $admins_only = false ) {
 	return $staff;
 }
 
+/**
+ * Get array of all forum mods
+ *
+ * Backwards compat
+ *
+ * @since		1.0.0
+ * @param		bool $admins_only Return only admins
+ * @return		array $staff The array of mods
+ */
+function edd_bbp_d_get_all_mods( $admins_only = false ) {
+	return edd_bbp_get_all_mods( $admins_only );
+}
+
 
 /**
  * Get forum topic status
@@ -41,7 +54,7 @@ function edd_bbp_get_all_mods( $admins_only = false ) {
  * @return		string $status The status of the topic
  */
 function edd_bbp_get_topic_status( $topic_id ) {
-	$default = get_option( '_bbps_default_status' );
+	$default = 1;
 
 	$status = get_post_meta( $topic_id, '_bbps_topic_status', true );
 
@@ -52,17 +65,29 @@ function edd_bbp_get_topic_status( $topic_id ) {
 
 	switch ( $switch ) {
 		case 1:
-			$status = __( 'not resolved', 'edd-bbpress-dashboard' );
+			$status = 'not resolved';
 			break;
 		case 2:
-			$status = __( 'resolved', 'edd-bbpress-dashboard' );
+			$status = 'resolved';
 			break;
 		case 3:
-			$status = __( 'not a support question', 'edd-bbpress-dashboard' );
+			$status = 'not a support question';
 			break;
 	}
 
 	return $status;
+}
+
+
+/**
+ * Get forum topic status - Backwards compat version
+ *
+ * @since		1.0.0
+ * @param		int $topic_id The ID of the topic
+ * @return		string $status The status of the topic
+ */
+function edd_bbp_d_get_topic_status( $topic_id ) {
+	return edd_bbp_get_topic_status( $topic_id );
 }
 
 
@@ -75,9 +100,8 @@ function edd_bbp_get_topic_status( $topic_id ) {
  * @return		void
  */
 function edd_bbp_generate_status_options( $topic_id ) {
-	$dropdown_options = get_option( '_bbps_used_status' );
 	$status = get_post_meta( $topic_id, '_bbps_topic_status', true );
-	$default = get_option( '_bbps_default_status' );
+	$default = 1;
 
 	// Only use the default value as selected if the topic doesnt ahve a status set
 	if ( $status )
@@ -90,9 +114,9 @@ function edd_bbp_generate_status_options( $topic_id ) {
 		<select name="bbps_support_option" id="bbps_support_options">
 		<?php
 			// we only want to display the options the user has selected. the long term goal is to let users add their own forum statuses
-			if ( isset( $dropdown_options['res'] ) ) { echo '<option value="1" ' . selected( $value, 1 ) . '>' . __( 'Not Resolved', 'edd-bbpress-dashboard' ) . '</option>'; }
-			if ( isset( $dropdown_options['notres'] ) ) { echo '<option value="2" ' . selected( $value, 2 ) . '>' . __( 'Resolved', 'edd-bbpress-dashboard' ) . '</option>'; }
-			if ( isset( $dropdown_options['notsup'] ) ) { echo '<option value="3" ' . selected( $value, 3 ) . '>' . __( 'Not a Support Question', 'edd-bbpress-dashboard' ) . '</option>'; }
+			echo '<option value="1" ' . selected( $value, 1 ) . '>Not Resolved</option>';
+			echo '<option value="2" ' . selected( $value, 2 ) . '>Resolved</option>';
+			echo '<option value="3" ' . selected( $value, 3 ) . '>Not a Support Question</option>';
 		?>
 		</select>
 		<input type="submit" value="Update" name="bbps_support_submit" />
@@ -100,6 +124,20 @@ function edd_bbp_generate_status_options( $topic_id ) {
 		<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
 	</form>
 	<?php
+}
+
+/**
+ * Generates a drop down list for administrators and moderators to change
+ * the status of a forum topic
+ *
+ * Backwards compay version
+ *
+ * @since		1.0.0
+ * @param		int $topic_id The ID of the topic
+ * @return		void
+ */
+function edd_bbp_d_generate_status_options( $topic_id ) {
+	edd_bbp_generate_status_options( $topic_id );
 }
 
 
@@ -155,14 +193,20 @@ function edd_bbp_count_tickets_of_mod( $mod_id = 0 ) {
  * @return		void
  */
 function edd_bbp_assign_topic_form() {
-	if ( get_option( '_bbps_topic_assign' ) == 1 && current_user_can( 'moderate' ) ) {
-		$topic_id = bbp_get_topic_id();
-		$topic_assigned = edd_bbp_get_topic_assignee_id( $topic_id );
+	if ( ! current_user_can( 'moderate' ) ) {
+		return;
+	}
 
-		global $current_user;
-		get_currentuserinfo();
-		$current_user_id = $current_user->ID;
-		?>
+	$topic_id = bbp_get_topic_id();
+	$topic_assigned = edd_bbp_get_topic_assignee_id( $topic_id );
+
+	global $current_user;
+	get_currentuserinfo();
+	$current_user_id = $current_user->ID;
+	?>
+
+	<div class="moderator-tools clearfix">
+
 		<div id="bbps_support_forum_options">
 			<?php
 			$user_login = $current_user->user_login;
@@ -171,9 +215,21 @@ function edd_bbp_assign_topic_form() {
 				<div class='bbps-support-forums-message'> Topic assigned to: <?php echo $assigned_user_name; ?></div><?php
 			}
 			?>
-			<div id ="bbps_support_topic_assign">
+			<div id="bbps_support_topic_assign">
 				<form id="bbps-topic-assign" name="bbps_support_topic_assign" action="" method="post">
-					<?php edd_bbp_user_assign_dropdown(); ?>
+					<?php
+					$all_users       = edd_bbp_get_all_mods();
+					$topic_id        = bbp_get_topic_id();
+					$claimed_user_id = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
+
+					if ( ! empty( $all_users ) ) : ?>
+						<select name="bbps_assign_list" id="bbps_support_options">
+							<option value="">Unassigned</option>
+							<?php foreach ( $all_users as $user ) : ?>
+								<option value="<?php echo $user->ID; ?>"<?php selected( $user->ID, $claimed_user_id ); ?>><?php echo $user->user_firstname . ' ' . $user->user_lastname ; ?></option>
+							<?php endforeach; ?>
+						</select>
+					<?php endif; ?>
 					<input type="submit" value="Assign" name="bbps_support_topic_assign" />
 					<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
 					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
@@ -186,45 +242,10 @@ function edd_bbp_assign_topic_form() {
 				</form>
 			</div>
 		</div><!-- /#bbps_support_forum_options -->
-		<?php
-	}
-
+	</div>
+	<?php
 }
 add_action( 'bbp_template_before_single_topic' , 'edd_bbp_assign_topic_form' );
-
-
-/**
- * Print the dropdown of users to assign
- *
- * @since		1.0.0
- * @return		void
- */
-function edd_bbp_user_assign_dropdown() {
-	$all_users = edd_bbp_get_all_mods();
-	$topic_id = bbp_get_topic_id();
-	$claimed_user_id = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
-
-	if ( ! empty( $all_users ) ) {
-		if ( $claimed_user_id > 0 ) {
-			$text = __( 'Reassign topic to: ', 'edd-bbpress-dashboard' );
-		} else {
-			$text = __( 'Assign topic to: ', 'edd-bbpress-dashboard' );
-		}
-
-		echo $text;
-?>
-		<select name="bbps_assign_list" id="bbps_support_options">
-		<option value=""><?php _e( 'Unassigned', 'edd-bbpress-dashboard' ); ?></option><?php
-		foreach ( $all_users as $user ) {
-?>
-			<option value="<?php echo $user->ID; ?>"<?php selected( $user->ID, $claimed_user_id ); ?>> <?php echo $user->user_firstname . ' ' . $user->user_lastname ; ?></option>
-		<?php
-		}
-		?> </select> <?php
-	}
-
-}
-
 
 /**
  * Send message on ticket assignment
@@ -250,7 +271,7 @@ function edd_bbp_assign_topic() {
 		$post_link
 EMAILMSG;
 			if ( $assigned == true ) {
-				wp_mail( $user_email, __(  'A forum topic has been assigned to you', 'edd-bbs-dashboard' ), $message );
+				wp_mail( $user_email, 'A forum topic has been assigned to you', $message );
 			}
 		}
 	}
@@ -275,8 +296,18 @@ function edd_bbp_ping_topic_assignee() {
 		A ticket that has been assigned to you is in need of attention.
 		$post_link
 EMAILMSG;
-		wp_mail( $user_email, __( 'EDD Ticket Ping', 'edd-bbpress-dashboard' ), $message );
+		wp_mail( $user_email, 'EDD Ticket Ping', $message );
 	}
+}
+
+/**
+ * Ping topic assignee - Backwards compat
+ *
+ * @since		1.0.0
+ * @return		void
+ */
+function edd_bbp_d_ping_asignee_button() {
+	edd_bbp_ping_topic_assignee();
 }
 
 
@@ -287,7 +318,7 @@ EMAILMSG;
  * @return		void
  */
 function edd_bbp_ping_assignee_button() {
-	if ( get_option( '_bbps_topic_assign' ) == 1 && edd_bbp_is_support_forum( bbp_get_forum_id() ) ) {
+	if ( edd_bbp_is_support_forum( bbp_get_forum_id() ) ) {
 		$topic_id = bbp_get_topic_id();
 		$topic_assigned = edd_bbp_get_topic_assignee_id( $topic_id );
 		$status = edd_bbp_get_topic_status( $topic_id );
@@ -483,7 +514,7 @@ function edd_bbp_add_user_purchases_link() {
 		}
 		echo '</ul>';
 	else :
-		echo '<p>' . __( 'This user has never purchased anything.', 'edd-bbpress-dashboard' ) . '</p>';
+		echo '<p>This user has never purchased anything.</p>';
 	endif;
 	echo '</div>';
 }
@@ -506,13 +537,13 @@ function edd_bbp_add_user_priority_support_status() {
 	$user_id = bbp_get_displayed_user_field( 'ID' );
 
 	echo '<div class="rcp_support_status">';
-	echo '<h4>' . __( 'Priority Support Access', 'edd-bbpress-dashboard' ) . '</h4>';
+	echo '<h4>Priority Support Access</h4>';
 	if ( rcp_is_active( $user_id ) ) {
-		echo '<p>' . __( 'Has <strong>Priority Support</strong> access.', 'edd-bbpress-dashboard' ) . '</p>';
+		echo '<p>Has <strong>Priority Support</strong> access.</p>';
 	} elseif ( rcp_is_expired( $user_id ) ) {
-		echo '<p>' . __( '<strong>Priority Support</strong> access has <span style="color:red;">expired</span>.',  'edd-bbpress-dashboard' ) . '</p>';
+		echo '<p><strong>Priority Support</strong> access has <span style="color:red;">expired</span>.</p>';
 	} else {
-		echo '<p>' . __( 'Has no priority support accesss', 'edd-bbpress-dashboard' ) . '</p>';
+		echo '<p>Has no priority support accesss</p>';
 	}
 	echo '</div>';
 }
@@ -561,9 +592,9 @@ function edd_bbp_sidebar() {
 		<?php do_action( 'edd_bbp_sidebar' ); ?>
 
 		<h3><?php echo get_the_author_meta( 'first_name' ) . '  ' . get_the_author_meta( 'last_name' ); ?></h3>
-		<p class="bbp-user-forum-role"><?php  printf( __( 'Forum Role: %s',      'bbpress' ), bbp_get_user_display_role( $user_id )    ); ?></p>
-		<p class="bbp-user-topic-count"><?php printf( __( 'Topics Started: %s',  'bbpress' ), bbp_get_user_topic_count_raw( $user_id ) ); ?></p>
-		<p class="bbp-user-reply-count"><?php printf( __( 'Replies Created: %s', 'bbpress' ), bbp_get_user_reply_count_raw( $user_id ) ); ?></p>
+		<p class="bbp-user-forum-role"><?php  printf( 'Forum Role: %s', bbp_get_user_display_role( $user_id ) ); ?></p>
+		<p class="bbp-user-topic-count"><?php printf( 'Topics Started: %s', bbp_get_user_topic_count_raw( $user_id ) ); ?></p>
+		<p class="bbp-user-reply-count"><?php printf( 'Replies Created: %s', bbp_get_user_reply_count_raw( $user_id ) ); ?></p>
 
 		<div class="rcp_support_status">
 			<h4>Priority Support Access</h4>
@@ -614,6 +645,10 @@ function edd_bbp_sidebar() {
 		</div>
 	</div>
 	<?php
+}
+
+function edd_bbp_d_sidebar() {
+	edd_bbp_sidebar();
 }
 
 
@@ -683,7 +718,7 @@ function edd_bbp_send_priority_to_hall( $topic_id = 0, $forum_id = 0, $anonymous
 	}
 
 	$json = json_encode( array(
-		'title'   => __( 'A new priority ticket has been posted', 'edd-bbpress-dashboard' ),
+		'title'   => 'A new priority ticket has been posted',
 		'message' => esc_html( get_the_title( $topic_id ) ) . ' - ' . esc_url( get_permalink( $topic_id ) )
 	) );
 
@@ -743,9 +778,9 @@ function edd_bbp_display_connected_docs() {
     ?>
     <div class="edd_bbp_support_forum_options">
     <?php if( bbp_is_single_topic() ) : ?>
-        <h3><?php _e( 'Related Documentation', 'edd-bbpress-dashboard' ); ?>:</h3>
+        <h3>Related Documentation:</h3>
     <?php else : ?>
-        <strong><?php _e( 'Related Documentation', 'edd-bbpress-dashboard' ); ?>:</strong>
+        <strong>Related Documentation:</strong>
     <?php endif; ?>
         <?php while ( $connected->have_posts() ) : $connected->the_post(); ?>
             <div><a href="<?php the_permalink(); ?>" target="_blank"><?php the_title(); ?></a></div>
@@ -769,7 +804,7 @@ add_action( 'edd_bbp_sidebar', 'edd_bbp_display_connected_docs' );
  */
 function edd_bbp_new_topic_notice() {
 	if( bbp_is_single_forum() )
-		echo '<div class="bbp-template-notice"><p>' . __( 'Please search the forums for existing questions before posting a new one.', 'edd-bbpress-dashboard' ) . '</p></div>';
+		echo '<div class="bbp-template-notice"><p>Please search the forums for existing questions before posting a new one.</p></div>';
 }
 add_action( 'bbp_template_notices', 'edd_bbp_new_topic_notice');
 

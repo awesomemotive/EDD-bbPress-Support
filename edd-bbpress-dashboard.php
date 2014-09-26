@@ -6,7 +6,6 @@
  * Version:			2.1
  * Author:			Pippin Williamson, Daniel J Griffiths and Sunny Ratilal
  * Author URI:		https://easydigitaldownloads.com/
- * Text Domain:		edd-bbp-dashboard
  *
  * @package			EDD\BBP
  */
@@ -44,7 +43,6 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 				self::$instance = new EDD_BBP();
 				self::$instance->setup_constants();
 				self::$instance->includes();
-				self::$instance->load_textdomain();
 				self::$instance->hooks();
 			}
 
@@ -79,13 +77,11 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 			require_once EDD_BBP_DIR . 'includes/actions.php';
 			require_once EDD_BBP_DIR . 'includes/functions.php';
 			require_once EDD_BBP_DIR . 'includes/shortcodes.php';
-			require_once EDD_BBP_DIR . 'includes/option-functions.php';
 			require_once EDD_BBP_DIR . 'includes/support-functions.php';
 
 			if( is_admin() ) {
 				require_once EDD_BBP_DIR . 'includes/admin/functions.php';
 				require_once EDD_BBP_DIR . 'includes/admin/bbps-admin.php';
-				require_once EDD_BBP_DIR . 'includes/admin/bbps-settings.php';
 			}
 		}
 
@@ -101,44 +97,8 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 			// Initial activation
 			register_activation_hook( __FILE__, array( $this, 'activate' ) );
 
-			// Setup options
-			add_action( 'edd_bbp_activation', array( $this, 'add_options' ) );
-
 			// Tweak subforum paging
 			add_filter( 'bbp_after_forum_get_subforums_parse_args', array( $this, 'subforum_args' ) );
-		}
-
-
-		/**
-		 * Internationalization
-		 *
-		 * @access		public
-		 * @since		2.1
-		 * @return		void
-		 */
-		public function load_textdomain() {
-			// Set filter for language directory
-			$lang_dir = EDD_BBP_DIR . '/languages/';
-			$lang_dir = apply_filters( 'edd_bbp_dashboard_languages_directory', $lang_dir );
-
-			// Traditional WordPress plugin locale filter
-			$locale = apply_filters( 'plugin_locale', get_locale(), 'edd-bbpress-dashboard' );
-			$mofile = sprintf( '%1$s-%2$s.mo', 'edd-bbpress-dashboard', $locale );
-
-			// Setup paths to current locale file
-			$mofile_local	= $lang_dir . $mofile;
-			$mofile_global	= WP_LANG_DIR . '/edd-bbpress-dashboard/' . $mofile;
-
-			if( file_exists( $mofile_global ) ) {
-				// Look in global /wp-content/languages/edd-bbpress-dashboard/ folder
-				load_textdomain( 'edd-bbpress-dashboard', $mofile_global );
-			} elseif( file_exists( $mofile_local ) ) {
-				// Look in local /wp-content/plugins/edd-bbpress-dashboard/languages/ folder
-				load_textdomain( 'edd-bbpress-dashboard', $mofile_local );
-			} else {
-				// Load the default language files
-				load_plugin_textdomain( 'edd-bbpress-dashboard', false, $lang_dir );
-			}
 		}
 
 
@@ -151,27 +111,6 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 		 */
 		function activate() {
 			do_action( 'edd_bbp_activation' );
-		}
-
-
-		/**
-		 * Add options
-		 *
-		 * @access		public
-		 * @since		2.1
-		 * @return		void
-		 */
-		function add_options() {
-			$options = apply_filters( 'edd_bbp_options', array(
-				'_bbps_default_status' => '1',
-				'_bbps_used_status' => '',
-				'_bbps_enable_topic_move' => '1',
-				'_bbps_status_permissions_urgent' => '',
-			) );
-
-			foreach( $options as $key => $value ) {
-				add_option( $key, $value );
-			}
 		}
 
 

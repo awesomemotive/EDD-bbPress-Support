@@ -50,6 +50,17 @@ function edd_bbp_is_support_forum( $forum_id ) {
 	return apply_filters( 'edd_bbp_is_support_forum', $return, $forum_id );
 }
 
+/**
+ * Is this a support forum? Backwards compat version (EDD site calls this)
+ *
+ * @since		1.0.0
+ * @param		int $forum_id The ID of the forum to check
+ * @return		bool $return True if support forum, false otherwise
+ */
+function edd_bbp_d_is_support_forum( $forum_id ) {
+	return edd_bbp_is_support_forum( $forum_id );
+}
+
 
 /**
  * Is this a premium topic?
