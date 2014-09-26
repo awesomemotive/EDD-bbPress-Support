@@ -89,10 +89,10 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 				<h4>Tickets assigned to <?php echo $mod->display_name; ?></h4>
 					<table class="table table-striped" width="100%">
 						<tr>
-							<th width="35%"><?php _e( 'Topic Title', 'edd-bbpress-dashboard' ); ?></th>
-							<th width="25%"><?php _e( 'Last Post By', 'edd-bbpress-dashboard' ); ?></th>
-							<th width="25%"><?php _e( 'Last Updated', 'edd-bbpress-dashboard' ); ?></th>
-							<th width="15%"><?php _e( 'Post Count', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="35%">Topic Title</th>
+							<th width="25%">Last Post By</th>
+							<th width="25%">Last Updated</th>
+							<th width="15%">Post Count</th>
 						</tr>
 						<?php while( $assigned_tickets->have_posts() ) : $assigned_tickets->the_post(); ?>
 							<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
@@ -111,7 +111,7 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 					<?php wp_reset_postdata(); ?>
 					</table>
 			<?php else : ?>
-				<div><?php _e( 'This mod has no assigned tickets.', 'edd-bbpress-dashboard' ); ?></div>
+				<div>This mod has no assigned tickets.</div>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -265,9 +265,9 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 						<table class="table table-striped" width="100%">
 							<tr>
 								<th></th>
-								<th width="40%"><?php _e( 'Topic Title', 'edd-bbpress-dashboard' ); ?></th>
-								<th width="25%"><?php _e( 'Last Updated', 'edd-bbpress-dashboard' ); ?></th>
-								<th width="25%"><?php _e( 'Actions', 'edd-bbpress-dashboard' ); ?></th>
+								<th width="40%">Topic Title</th>
+								<th width="25%">Last Updated</th>
+								<th width="25%">Actions</th>
 							</tr>
 							<?php while( $waiting_tickets->have_posts() ) : $waiting_tickets->the_post(); ?>
 								<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
@@ -281,7 +281,7 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 										<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 									</td>
 									<td><?php bbp_topic_freshness_link( get_the_ID() ); ?></td>
-									<td><a href="<?php echo $remove_url; ?>"><?php _e( 'Remove Pending Status', 'edd-bbpress-dashboard' ); ?></a></td>
+									<td><a href="<?php echo $remove_url; ?>">Remove Pending Status</a></td>
 								</tr>
 							<?php endwhile; ?>
 						</table>
@@ -290,7 +290,7 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 						<?php wp_reset_postdata(); ?>
 					</form>
 				<?php else : ?>
-					<li><?php _e( 'No tickets awaiting your reply. Excellent, now go grab some unresolved or unassigned tickets.', 'edd-bbpress-dashboard' ); ?></li>
+					<li>No tickets awaiting your reply. Excellent, now go grab some unresolved or unassigned tickets.</li>
 				<?php endif; ?>
 			</ul>
 		</div>
@@ -299,9 +299,9 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 				<?php if ( $assigned_tickets->have_posts() ) : ?>
 					<table class="table table-striped" width="100%">
 						<tr>
-							<th width="40%"><?php _e( 'Topic Title', 'edd-bbpress-dashboard' ); ?></th>
-							<th width="30%"><?php _e( 'Last Post By', 'edd-bbpress-dashboard' ); ?></th>
-							<th width="30%"><?php _e( 'Last Updated', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="40%">Topic Title</th>
+							<th width="30%">Last Post By</th>
+							<th width="30%">Last Updated</th>
 						</tr>
 						<?php while( $assigned_tickets->have_posts() ) : $assigned_tickets->the_post(); ?>
 							<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
@@ -319,7 +319,7 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 					<?php wp_reset_postdata(); ?>
 					</table>
 				<?php else : ?>
-					<li><?php _e( 'No unresolved tickets, yay! Now go grab some unresolved or unassigned tickets.', 'edd-bbpress-dashboard' ); ?></li>
+					<li>No unresolved tickets, yay! Now go grab some unresolved or unassigned tickets.</li>
 				<?php endif; ?>
 			</ul>
 		</div>
@@ -328,9 +328,9 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 				<?php if( $unassigned_tickets->have_posts() ) : ?>
 					<table class="table table-striped" width="100%">
 						<tr>
-							<th width="40%"><?php _e( 'Topic Title', 'edd-bbpress-dashboard' ); ?></th>
-							<th width="30%"><?php _e( 'Last Post By', 'edd-bbpress-dashboard' ); ?></th>
-							<th width="30%"><?php _e( 'Last Updated', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="40%">Topic Title</th>
+							<th width="30%">Last Post By</th>
+							<th width="30%">Last Updated</th>
 						</tr>
 						<?php while( $unassigned_tickets->have_posts() ) : $unassigned_tickets->the_post(); ?>
 							<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
@@ -348,7 +348,7 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 					<?php wp_reset_postdata(); ?>
 					</table>
 				<?php else : ?>
-					<li><?php _e( 'No unassigned tickets, yay!', 'edd-bbpress-dashboard' ); ?></li>
+					<li>No unassigned tickets, yay!</li>
 				<?php endif; ?>
 			</ul>
 		</div>
@@ -357,9 +357,9 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 				<?php if( $no_reply_tickets->have_posts() ) : ?>
 					<table class="table table-striped" width="100%">
 						<tr>
-							<th width="40%"><?php _e( 'Topic Title', 'edd-bbpress-dashboard' ); ?></th>
-							<th width="30%"><?php _e( 'Posted', 'edd-bbpress-dashboard' ); ?></th>
-							<th width="30%"><?php _e( 'Assignee', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="40%">Topic Title</th>
+							<th width="30%">Posted</th>
+							<th width="30%">Assignee</th>
 						</tr>
 						<?php while( $no_reply_tickets->have_posts() ) : $no_reply_tickets->the_post(); ?>
 							<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
@@ -372,13 +372,13 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 								</td>
 								<td><?php bbp_topic_freshness_link( get_the_ID() ); ?></td>
-								<td><?php echo ( !empty( $assignee_name ) ) ? $assignee_name : __( 'Unassigned', 'edd-bbpress-dashboard' ); ?></td>
+								<td><?php echo ( !empty( $assignee_name ) ) ? $assignee_name : 'Unassigned' ?></td>
 							</tr>
 						<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
 					</table>
 				<?php else : ?>
-					<li><?php _e( 'No tickets without replies, yay!', 'edd-bbpress-dashboard' ); ?></li>
+					<li>No tickets without replies, yay!</li>
 				<?php endif; ?>
 			</ul>
 		</div>
@@ -387,10 +387,10 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 				<?php if( $unresolved_tickets->have_posts() ) : ?>
 					<table class="table table-striped" width="100%">
 						<tr>
-							<th width="35%"><?php _e( 'Topic Title', 'edd-bbpress-dashboard' ); ?></th>
-							<th width="25%"><?php _e( 'Last Updated', 'edd-bbpress-dashboard' ); ?></th>
-							<th width="25%"><?php _e( 'Assignee', 'edd-bbpress-dashboard' ); ?></th>
-							<th width="15%"><?php _e( 'Post Count', 'edd-bbpress-dashboard' ); ?></th>
+							<th width="35%">Topic Title</th>
+							<th width="25%">Last Updated</th>
+							<th width="25%">Assignee</th>
+							<th width="15%">Post Count</th>
 						</tr>
 						<?php while( $unresolved_tickets->have_posts() ) : $unresolved_tickets->the_post(); ?>
 							<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
@@ -403,14 +403,14 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 								</td>
 								<td><?php bbp_topic_freshness_link( get_the_ID() ); ?></td>
-								<td><?php echo ( !empty( $assignee_name ) ) ? $assignee_name : __( 'Unassigned', 'edd-bbpress-dashboard' ); ?></td>
+								<td><?php echo ( !empty( $assignee_name ) ) ? $assignee_name : 'Unassigned'; ?></td>
 								<td><?php bbp_topic_post_count( get_the_ID() ); ?></td>
 							</tr>
 						<?php endwhile; ?>
 					<?php wp_reset_postdata(); ?>
 					</table>
 				<?php else : ?>
-					<li><?php _e( 'No unassigned tickets, yay!', 'edd-bbpress-dashboard' ); ?></li>
+					<li>No unassigned tickets, yay!</li>
 				<?php endif; ?>
 			</ul>
 		</div>

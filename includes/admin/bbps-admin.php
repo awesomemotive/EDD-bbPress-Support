@@ -24,7 +24,7 @@ function bbps_extend_forum_attributes_mb( $forum_id ) {
 	?>
 
 	<p>
-		<strong><?php _e( 'Support Forum:', 'edd-bbpress-dashboard' ); ?></strong>
+		<strong>Support Forum:</strong>
 		<input type="checkbox" name="bbps-support-forum" value="1"<?php checked( true, $support_forum ); ?>/>
 	</p>
 
