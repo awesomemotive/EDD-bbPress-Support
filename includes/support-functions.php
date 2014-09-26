@@ -32,6 +32,19 @@ function edd_bbp_get_all_mods( $admins_only = false ) {
 	return $staff;
 }
 
+/**
+ * Get array of all forum mods
+ *
+ * Backwards compat
+ *
+ * @since		1.0.0
+ * @param		bool $admins_only Return only admins
+ * @return		array $staff The array of mods
+ */
+function edd_bbp_d_get_all_mods( $admins_only = false ) {
+	return edd_bbp_get_all_mods( $admins_only );
+}
+
 
 /**
  * Get forum topic status
@@ -63,6 +76,18 @@ function edd_bbp_get_topic_status( $topic_id ) {
 	}
 
 	return $status;
+}
+
+
+/**
+ * Get forum topic status - Backwards compat version
+ *
+ * @since		1.0.0
+ * @param		int $topic_id The ID of the topic
+ * @return		string $status The status of the topic
+ */
+function edd_bbp_d_get_topic_status( $topic_id ) {
+	return edd_bbp_get_topic_status( $topic_id );
 }
 
 
@@ -99,6 +124,20 @@ function edd_bbp_generate_status_options( $topic_id ) {
 		<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
 	</form>
 	<?php
+}
+
+/**
+ * Generates a drop down list for administrators and moderators to change
+ * the status of a forum topic
+ *
+ * Backwards compay version
+ *
+ * @since		1.0.0
+ * @param		int $topic_id The ID of the topic
+ * @return		void
+ */
+function edd_bbp_d_generate_status_options( $topic_id ) {
+	edd_bbp_generate_status_options( $topic_id );
 }
 
 
@@ -162,68 +201,52 @@ function edd_bbp_assign_topic_form() {
 		get_currentuserinfo();
 		$current_user_id = $current_user->ID;
 		?>
-		<div id="bbps_support_forum_options">
-			<?php
-			$user_login = $current_user->user_login;
-			if ( ! empty( $topic_assigned ) ) {
-				$assigned_user_name = edd_bbp_get_topic_assignee_name( $topic_assigned ); ?>
-				<div class='bbps-support-forums-message'> Topic assigned to: <?php echo $assigned_user_name; ?></div><?php
-			}
-			?>
-			<div id ="bbps_support_topic_assign">
-				<form id="bbps-topic-assign" name="bbps_support_topic_assign" action="" method="post">
-					<?php edd_bbp_user_assign_dropdown(); ?>
-					<input type="submit" value="Assign" name="bbps_support_topic_assign" />
-					<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
-					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
-				</form>
-				<form id="bbs-topic-assign-me" name="bbps_support_topic_assign" action="" method="post">
-					<input type="submit" value="Assign To Me" name="bbps_support_topic_assign" />
-					<input type="hidden" value="<?php echo get_current_user_id(); ?>" name="bbps_assign_list" />
-					<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
-					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
-				</form>
-			</div>
-		</div><!-- /#bbps_support_forum_options -->
+
+		<div class="moderator-tools clearfix">
+
+			<div id="bbps_support_forum_options">
+				<?php
+				$user_login = $current_user->user_login;
+				if ( ! empty( $topic_assigned ) ) {
+					$assigned_user_name = edd_bbp_get_topic_assignee_name( $topic_assigned ); ?>
+					<div class='bbps-support-forums-message'> Topic assigned to: <?php echo $assigned_user_name; ?></div><?php
+				}
+				?>
+				<div id="bbps_support_topic_assign">
+					<form id="bbps-topic-assign" name="bbps_support_topic_assign" action="" method="post">
+						<?php
+						$all_users       = edd_bbp_get_all_mods();
+						$topic_id        = bbp_get_topic_id();
+						$claimed_user_id = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
+
+						if ( ! empty( $all_users ) ) : ?>
+							<select name="bbps_assign_list" id="bbps_support_options">
+								<option value=""><?php _e( 'Unassigned', 'edd-bbpress-dashboard' ); ?></option>
+								<?php foreach ( $all_users as $user ) : ?>
+									<option value="<?php echo $user->ID; ?>"<?php selected( $user->ID, $claimed_user_id ); ?>><?php echo $user->user_firstname . ' ' . $user->user_lastname ; ?></option>
+								<?php endforeach; ?>
+							</select>
+						<?php endif; ?>
+						<input type="submit" value="Assign" name="bbps_support_topic_assign" />
+						<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
+						<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
+					</form>
+					<form id="bbs-topic-assign-me" name="bbps_support_topic_assign" action="" method="post">
+						<input type="submit" value="Assign To Me" name="bbps_support_topic_assign" />
+						<input type="hidden" value="<?php echo get_current_user_id(); ?>" name="bbps_assign_list" />
+						<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
+						<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
+					</form>
+				</div>
+			</div><!-- /#bbps_support_forum_options -->
+
+		</div>
+
 		<?php
 	}
 
 }
 add_action( 'bbp_template_before_single_topic' , 'edd_bbp_assign_topic_form' );
-
-
-/**
- * Print the dropdown of users to assign
- *
- * @since		1.0.0
- * @return		void
- */
-function edd_bbp_user_assign_dropdown() {
-	$all_users = edd_bbp_get_all_mods();
-	$topic_id = bbp_get_topic_id();
-	$claimed_user_id = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
-
-	if ( ! empty( $all_users ) ) {
-		if ( $claimed_user_id > 0 ) {
-			$text = __( 'Reassign topic to: ', 'edd-bbpress-dashboard' );
-		} else {
-			$text = __( 'Assign topic to: ', 'edd-bbpress-dashboard' );
-		}
-
-		echo $text;
-?>
-		<select name="bbps_assign_list" id="bbps_support_options">
-		<option value=""><?php _e( 'Unassigned', 'edd-bbpress-dashboard' ); ?></option><?php
-		foreach ( $all_users as $user ) {
-?>
-			<option value="<?php echo $user->ID; ?>"<?php selected( $user->ID, $claimed_user_id ); ?>> <?php echo $user->user_firstname . ' ' . $user->user_lastname ; ?></option>
-		<?php
-		}
-		?> </select> <?php
-	}
-
-}
-
 
 /**
  * Send message on ticket assignment
@@ -276,6 +299,16 @@ function edd_bbp_ping_topic_assignee() {
 EMAILMSG;
 		wp_mail( $user_email, __( 'EDD Ticket Ping', 'edd-bbpress-dashboard' ), $message );
 	}
+}
+
+/**
+ * Ping topic assignee - Backwards compat
+ *
+ * @since		1.0.0
+ * @return		void
+ */
+function edd_bbp_d_ping_asignee_button() {
+	edd_bbp_ping_topic_assignee();
 }
 
 
@@ -613,6 +646,10 @@ function edd_bbp_sidebar() {
 		</div>
 	</div>
 	<?php
+}
+
+function edd_bbp_d_sidebar() {
+	edd_bbp_sidebar();
 }
 
 
