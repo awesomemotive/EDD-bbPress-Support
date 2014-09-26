@@ -241,14 +241,18 @@ function edd_bbp_assign_topic_form() {
 					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
 				</form>
 
-				<div id ="bbps_support_forum_ping">
-					<form id="bbps-topic-ping" name="bbps_support_topic_ping" action="" method="post">
-						<input type="submit" class="edd-submit button" value="Ping Assignee" name="bbps_topic_ping_submit" />
-						<input type="hidden" value="bbps_ping_topic" name="bbps_action"/>
-						<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
-						<input type="hidden" value="<?php echo $forum_id ?>" name="bbp_old_forum_id" />
-					</form>
-				</div>
+				<form id="bbps-topic-ping" name="bbps_support_topic_ping" action="" method="post">
+					<input type="submit" class="edd-submit button" value="Ping Assignee" name="bbps_topic_ping_submit" />
+					<input type="hidden" value="bbps_ping_topic" name="bbps_action"/>
+					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
+					<input type="hidden" value="<?php echo $forum_id ?>" name="bbp_old_forum_id" />
+				</form>
+
+				<form id="bbps-topic-keep-open" name="bbps_support_topic_keep_open" action="" method="post">
+					<input type="submit" class="edd-submit button" value="Keep Open"title="This prevents this topic from beeing closed automatically" name="bbps_topic_keep_open_submit" />
+					<input type="hidden" value="bbps_ping_topic" name="bbps_action"/>
+					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
+				</form>
 
 			</div>
 		</div><!-- /#bbps_support_forum_options -->
@@ -774,6 +778,11 @@ function edd_bbp_close_old_tickets_and_notify() {
 				'key'     => '_bbp_last_active_time',
 				'value'   => strtotime( '-10 days' ),
 				'compare' => '<='
+			),
+			array(
+				'key'     => '_bbp_override_auto_close',
+				'compare' => 'NOT EXISTS',
+				'compare' => '1'
 			)
 		),
 		'posts_per_page' => 50,
