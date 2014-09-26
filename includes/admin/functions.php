@@ -99,9 +99,6 @@ function edd_bbp_register_admin_settings() {
 	add_settings_field( '_bbps_enable_post_count', __( 'Show forum post count', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_post_count', 'bbpress', 'bbps-forum-setting' );
  	register_setting  ( 'bbpress', '_bbps_enable_post_count', 'intval');
 
-	add_settings_field( '_bbps_enable_user_rank', __( 'Show Rank', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_user_rank', 'bbpress', 'bbps-forum-setting' );
- 	register_setting  ( 'bbpress', '_bbps_enable_user_rank', 'intval');
-
 	// Add the forum status section
 	add_settings_section( 'bbps-status-setting', __( 'Topic Status Settings', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_status_section', 'bbpress' );
 

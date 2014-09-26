@@ -82,20 +82,6 @@ function bbps_admin_setting_callback_post_count() {
 
 
 /**
- * Settings callback for rank
- *
- * @since		1.0
- * @return		void
- */
-function bbps_admin_setting_callback_user_rank() {
-?>
-	<input id="bbps_enable_user_rank" name="_bbps_enable_user_rank" type="checkbox" <?php checked( edd_bbp_is_user_rank_enabled(), 1 ); ?> value="1" />
-	<label for="bbps_enable_user_rank"><?php _e( 'Display the users rank title below their gravatar?', 'edd-bbpress-dashboard' ); ?></label>
-<?php
-}
-
-
-/**
  * Settings callback for status
  *
  * @since		1.0
