@@ -198,6 +198,7 @@ function edd_bbp_assign_topic_form() {
 	}
 
 	$topic_id = bbp_get_topic_id();
+	$forum_id = bbp_get_forum_id();
 	$topic_assigned = edd_bbp_get_topic_assignee_id( $topic_id );
 
 	global $current_user;
@@ -219,7 +220,6 @@ function edd_bbp_assign_topic_form() {
 				<form id="bbps-topic-assign" name="bbps_support_topic_assign" action="" method="post">
 					<?php
 					$all_users       = edd_bbp_get_all_mods();
-					$topic_id        = bbp_get_topic_id();
 					$claimed_user_id = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
 
 					if ( ! empty( $all_users ) ) : ?>
@@ -240,6 +240,16 @@ function edd_bbp_assign_topic_form() {
 					<input type="hidden" value="bbps_assign_topic" name="bbps_action"/>
 					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
 				</form>
+
+				<div id ="bbps_support_forum_ping">
+					<form id="bbps-topic-ping" name="bbps_support_topic_ping" action="" method="post">
+						<input type="submit" class="edd-submit button" value="Ping Assignee" name="bbps_topic_ping_submit" />
+						<input type="hidden" value="bbps_ping_topic" name="bbps_action"/>
+						<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
+						<input type="hidden" value="<?php echo $forum_id ?>" name="bbp_old_forum_id" />
+					</form>
+				</div>
+
 			</div>
 		</div><!-- /#bbps_support_forum_options -->
 	</div>
@@ -276,71 +286,6 @@ EMAILMSG;
 		}
 	}
 }
-
-
-/**
- * Ping topic assignee
- *
- * @since		1.0.0
- * @return		void
- */
-function edd_bbp_ping_topic_assignee() {
-	$topic_id = absint( $_POST['bbps_topic_id'] );
-	$user_id  = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
-
-	if ( $user_id ) {
-		$userinfo = get_userdata( $user_id );
-		$user_email = $userinfo->user_email;
-		$post_link = get_permalink( $topic_id );
-		$message = <<< EMAILMSG
-		A ticket that has been assigned to you is in need of attention.
-		$post_link
-EMAILMSG;
-		wp_mail( $user_email, 'EDD Ticket Ping', $message );
-	}
-}
-
-/**
- * Ping topic assignee - Backwards compat
- *
- * @since		1.0.0
- * @return		void
- */
-function edd_bbp_d_ping_asignee_button() {
-	edd_bbp_ping_topic_assignee();
-}
-
-
-/**
- * Print the Ping Assignee button
- *
- * @since		1.0.0
- * @return		void
- */
-function edd_bbp_ping_assignee_button() {
-	if ( edd_bbp_is_support_forum( bbp_get_forum_id() ) ) {
-		$topic_id = bbp_get_topic_id();
-		$topic_assigned = edd_bbp_get_topic_assignee_id( $topic_id );
-		$status = edd_bbp_get_topic_status( $topic_id );
-		$forum_id = bbp_get_forum_id();
-		$user_id = get_current_user_id();
-
-		if ( current_user_can( 'moderate' ) && $topic_assigned ) {
-?>
-		<div id ="bbps_support_forum_ping">
-			<form id="bbps-topic-ping" name="bbps_support_topic_ping" action="" method="post">
-				<input type="submit" class="edd-submit button" value="Ping Assignee" name="bbps_topic_ping_submit" />
-				<input type="hidden" value="bbps_ping_topic" name="bbps_action"/>
-				<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
-				<input type="hidden" value="<?php echo $forum_id ?>" name="bbp_old_forum_id" />
-			</form>
-		</div>
-		<?php
-		}
-	}
-}
-add_action( 'bbp_template_before_single_topic', 'edd_bbp_ping_assignee_button' );
-
 
 /**
  * Adds a class and status to topic title
