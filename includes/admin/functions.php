@@ -102,38 +102,12 @@ function edd_bbp_register_admin_settings() {
 	// Add the forum status section
 	add_settings_section( 'bbps-status-setting', __( 'Topic Status Settings', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_status_section', 'bbpress' );
 
-	register_setting  ( 'bbpress', '_bbps_default_status', 'intval' );
-	add_settings_field( '_bbps_default_status', __( 'Default Status:', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_default_status', 'bbpress', 'bbps-status-setting' );
-
-	// default topic option
-	register_setting  ( 'bbpress', '_bbps_used_status', 'bbps_validate_checkbox_group' );
-
-	// each drop down option for selection
-	add_settings_field( '_bbps_used_status_1', __( 'Display Status:', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_displayed_status_res', 'bbpress', 'bbps-status-setting' );
-	add_settings_field( '_bbps_used_status_2', __( 'Display Status:', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_displayed_status_notres', 'bbpress', 'bbps-status-setting' );
-	add_settings_field( '_bbps_used_status_3', __( 'Display Status:', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_displayed_status_notsup', 'bbpress', 'bbps-status-setting' );
-
-	// who can update the status
-	register_setting  ( 'bbpress', '_bbps_status_permissions', 'bbps_validate_checkbox_group' );
-	// each drop down option for selection
-	add_settings_field( '_bbps_status_permissions_admin', __( 'Admin', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_permission_admin', 'bbpress', 'bbps-status-setting' );
-	add_settings_field( '_bbps_status_permissions_user', __( 'Topic Creator', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_permission_user', 'bbpress', 'bbps-status-setting' );
-	add_settings_field( '_bbps_status_permissions_moderator', __( 'Forum Moderator', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_permission_moderator', 'bbpress', 'bbps-status-setting' );
-
 	/* support forum misc settings */
 	add_settings_section( 'bbps-topic_status-setting', __( 'Support Froum Settings', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_support_forum_section', 'bbpress' );
-
-	register_setting  ( 'bbpress', '_bbps_status_permissions_urgent', 'intval' );
-	// each drop down option for selection
-	add_settings_field( '_bbps_status_permissions_urgent', __( 'Urgent Topic Status', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_urgent', 'bbpress', 'bbps-topic_status-setting' );
 
 	// the ability to move topics
  	add_settings_field( '_bbps_enable_topic_move', __( 'Move topics', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_move_topic', 'bbpress', 'bbps-topic_status-setting' );
  	register_setting  ( 'bbpress', '_bbps_enable_topic_move', 'intval');
-
- 	// the ability to assign a topic to a mod or admin
- 	add_settings_field( '_bbps_topic_assign', __( 'Assign topics', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_assign_topic', 'bbpress', 'bbps-topic_status-setting' );
- 	register_setting  ( 'bbpress', '_bbps_topic_assign', 'intval');
 
  	// ability for admin and moderators to claim topics
  	add_settings_field( '_bbps_claim_topic', __( 'Claim topics', 'edd-bbpress-dashboard' ), 'edd_bbp_admin_setting_callback_claim_topic', 'bbpress', 'bbps-topic_status-setting' );

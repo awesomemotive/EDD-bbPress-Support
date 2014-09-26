@@ -79,13 +79,11 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 			require_once EDD_BBP_DIR . 'includes/actions.php';
 			require_once EDD_BBP_DIR . 'includes/functions.php';
 			require_once EDD_BBP_DIR . 'includes/shortcodes.php';
-			require_once EDD_BBP_DIR . 'includes/option-functions.php';
 			require_once EDD_BBP_DIR . 'includes/support-functions.php';
 
 			if( is_admin() ) {
 				require_once EDD_BBP_DIR . 'includes/admin/functions.php';
 				require_once EDD_BBP_DIR . 'includes/admin/bbps-admin.php';
-				require_once EDD_BBP_DIR . 'includes/admin/bbps-settings.php';
 			}
 		}
 
@@ -100,9 +98,6 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 		private function hooks() {
 			// Initial activation
 			register_activation_hook( __FILE__, array( $this, 'activate' ) );
-
-			// Setup options
-			add_action( 'edd_bbp_activation', array( $this, 'add_options' ) );
 
 			// Tweak subforum paging
 			add_filter( 'bbp_after_forum_get_subforums_parse_args', array( $this, 'subforum_args' ) );
@@ -151,27 +146,6 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 		 */
 		function activate() {
 			do_action( 'edd_bbp_activation' );
-		}
-
-
-		/**
-		 * Add options
-		 *
-		 * @access		public
-		 * @since		2.1
-		 * @return		void
-		 */
-		function add_options() {
-			$options = apply_filters( 'edd_bbp_options', array(
-				'_bbps_default_status' => '1',
-				'_bbps_used_status' => '',
-				'_bbps_enable_topic_move' => '1',
-				'_bbps_status_permissions_urgent' => '',
-			) );
-
-			foreach( $options as $key => $value ) {
-				add_option( $key, $value );
-			}
 		}
 
 
