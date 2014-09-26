@@ -767,8 +767,8 @@ add_action( 'bbp_template_notices', 'edd_bbp_new_topic_notice');
 function edd_bbp_close_old_tickets_and_notify() {
 	
 	$args = array(
-		'post_type'  => 'topic',
-		'meta_query' => array(
+		'post_type'    => 'topic',
+		'meta_query'   => array(
 			'relation' => 'AND',
 			array(
 				'key'   => '_bbps_topic_status',
@@ -790,7 +790,7 @@ function edd_bbp_close_old_tickets_and_notify() {
 				'compare' => '>'
 			),
 		),
-		'posts_per_page' => 50,
+		'posts_per_page'      => 50,
 		'post_parent__not_in' => array( 318 )
 	);
 	$tickets = new WP_Query( $args );
@@ -803,7 +803,7 @@ function edd_bbp_close_old_tickets_and_notify() {
 
 		foreach( $tickets as $ticket ) {
 
-			$author_name = get_the_author_meta( 'display_name', $ticket->post_author );
+			$author_name  = get_the_author_meta( 'display_name', $ticket->post_author );
 			$author_email = get_the_author_meta( 'user_email', $ticket->post_author );
 
 			$to   = array();
