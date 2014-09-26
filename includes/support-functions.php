@@ -783,7 +783,12 @@ function edd_bbp_close_old_tickets_and_notify() {
 				'key'     => '_bbp_override_auto_close',
 				'compare' => 'NOT EXISTS',
 				'compare' => '1'
-			)
+			),
+			array(
+				'key'     => '_bbp_voice_count',
+				'value'   => '1',
+				'compare' => '>'
+			),
 		),
 		'posts_per_page' => 50,
 		'post_parent__not_in' => array( 318 )
