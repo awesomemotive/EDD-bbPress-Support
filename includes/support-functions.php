@@ -224,7 +224,7 @@ function edd_bbp_assign_topic_form() {
 
 					if ( ! empty( $all_users ) ) : ?>
 						<select name="bbps_assign_list" id="bbps_support_options">
-							<option value=""><?php _e( 'Unassigned', 'edd-bbpress-dashboard' ); ?></option>
+							<option value="">Unassigned</option>
 							<?php foreach ( $all_users as $user ) : ?>
 								<option value="<?php echo $user->ID; ?>"<?php selected( $user->ID, $claimed_user_id ); ?>><?php echo $user->user_firstname . ' ' . $user->user_lastname ; ?></option>
 							<?php endforeach; ?>
