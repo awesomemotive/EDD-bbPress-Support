@@ -403,7 +403,7 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 								</td>
 								<td><?php bbp_topic_freshness_link( get_the_ID() ); ?></td>
-								<td><?php echo ( !empty( $assignee_name ) ) ? $assignee_name : 'Unassigned'</td>
+								<td><?php echo ( !empty( $assignee_name ) ) ? $assignee_name : 'Unassigned'; ?></td>
 								<td><?php bbp_topic_post_count( get_the_ID() ); ?></td>
 							</tr>
 						<?php endwhile; ?>
