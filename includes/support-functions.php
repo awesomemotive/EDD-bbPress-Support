@@ -772,3 +772,64 @@ function edd_bbp_new_topic_notice() {
 		echo '<div class="bbp-template-notice"><p>' . __( 'Please search the forums for existing questions before posting a new one.', 'edd-bbpress-dashboard' ) . '</p></div>';
 }
 add_action( 'bbp_template_notices', 'edd_bbp_new_topic_notice');
+
+
+/**
+ * Find all tickets that are 10 days old, close them, and send notices to the customer
+ *
+ * @since		2.1
+ * @return		void
+ */
+function edd_bbp_close_old_tickets_and_notify() {
+	
+	$args = array(
+		'post_type'  => 'topic',
+		'meta_query' => array(
+			'relation' => 'AND',
+			array(
+				'key'   => '_bbps_topic_status',
+				'value' => '1',
+			),
+			array(
+				'key'     => '_bbp_last_active_time',
+				'value'   => strtotime( '-10 days' ),
+				'compare' => '<='
+			)
+		),
+		'posts_per_page' => 50,
+		'post_parent__not_in' => array( 318 )
+	);
+	$tickets = new WP_Query( $args );
+
+	if( $tickets ) {
+
+		$emails = EDD()->emails;
+		$emails->__set( 'from_address', 'no-reply@easydigitaldownloads.com' );
+		$emails->heading = 'Support Alert';
+
+		foreach( $tickets as $ticket ) {
+
+			$author_name = get_the_author_meta( 'display_name', $ticket->post_author );
+			$author_email = get_the_author_meta( 'user_email', $ticket->post_author );
+
+			$to   = array();
+			$to[] = $author_email;
+			$to[] = 'pippin@pippinsplugins.com';
+
+			$message  = "Hello $author_name,\n\n";
+			$message .= "This email is to alert you that your ticket titled '$ticket->post_title' at https://easydigitaldownloads.com has been automatically closed due to inactivity.\n\n";
+			$message .= "If you believe this is in error or you are still needing assistance with this issue, simply reply to the ticket again and let us know: \n\n";
+			$message .= bbp_get_topic_permalink( $ticket->ID );
+
+			$emails->send( $to, 'Support Ticket Closed', $message );
+
+			update_post_meta( $ticket->ID, '_bbps_topic_status', '2' );
+
+		}
+
+		$emails->__set( 'from_address', false );
+
+	}
+
+}
+add_action( 'edd_daily_scheduled_events', 'edd_bbp_close_old_tickets_and_notify');
