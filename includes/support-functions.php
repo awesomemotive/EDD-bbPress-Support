@@ -41,7 +41,7 @@ function edd_bbp_get_all_mods( $admins_only = false ) {
  * @return		string $status The status of the topic
  */
 function edd_bbp_get_topic_status( $topic_id ) {
-	$default = get_option( '_bbps_default_status' );
+	$default = 1;
 
 	$status = get_post_meta( $topic_id, '_bbps_topic_status', true );
 
@@ -75,9 +75,8 @@ function edd_bbp_get_topic_status( $topic_id ) {
  * @return		void
  */
 function edd_bbp_generate_status_options( $topic_id ) {
-	$dropdown_options = get_option( '_bbps_used_status' );
 	$status = get_post_meta( $topic_id, '_bbps_topic_status', true );
-	$default = get_option( '_bbps_default_status' );
+	$default = 1;
 
 	// Only use the default value as selected if the topic doesnt ahve a status set
 	if ( $status )
@@ -90,9 +89,9 @@ function edd_bbp_generate_status_options( $topic_id ) {
 		<select name="bbps_support_option" id="bbps_support_options">
 		<?php
 			// we only want to display the options the user has selected. the long term goal is to let users add their own forum statuses
-			if ( isset( $dropdown_options['res'] ) ) { echo '<option value="1" ' . selected( $value, 1 ) . '>' . __( 'Not Resolved', 'edd-bbpress-dashboard' ) . '</option>'; }
-			if ( isset( $dropdown_options['notres'] ) ) { echo '<option value="2" ' . selected( $value, 2 ) . '>' . __( 'Resolved', 'edd-bbpress-dashboard' ) . '</option>'; }
-			if ( isset( $dropdown_options['notsup'] ) ) { echo '<option value="3" ' . selected( $value, 3 ) . '>' . __( 'Not a Support Question', 'edd-bbpress-dashboard' ) . '</option>'; }
+			echo '<option value="1" ' . selected( $value, 1 ) . '>' . __( 'Not Resolved', 'edd-bbpress-dashboard' ) . '</option>';
+			echo '<option value="2" ' . selected( $value, 2 ) . '>' . __( 'Resolved', 'edd-bbpress-dashboard' ) . '</option>';
+			echo '<option value="3" ' . selected( $value, 3 ) . '>' . __( 'Not a Support Question', 'edd-bbpress-dashboard' ) . '</option>';
 		?>
 		</select>
 		<input type="submit" value="Update" name="bbps_support_submit" />
@@ -155,7 +154,7 @@ function edd_bbp_count_tickets_of_mod( $mod_id = 0 ) {
  * @return		void
  */
 function edd_bbp_assign_topic_form() {
-	if ( get_option( '_bbps_topic_assign' ) == 1 && current_user_can( 'moderate' ) ) {
+	if ( current_user_can( 'moderate' ) ) {
 		$topic_id = bbp_get_topic_id();
 		$topic_assigned = edd_bbp_get_topic_assignee_id( $topic_id );
 
@@ -287,7 +286,7 @@ EMAILMSG;
  * @return		void
  */
 function edd_bbp_ping_assignee_button() {
-	if ( get_option( '_bbps_topic_assign' ) == 1 && edd_bbp_is_support_forum( bbp_get_forum_id() ) ) {
+	if ( edd_bbp_is_support_forum( bbp_get_forum_id() ) ) {
 		$topic_id = bbp_get_topic_id();
 		$topic_assigned = edd_bbp_get_topic_assignee_id( $topic_id );
 		$status = edd_bbp_get_topic_status( $topic_id );
