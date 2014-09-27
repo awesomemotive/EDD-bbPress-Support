@@ -193,10 +193,6 @@ function edd_bbp_count_tickets_of_mod( $mod_id = 0 ) {
  * @return		void
  */
 function edd_bbp_assign_topic_form() {
-	if ( ! current_user_can( 'moderate' ) ) {
-		return;
-	}
-
 	$topic_id = bbp_get_topic_id();
 	$forum_id = bbp_get_forum_id();
 	$topic_assigned = edd_bbp_get_topic_assignee_id( $topic_id );
@@ -205,7 +201,17 @@ function edd_bbp_assign_topic_form() {
 	get_currentuserinfo();
 	$current_user_id = $current_user->ID;
 
-	$status = get_post_meta( $topic_id, '_bbps_topic_status', true );
+	$status       = get_post_meta( $topic_id, '_bbps_topic_status', true );
+	$status_label = $status == '1' ? 'Not resolved' : 'Resolved';
+
+	if ( ! current_user_can( 'moderate' ) ) {
+		
+?>		
+	<div class="moderator-tools clearfix">This topic is: </div>
+<?php
+		return;
+	}
+
 
 
 	?>
