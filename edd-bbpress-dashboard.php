@@ -99,6 +99,7 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 
 			// Tweak subforum paging
 			add_filter( 'bbp_after_forum_get_subforums_parse_args', array( $this, 'subforum_args' ) );
+			add_filter( 'bbp_topic_admin_links', array( $this, 'admin_links' ), 10, 2 );
 			add_filter( 'bbp_reply_admin_links', array( $this, 'admin_links' ), 10, 2 );
 		}
 
@@ -138,6 +139,12 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 		 * @return		array $id The Topic or Reply ID
 		 */
 		function admin_links( $links, $id ) {
+
+			if( isset( $links['stick'] ) ) {
+
+				unset( $links['stick'] );
+				
+			}
 
 			unset( $links['reply'] );
 
