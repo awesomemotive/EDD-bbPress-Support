@@ -253,7 +253,6 @@ function edd_bbp_assign_topic_form() {
 				</form>
 
 				<form id="bbps-topic-status" name="bbps_support" action="" method="post">
-					<label for="bbps_support_options">This topic is: </label>
 					<select name="bbps_support_option" id="bbps_support_options">
 						<option value="1"<?php selected( $value, 1 ) ; ?>>Not Resolved</option>
 						<option value="2"<?php selected( $value, 2 ) ; ?>>Resolved</option>
