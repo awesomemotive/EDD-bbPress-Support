@@ -835,7 +835,7 @@ function edd_bbp_close_old_tickets_and_notify() {
 			$to[] = 'pippin@pippinsplugins.com';
 
 			$message  = "Hello $author_name,\n\n";
-			$message .= "This email is to alert you that your ticket titled '$ticket->post_title' at https://easydigitaldownloads.com has been automatically closed due to inactivity.\n\n";
+			$message .= "This email is to alert you that your ticket titled {$ticket->post_title} at https://easydigitaldownloads.com has been automatically closed due to inactivity.\n\n";
 			$message .= "If you believe this is in error or you are still needing assistance with this issue, simply reply to the ticket again and let us know: \n\n";
 			$message .= bbp_get_topic_permalink( $ticket->ID );
 
