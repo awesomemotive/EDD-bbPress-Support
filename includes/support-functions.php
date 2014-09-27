@@ -814,7 +814,7 @@ function edd_bbp_close_old_tickets_and_notify() {
 				'compare' => '>' // Only tickets with at least two voices (one mod and one user normally)
 			),
 		),
-		'posts_per_page'      => 50,
+		'posts_per_page'      => 1,
 		'post_parent__not_in' => array( 318 ) // No feature requests
 	);
 	$tickets = new WP_Query( $args );
