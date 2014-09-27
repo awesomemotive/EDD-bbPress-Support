@@ -204,6 +204,10 @@ function edd_bbp_assign_topic_form() {
 	global $current_user;
 	get_currentuserinfo();
 	$current_user_id = $current_user->ID;
+
+	$status = get_post_meta( $topic_id, '_bbps_topic_status', true );
+
+
 	?>
 
 	<div class="moderator-tools clearfix">
@@ -246,6 +250,18 @@ function edd_bbp_assign_topic_form() {
 					<input type="hidden" value="bbps_ping_topic" name="bbps_action"/>
 					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
 					<input type="hidden" value="<?php echo $forum_id ?>" name="bbp_old_forum_id" />
+				</form>
+
+				<form id="bbps-topic-status" name="bbps_support" action="" method="post">
+					<label for="bbps_support_options">This topic is: </label>
+					<select name="bbps_support_option" id="bbps_support_options">
+						<option value="1"<?php selected( $value, 1 ) ; ?>>Not Resolved</option>
+						<option value="2"<?php selected( $value, 2 ) ; ?>>Resolved</option>
+						<option value="3"<?php selected( $value, 3 ) ; ?>>Not a Support Question</option>
+					</select>
+					<input type="submit" value="Update" name="bbps_support_submit" />
+					<input type="hidden" value="bbps_update_status" name="bbps_action"/>
+					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
 				</form>
 
 				<?php if( ! get_post_meta( $topic_id, '_bbp_override_auto_close', true ) ) : ?>
