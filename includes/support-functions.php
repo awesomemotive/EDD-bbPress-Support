@@ -269,9 +269,9 @@ function edd_bbp_assign_topic_form() {
 				<div class="clearfix"></div>
 				<form id="bbps-topic-status" name="bbps_support" action="" method="post">
 					<select name="bbps_support_option" id="bbps_support_options">
-						<option value="1"<?php selected( $value, 1 ) ; ?>>Not Resolved</option>
-						<option value="2"<?php selected( $value, 2 ) ; ?>>Resolved</option>
-						<option value="3"<?php selected( $value, 3 ) ; ?>>Not a Support Question</option>
+						<option value="1"<?php selected( $status, 1 ) ; ?>>Not Resolved</option>
+						<option value="2"<?php selected( $status, 2 ) ; ?>>Resolved</option>
+						<option value="3"<?php selected( $status, 3 ) ; ?>>Not a Support Question</option>
 					</select>
 					<input type="submit" value="Update" name="bbps_support_submit" />
 					<input type="hidden" value="bbps_update_status" name="bbps_action"/>
