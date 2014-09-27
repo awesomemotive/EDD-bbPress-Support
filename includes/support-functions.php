@@ -248,11 +248,13 @@ function edd_bbp_assign_topic_form() {
 					<input type="hidden" value="<?php echo $forum_id ?>" name="bbp_old_forum_id" />
 				</form>
 
+				<?php if( ! get_post_meta( $topic_id, '_bbp_override_auto_close', true ) ) : ?>
 				<form id="bbps-topic-keep-open" name="bbps_support_topic_keep_open" action="" method="post">
 					<input type="submit" class="edd-submit button" value="Keep Open"title="This prevents this topic from beeing closed automatically" name="bbps_topic_keep_open_submit" />
 					<input type="hidden" value="bbps_ping_topic" name="bbps_action"/>
 					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
 				</form>
+				<?php endif; ?>
 
 			</div>
 		</div><!-- /#bbps_support_forum_options -->
