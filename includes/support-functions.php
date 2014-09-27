@@ -800,13 +800,13 @@ function edd_bbp_close_old_tickets_and_notify() {
 			),
 			array(
 				'key'     => '_bbp_last_active_time',
-				'value'   => strtotime( '-10 days' ),
-				'compare' => '<=' // Tickets older than ten days
+				'value'   => date( 'Y-n-d H:i:s', strtotime( '-10 days' ) ),
+				'compare' => '<=', // Tickets older than ten days
+				'type'    => 'DATETIME'
 			),
 			array(
 				'key'     => '_bbp_override_auto_close',
 				'compare' => 'NOT EXISTS',
-				'compare' => '1' // Only tickets not forcibly kept open
 			),
 			array(
 				'key'     => '_bbp_voice_count',
@@ -814,10 +814,10 @@ function edd_bbp_close_old_tickets_and_notify() {
 				'compare' => '>' // Only tickets with at least two voices (one mod and one user normally)
 			),
 		),
-		'posts_per_page'      => 1,
+		'posts_per_page'      => 50,
 		'post_parent__not_in' => array( 318 ) // No feature requests
 	);
-	$tickets = new WP_Query( $args );
+	$tickets = get_posts( $args );
 
 	if( $tickets ) {
 
