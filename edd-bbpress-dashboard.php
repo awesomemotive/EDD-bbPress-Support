@@ -99,7 +99,7 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 
 			// Tweak subforum paging
 			add_filter( 'bbp_after_forum_get_subforums_parse_args', array( $this, 'subforum_args' ) );
-			add_filter( 'bbp_get_reply_admin_links', array( $this, 'admin_links' ), 10, 2 );
+			add_filter( 'bbp_reply_admin_links', array( $this, 'admin_links' ), 10, 2 );
 		}
 
 
