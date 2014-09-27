@@ -202,7 +202,7 @@ function edd_bbp_assign_topic_form() {
 	$current_user_id = $current_user->ID;
 
 	$status       = get_post_meta( $topic_id, '_bbps_topic_status', true );
-	$status_label = $status == '1' ? 'Not resolved' : 'Resolved';
+	$status_label = $status == '1' ? 'not resolved' : 'resolved';
 
 	if ( ! current_user_can( 'moderate' ) ) {
 		
