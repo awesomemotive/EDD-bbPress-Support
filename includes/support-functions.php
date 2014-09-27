@@ -207,7 +207,7 @@ function edd_bbp_assign_topic_form() {
 	if ( ! current_user_can( 'moderate' ) ) {
 		
 ?>		
-	<div class="moderator-tools clearfix">This topic is: </div>
+	<div class="moderator-tools clearfix">This topic is: <?php echo $status_label; ?></div>
 <?php
 		return;
 	}
