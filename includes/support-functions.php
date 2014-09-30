@@ -853,3 +853,26 @@ function edd_bbp_close_old_tickets_and_notify() {
 
 }
 add_action( 'edd_daily_scheduled_events', 'edd_bbp_close_old_tickets_and_notify');
+
+/**
+ * Emails a moderator a reminder when the Ping Assignee button is clicked
+ *
+ * @since		1.0
+ * @return		void
+ */
+function edd_bbp_ping_topic_assignee() {
+	$topic_id = absint( $_POST['bbps_topic_id'] );
+	$user_id  = get_post_meta( $topic_id, 'bbps_topic_assigned', true );
+
+	if ( $user_id ) {
+		$userinfo   = get_userdata( $user_id );
+		$user_email = $userinfo->user_email;
+		$post_link  = bbp_get_topic_permalink( $topic_id );
+
+		$message = <<< EMAILMSG
+		A ticket that has been assigned to you is in need of attention.
+		$post_link
+EMAILMSG;
+		wp_mail( $user_email, 'EDD Ticket Ping', $message );
+	}
+}
