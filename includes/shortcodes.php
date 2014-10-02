@@ -457,7 +457,7 @@ function edd_bbp_support_tickets( $atts, $content = null ) {
 			?>
 
 			<li>
-				<span class="status <?php echo sanitize_key( $status ); ?>"><?php echo $status; ?>:</span>&nbps;
+				<span class="status <?php echo sanitize_key( $status ); ?>"><?php echo $status; ?></span>&nbsp;&ndash;&nbsp;
 				<a href="<?php bbp_topic_permalink( $ticket->ID ); ?>"><?php bbp_topic_title( $ticket->ID ); ?></a>
 			</li>
 
