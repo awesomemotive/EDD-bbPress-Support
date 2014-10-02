@@ -439,7 +439,7 @@ add_shortcode( 'bbps_dashboard', 'edd_bbp_dashboard_shortcode' );
 
 function edd_bbp_support_tickets( $atts, $content = null ) {
 
-	$tickets = bbp_get_user_topics_started();
+	$tickets = bbp_get_user_topics_started( get_current_user_id() );
 
 	if( $tickets ) :
 ?>
