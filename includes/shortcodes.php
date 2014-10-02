@@ -435,3 +435,38 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 	return ob_get_clean();
 }
 add_shortcode( 'bbps_dashboard', 'edd_bbp_dashboard_shortcode' );
+
+
+function edd_bbp_support_tickets( $atts, $content = null ) {
+
+	$tickets = bbp_get_user_topics_started();
+
+	if( $tickets ) :
+?>
+		<ul id="edd-support-tickets">
+
+		<?php foreach( $tickets as $ticket ) : ?>
+
+			<?php
+			$status = get_post_meta( $ticket->ID, '_bbps_topic_status', true );
+			$status = 1 == $status ? 'Not Resolved' : 'Resolved';
+			?>
+
+			<li>
+				<span class="status <?php echo sanitize_key( $status ); ?>"><?php echo $status; ?>:</span>&nbps;
+				<a href="<?php bbp_topic_permalink( $ticket->ID ); ?>"><?php bbp_topic_title( $ticket->ID ); ?></a>
+			</li>
+
+		<?php endforeach; ?>
+
+		</ul>
+<?php
+
+	else :
+?>
+	<p class="edd-support-no-tickets">You have not opened any support tickets. Need help? <a href="<?php echo home_url( '/support' ); ?>">Open a ticket in the forums.</a></p>
+<?php
+	endif;
+
+}
+add_shortcode( 'support_tickets', 'edd_bbp_support_tickets' );
