@@ -876,3 +876,18 @@ EMAILMSG;
 		wp_mail( $user_email, 'EDD Ticket Ping', $message );
 	}
 }
+
+function edd_bbp_common_issues() {
+?>
+	<div id="edd-bbp-common-issues">
+		<p>Is your ticket about one of these issues?</p>
+		<select>
+			<option value="0">Select from common issues . . . </option>
+			<option value="pending">Payments not being marked as complete</option>
+			<option value="emails">Email receipts not being sent to customers</option>
+			<option value="fes-upload">File upload error in Frontend Submissions</option>
+		</select>
+	</div>
+<?php
+}
+add_action( 'bbp_theme_before_topic_form_notices', 'edd_bbp_common_issues' );
