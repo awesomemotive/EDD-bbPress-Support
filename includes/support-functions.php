@@ -879,14 +879,36 @@ EMAILMSG;
 
 function edd_bbp_common_issues() {
 ?>
+	<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$('#edd-common-ticket-answers').next('div').hide();
+	});
+	</script>
 	<div id="edd-bbp-common-issues">
 		<p>Is your ticket about one of these issues?</p>
 		<select>
 			<option value="0">Select from common issues . . . </option>
+			<option value="install-extention">I do not know how to install the extension I purchased</option>
 			<option value="pending">Payments not being marked as complete</option>
 			<option value="emails">Email receipts not being sent to customers</option>
 			<option value="fes-upload">File upload error in Frontend Submissions</option>
+			<option value="yes">Yes but the documentation did not solve my issue</option>
+			<option value="no">No, I need to create a new ticket</option>
 		</select>
+		<div id="edd-common-ticket-answers">
+			<div id="edd-common-issue-pending" class="bbp-template-notice">
+				<p>Extensions are installed in the same way that standard WordPress plugins are installed. See <a href="https://easydigitaldownloads.com/docs/how-to-install-an-extension/">this FAQ for more information</a>.</p>
+			</div>
+			<div id="edd-common-issue-pending" class="bbp-template-notice">
+				<p>Payments not getting marked as complete can be an effect of numerous causes, including conflicting plugins and improper merchant account configuration. See <a href="https://easydigitaldownloads.com/docs/payments-stay-pending/">this FAQ for more information</a>.</p>
+			</div>
+			<div id="edd-common-issue-emails" class="bbp-template-notice">
+				<p>If your emails are not getting delivered, it could be due to a plugin conflict or common server issue. See <a href="https://easydigitaldownloads.com/docs/email-receipts-sent/">this FAQ for more information</a>.</p>
+			</div>
+			<div id="edd-common-issue-fes-upload" class="bbp-template-notice">
+				<p>Help text here. See <a href="https://easydigitaldownloads.com/docs/payments-stay-pending/">this FAQ for more information</a>.</p>
+			</div>
+		</div>
 	</div>
 <?php
 }
