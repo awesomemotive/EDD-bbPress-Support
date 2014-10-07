@@ -881,11 +881,11 @@ function edd_bbp_common_issues() {
 ?>
 	<script type="text/javascript">
 	jQuery(document).ready(function($) {
-		$('#edd-bbp-common-issues').next('div').hide();
+		$('.bbp-template-notice:last').next('div').hide();
 		$('#edd-bbp-common-issues-select').change(function() {
 			var val = $(this).val();
 			$('#edd-common-ticket-answers div').hide();
-			$('#edd-common-ticket-answers#edd-common-issue-' + val ).show();
+			$('#edd-common-ticket-answers #edd-common-issue-' + val ).show();
 			if( val == 'no' || val == 'yes' ) {
 				$('#edd-bbp-common-issues').next('div').show();
 			}
