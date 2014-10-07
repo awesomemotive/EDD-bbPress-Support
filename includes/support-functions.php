@@ -903,13 +903,15 @@ function edd_bbp_common_issues() {
 			<option value="pending">Payments not being marked as complete</option>
 			<option value="emails">Email receipts not being sent to customers</option>
 			<option value="fes-upload">File upload error in Frontend Submissions</option>
-		</select><br/>
-		<label for="edd-bbp-docs-no-help">
-			<input type="radio" id="edd-bbp-docs-no-help" name="edd-bbp-docs-help" value="1"/> I read the documentation but it did not help
-		</label>
-		<label for="edd-bbp-no-docs">
-			<input type="radio" id="edd-bbp-no-docs" name="edd-bbp-docs-help" value="2"/> I did not find any documentation about my issue
-		</label>
+		</select>
+		<div>
+			<label for="edd-bbp-docs-no-help">
+				<input type="radio" id="edd-bbp-docs-no-help" name="edd-bbp-docs-help" value="1"/> I read the documentation but it did not help
+			</label>
+			<label for="edd-bbp-no-docs">
+				<input type="radio" id="edd-bbp-no-docs" name="edd-bbp-docs-help" value="2"/> I did not find any documentation about my issue
+			</label>
+		</div>
 		<div id="edd-common-ticket-answers">
 			<div id="edd-common-issue-install-extension" class="bbp-template-notice" style="display:none;">
 				<p>Extensions are installed in the same way that standard WordPress plugins are installed. See <a href="https://easydigitaldownloads.com/docs/how-to-install-an-extension/">this FAQ for more information</a>.</p>
