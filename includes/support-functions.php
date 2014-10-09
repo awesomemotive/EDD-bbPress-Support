@@ -929,6 +929,11 @@ function edd_bbp_common_issues() {
 					<input type="radio" id="edd-bbp-no-docs" name="edd-bbp-docs-help" value="2"/> I did not find any documentation about my issue
 				</label>
 			</div>
+			<div>
+				<label for="edd-bbp-no-docs">
+					<input type="radio" id="edd-bbp-no-docs" name="edd-bbp-docs-help" value="3"/> I did not read the documentation
+				</label>
+			</div>
 		</div>
 	</div>
 <?php
@@ -956,3 +961,23 @@ function edd_bbp_store_docs_helpful_selection( $topic_id = 0, $forum_id = 0, $an
 
 }
 add_action( 'bbp_new_topic', 'edd_bbp_store_docs_helpful_selection', 20, 4 );
+
+function edd_bbp_show_docs_helpful_selection() {
+
+	$helpful  = get_post_meta( bbp_get_topic_id(), '_edd_bbp_docs_helpful', true );
+	if( empty( $helpful ) ) {
+		return;
+	}
+?>
+	<div class="edd-bbp-docs-helpful">
+		<?php if( 1 == $helpful ) : ?>
+			Docs were not helpful
+		<?php elseif( 2 == $helpful ) : ?>
+			Did not find relevant docs
+		<?php else : ?>
+			Did not read docs
+		<?php endif; ?>
+	</div>
+<?php
+}
+add_action( 'bbp_theme_after_reply_content', 'edd_bbp_show_docs_helpful_selection' );
