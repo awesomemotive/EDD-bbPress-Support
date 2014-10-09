@@ -916,7 +916,7 @@ function edd_bbp_common_issues() {
 				<p>If your emails are not getting delivered, it could be due to a plugin conflict or common server issue. See <a href="https://easydigitaldownloads.com/docs/email-receipts-sent/">this FAQ for more information</a>.</p>
 			</div>
 			<div id="edd-common-issue-fes-upload" class="bbp-template-notice" style="display:none;">
-				<p>Help text here. See <a href="https://easydigitaldownloads.com/docs/payments-stay-pending/">this FAQ for more information</a>.</p>
+				<p>Upload errors can happen for a number of reasons and are usually the result of a conflicting plugin. See <a href="https://easydigitaldownloads.com/docs/fes-faqs/">this FAQ for more information</a>.</p>
 			</div>
 		</div>
 		<div>
