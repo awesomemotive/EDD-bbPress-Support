@@ -886,9 +886,6 @@ function edd_bbp_common_issues() {
 			var val = $(this).val();
 			$('#edd-common-ticket-answers div').hide();
 			$('#edd-common-ticket-answers #edd-common-issue-' + val ).show();
-			if( val == 'no' || val == 'yes' ) {
-				$('#bbp-new-topic-fields').show();
-			}
 		});
 		$('input[name="edd-bbp-docs-help"]').change(function() {
 			if( $(this).val() == '3' ) {
