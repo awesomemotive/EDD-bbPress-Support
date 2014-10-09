@@ -891,7 +891,12 @@ function edd_bbp_common_issues() {
 			}
 		});
 		$('input[name="edd-bbp-docs-help"]').change(function() {
-			$('#bbp-new-topic-fields').show();
+			if( $(this).val() == '3' ) {
+				$('#bbp-new-topic-fields').hide();
+				$('#edd-bbp-google-search').hide();
+			} else {
+				$('#bbp-new-topic-fields').show();
+			}
 		});
 	});
 	</script>
@@ -923,7 +928,7 @@ function edd_bbp_common_issues() {
 			<p>Have you consulted the documentation?</p>
 			<div>
 				<label for="edd-bbp-docs-no-help">
-					<input type="radio" id="edd-bbp-docs-no-help" name="edd-bbp-docs-help" value="1"/> I read the documentation but it did not help
+					<input type="radio" id="edd-bbp-docs-no-help" name="edd-bbp-docs-help" value="1"/> I read the documentation but it did not help or the doc's aren't applicable to my situation
 				</label>
 			</div>
 			<div>
@@ -936,6 +941,21 @@ function edd_bbp_common_issues() {
 					<input type="radio" id="edd-bbp-no-docs" name="edd-bbp-docs-help" value="2"/> I did not find any documentation about my issue
 				</label>
 			</div>
+		</div>
+		<div id="edd-bbp-google-search" style="display:none">
+			<script>
+			  (function() {
+			    var cx = '013364375160530833496:u0gpdnp1z-8';
+			    var gcse = document.createElement('script');
+			    gcse.type = 'text/javascript';
+			    gcse.async = true;
+			    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+			        '//www.google.com/cse/cse.js?cx=' + cx;
+			    var s = document.getElementsByTagName('script')[0];
+			    s.parentNode.insertBefore(gcse, s);
+			  })();
+			</script>
+			<gcse:search></gcse:search>
 		</div>
 	</div>
 <?php
