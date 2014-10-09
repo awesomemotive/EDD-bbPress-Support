@@ -895,6 +895,7 @@ function edd_bbp_common_issues() {
 				$('#bbp-new-topic-fields').hide();
 				$('#edd-bbp-google-search').show();
 			} else {
+				$('#edd-bbp-google-search').hide();
 				$('#bbp-new-topic-fields').show();
 			}
 		});
