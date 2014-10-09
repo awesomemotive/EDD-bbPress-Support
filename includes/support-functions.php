@@ -927,13 +927,13 @@ function edd_bbp_common_issues() {
 				</label>
 			</div>
 			<div>
-				<label for="edd-bbp-no-docs">
-					<input type="radio" id="edd-bbp-no-docs" name="edd-bbp-docs-help" value="2"/> I did not find any documentation about my issue
+				<label for="edd-bbp-no-read-docs">
+					<input type="radio" id="edd-bbp-no-read-docs" name="edd-bbp-docs-help" value="3"/> I did not read the documentation
 				</label>
 			</div>
 			<div>
-				<label for="edd-bbp-no-read-docs">
-					<input type="radio" id="edd-bbp-no-read-docs" name="edd-bbp-docs-help" value="3"/> I did not read the documentation
+				<label for="edd-bbp-no-docs">
+					<input type="radio" id="edd-bbp-no-docs" name="edd-bbp-docs-help" value="2"/> I did not find any documentation about my issue
 				</label>
 			</div>
 		</div>
