@@ -893,7 +893,7 @@ function edd_bbp_common_issues() {
 		$('input[name="edd-bbp-docs-help"]').change(function() {
 			if( $(this).val() == '3' ) {
 				$('#bbp-new-topic-fields').hide();
-				$('#edd-bbp-google-search').hide();
+				$('#edd-bbp-google-search').show();
 			} else {
 				$('#bbp-new-topic-fields').show();
 			}
