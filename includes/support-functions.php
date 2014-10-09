@@ -768,20 +768,6 @@ function edd_bbp_display_connected_docs() {
 add_action( 'bbp_template_before_single_forum', 'edd_bbp_display_connected_docs' );
 add_action( 'edd_bbp_sidebar', 'edd_bbp_display_connected_docs' );
 
-
-/**
- * Display forum notices
- *
- * @since		1.0.0
- * @return		void
- */
-function edd_bbp_new_topic_notice() {
-	if( bbp_is_single_forum() )
-		echo '<div class="bbp-template-notice"><p>Please search the forums for existing questions before posting a new one.</p></div>';
-}
-add_action( 'bbp_template_notices', 'edd_bbp_new_topic_notice');
-
-
 /**
  * Find all tickets that are 10 days old, close them, and send notices to the customer
  *
