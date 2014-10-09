@@ -971,14 +971,17 @@ add_action( 'bbp_new_topic', 'edd_bbp_store_docs_helpful_selection', 20, 4 );
 
 function edd_bbp_show_docs_helpful_selection() {
 
+	static $edd_bbp_doc_notice;
+
 	$helpful  = get_post_meta( bbp_get_topic_id(), '_edd_bbp_docs_helpful', true );
 	if( empty( $helpful ) || ! current_user_can( 'moderate' ) ) {
 		return;
 	}
 
-	if( ! bbp_is_topic() ) {
+	if( $edd_bbp_doc_notice ) {
 		return;
 	}
+
 ?>
 	<div class="bbp-template-notice edd-bbp-docs-helpful">
 		<p>
@@ -992,5 +995,6 @@ function edd_bbp_show_docs_helpful_selection() {
 		</p>
 	</div>
 <?php
+	$edd_bbp_doc_notice = true;
 }
 add_action( 'bbp_theme_after_reply_content', 'edd_bbp_show_docs_helpful_selection' );
