@@ -967,7 +967,7 @@ add_action( 'bbp_new_topic', 'edd_bbp_store_docs_helpful_selection', 20, 4 );
 function edd_bbp_show_docs_helpful_selection() {
 
 	$helpful  = get_post_meta( bbp_get_topic_id(), '_edd_bbp_docs_helpful', true );
-	if( empty( $helpful ) ) {
+	if( empty( $helpful ) || ! current_user_can( 'moderate' ) ) {
 		return;
 	}
 ?>
