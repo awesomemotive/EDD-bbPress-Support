@@ -903,6 +903,7 @@ function edd_bbp_common_issues() {
 			<option value="pending">Payments not being marked as complete</option>
 			<option value="emails">Email receipts not being sent to customers</option>
 			<option value="fes-upload">File upload error in Frontend Submissions</option>
+			<option value="no">No, I need to open a new ticket</option>
 		</select>
 		<div id="edd-common-ticket-answers">
 			<div id="edd-common-issue-install-extension" class="bbp-template-notice" style="display:none;">
@@ -919,6 +920,7 @@ function edd_bbp_common_issues() {
 			</div>
 		</div>
 		<div>
+			<p>Have you consulted the documentation?</p>
 			<div>
 				<label for="edd-bbp-docs-no-help">
 					<input type="radio" id="edd-bbp-docs-no-help" name="edd-bbp-docs-help" value="1"/> I read the documentation but it did not help
@@ -930,8 +932,8 @@ function edd_bbp_common_issues() {
 				</label>
 			</div>
 			<div>
-				<label for="edd-bbp-no-docs">
-					<input type="radio" id="edd-bbp-no-docs" name="edd-bbp-docs-help" value="3"/> I did not read the documentation
+				<label for="edd-bbp-no-read-docs">
+					<input type="radio" id="edd-bbp-no-read-docs" name="edd-bbp-docs-help" value="3"/> I did not read the documentation
 				</label>
 			</div>
 		</div>
