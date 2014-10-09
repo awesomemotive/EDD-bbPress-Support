@@ -971,7 +971,8 @@ function edd_bbp_show_docs_helpful_selection() {
 		return;
 	}
 ?>
-	<div class="edd-bbp-docs-helpful">
+	<div class="bbp-template-notice edd-bbp-docs-helpful">
+		<p>
 		<?php if( 1 == $helpful ) : ?>
 			Docs were not helpful
 		<?php elseif( 2 == $helpful ) : ?>
@@ -979,6 +980,7 @@ function edd_bbp_show_docs_helpful_selection() {
 		<?php else : ?>
 			Did not read docs
 		<?php endif; ?>
+		</p>
 	</div>
 <?php
 }
