@@ -893,6 +893,7 @@ function edd_bbp_common_issues() {
 			<option value="emails">Email receipts not being sent to customers</option>
 			<option value="fes-upload">File upload error in Frontend Submissions</option>
 			<option value="no">No, I need to open a new ticket</option>
+			<option value="yes">Yes, but I still need to open a new ticket</option>
 		</select>
 		<div id="edd-common-ticket-answers">
 			<div id="edd-common-issue-install-extension" class="bbp-template-notice" style="display:none;">
