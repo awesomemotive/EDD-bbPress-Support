@@ -928,7 +928,7 @@ function edd_bbp_common_issues() {
 			<p>Have you consulted the documentation?</p>
 			<div>
 				<label for="edd-bbp-docs-no-help">
-					<input type="radio" id="edd-bbp-docs-no-help" name="edd-bbp-docs-help" value="1"/> I read the documentation but it did not help or the doc's aren't applicable to my situation
+					<input type="radio" id="edd-bbp-docs-no-help" name="edd-bbp-docs-help" value="1"/> I read the documentation but it did not help or the docs aren't applicable to my situation
 				</label>
 			</div>
 			<div>
