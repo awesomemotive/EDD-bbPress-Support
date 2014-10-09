@@ -934,3 +934,25 @@ function edd_bbp_common_issues() {
 <?php
 }
 add_action( 'bbp_theme_before_topic_form_notices', 'edd_bbp_common_issues' );
+
+/**
+ * Store docs were helpful selection
+ *
+ * @since		1.0.0
+ * @param		int $topic_id The ID of the topic this belongs to
+ * @param		int $forum_id The ID of the parent forum
+ * @param		array $anonymous_data
+ * @param		int $topic_author The author of this topic
+ * @return		void
+ */
+function edd_bbp_store_docs_helpful_selection( $topic_id = 0, $forum_id = 0, $anonymous_data = false, $topic_author = 0 ) {
+
+	if( empty( $_POST['edd-bbp-docs-help'] ) ) {
+		return;
+	}
+
+	$helpful = absint( $_POST['edd-bbp-docs-help'] );
+	add_post_meta( $topic_id, '_edd_bbp_docs_helpful', $helpful );
+
+}
+add_action( 'bbp_new_topic', 'edd_bbp_store_docs_helpful_selection', 20, 4 );
