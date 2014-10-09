@@ -975,6 +975,10 @@ function edd_bbp_show_docs_helpful_selection() {
 	if( empty( $helpful ) || ! current_user_can( 'moderate' ) ) {
 		return;
 	}
+
+	if( ! bbp_is_topic() ) {
+		return;
+	}
 ?>
 	<div class="bbp-template-notice edd-bbp-docs-helpful">
 		<p>
