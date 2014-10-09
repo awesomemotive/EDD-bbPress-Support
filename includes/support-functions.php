@@ -941,6 +941,7 @@ function edd_bbp_common_issues() {
 			</div>
 		</div>
 		<div id="edd-bbp-google-search" style="display:none">
+			<p>Enter keywords to search for documentation or similar tickets to your issue.</p>
 			<script>
 			  (function() {
 			    var cx = '013364375160530833496:u0gpdnp1z-8';
