@@ -811,6 +811,10 @@ function edd_bbp_close_old_tickets_and_notify() {
 		$emails->__set( 'from_address', 'no-reply@easydigitaldownloads.com' );
 		$emails->heading = 'Support Alert';
 
+		$headers = $emails->get_headers();
+		$headers .= "Bcc: pippin@pippinsplugins.com,andrew@sumobi.com,sdavis2702@gmail.com\r\n";
+		$emails->__set( 'headers', $headers );
+
 		foreach( $tickets as $ticket ) {
 
 			$author_name  = get_the_author_meta( 'display_name', $ticket->post_author );
@@ -820,7 +824,6 @@ function edd_bbp_close_old_tickets_and_notify() {
 
 			$to   = array();
 			$to[] = $author_email;
-			$to[] = 'pippin@pippinsplugins.com';
 
 			$message  = "Hello {$author_name},\n\n";
 			$message .= "This email is to alert you that your ticket titled {$ticket->post_title} at https://easydigitaldownloads.com has been automatically closed due to inactivity.\n\n";
