@@ -837,6 +837,7 @@ function edd_bbp_close_old_tickets_and_notify() {
 		}
 
 		$emails->__set( 'from_address', false );
+		$emails->__set( 'headers', '' );
 
 	}
 
