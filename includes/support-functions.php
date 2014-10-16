@@ -813,10 +813,10 @@ function edd_bbp_close_old_tickets_and_notify() {
 
 		$headers = $emails->get_headers();
 		$headers .= "Bcc: pippin@pippinsplugins.com,andrew@sumobi.com,sdavis2702@gmail.com\r\n";
-		$emails->__set( 'headers', $headers );
 
 		foreach( $tickets as $ticket ) {
 
+			$emails->__set( 'headers', $headers );
 			$author_name  = get_the_author_meta( 'display_name', $ticket->post_author );
 			$author_email = get_the_author_meta( 'user_email', $ticket->post_author );
 
