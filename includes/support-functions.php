@@ -868,6 +868,10 @@ EMAILMSG;
 }
 
 function edd_bbp_common_issues() {
+
+	if( bbp_is_topic_edit() ) {
+		return;
+	}
 ?>
 	<script type="text/javascript">
 	jQuery(document).ready(function($) {
