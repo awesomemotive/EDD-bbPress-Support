@@ -671,7 +671,7 @@ function edd_bbp_get_topic_assignee_name( $user_id = NULL ) {
 
 
 /**
- * Send priority messages to Hall
+ * Send priority messages to Slack
  *
  * @since		1.0.0
  * @param		int $topic_id The ID of this topic
@@ -680,7 +680,7 @@ function edd_bbp_get_topic_assignee_name( $user_id = NULL ) {
  * @param		int $topic_author The author of this topic
  * @return		void
  */
-function edd_bbp_send_priority_to_hall( $topic_id = 0, $forum_id = 0, $anonymous_data = false, $topic_author = 0 ) {
+function edd_bbp_send_priority_to_slack( $topic_id = 0, $forum_id = 0, $anonymous_data = false, $topic_author = 0 ) {
 	// Bail if topic is not published
 	if ( ! bbp_is_topic_published( $topic_id ) ) {
 		return;
@@ -691,8 +691,9 @@ function edd_bbp_send_priority_to_hall( $topic_id = 0, $forum_id = 0, $anonymous
 	}
 
 	$json = json_encode( array(
+		'username' => 'edd-bot',
 		'title'   => 'A new priority ticket has been posted',
-		'message' => esc_html( get_the_title( $topic_id ) ) . ' - ' . esc_url( get_permalink( $topic_id ) )
+		'text' => esc_html( get_the_title( $topic_id ) ) . ' - <' . esc_url( get_permalink( $topic_id ) ) . '|View Ticket>'
 	) );
 
 	$args = array(
@@ -704,9 +705,9 @@ function edd_bbp_send_priority_to_hall( $topic_id = 0, $forum_id = 0, $anonymous
 		'sslverify' => false
 	);
 
-	wp_remote_post( 'https://hall.com/api/1/services/generic/7a4672fbb62a48920058d7cc0c1da6c8', $args );
+	wp_remote_post( 'https://hooks.slack.com/services/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', $args );
 }
-add_action( 'bbp_new_topic', 'edd_bbp_send_priority_to_hall', 10, 4 );
+add_action( 'bbp_new_topic', 'edd_bbp_send_priority_to_slack', 10, 4 );
 
 
 /**
