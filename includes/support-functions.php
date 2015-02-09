@@ -692,8 +692,8 @@ function edd_bbp_send_priority_to_slack( $topic_id = 0, $forum_id = 0, $anonymou
 
 	$json = json_encode( array(
 		'username' => 'edd-bot',
-		'title'   => 'A new priority ticket has been posted',
-		'text' => esc_html( get_the_title( $topic_id ) ) . ' - <' . esc_url( get_permalink( $topic_id ) ) . '|View Ticket>'
+		'icon_emoji' => ':happy:',
+		'text' => 'A new priority ticket has been posted - ' . esc_html( get_the_title( $topic_id ) ) . ' - <' . esc_url( get_permalink( $topic_id ) ) . '|View Ticket>'
 	) );
 
 	$args = array(
