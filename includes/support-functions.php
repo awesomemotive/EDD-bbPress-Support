@@ -671,7 +671,7 @@ function edd_bbp_get_topic_assignee_name( $user_id = NULL ) {
 
 
 /**
- * Send priority messages to Hall
+ * Send priority messages to Slack
  *
  * @since		1.0.0
  * @param		int $topic_id The ID of this topic
@@ -680,7 +680,7 @@ function edd_bbp_get_topic_assignee_name( $user_id = NULL ) {
  * @param		int $topic_author The author of this topic
  * @return		void
  */
-function edd_bbp_send_priority_to_hall( $topic_id = 0, $forum_id = 0, $anonymous_data = false, $topic_author = 0 ) {
+function edd_bbp_send_priority_to_slack( $topic_id = 0, $forum_id = 0, $anonymous_data = false, $topic_author = 0 ) {
 	// Bail if topic is not published
 	if ( ! bbp_is_topic_published( $topic_id ) ) {
 		return;
@@ -691,8 +691,9 @@ function edd_bbp_send_priority_to_hall( $topic_id = 0, $forum_id = 0, $anonymous
 	}
 
 	$json = json_encode( array(
-		'title'   => 'A new priority ticket has been posted',
-		'message' => esc_html( get_the_title( $topic_id ) ) . ' - ' . esc_url( get_permalink( $topic_id ) )
+		'username' => 'edd-bot',
+		'icon_emoji' => ':happy:',
+		'text' => 'A new priority ticket has been posted - ' . esc_html( get_the_title( $topic_id ) ) . ' - <' . esc_url( get_permalink( $topic_id ) ) . '|View Ticket>'
 	) );
 
 	$args = array(
@@ -704,9 +705,9 @@ function edd_bbp_send_priority_to_hall( $topic_id = 0, $forum_id = 0, $anonymous
 		'sslverify' => false
 	);
 
-	wp_remote_post( 'https://hall.com/api/1/services/generic/7a4672fbb62a48920058d7cc0c1da6c8', $args );
+	wp_remote_post( 'https://hooks.slack.com/services/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', $args );
 }
-add_action( 'bbp_new_topic', 'edd_bbp_send_priority_to_hall', 10, 4 );
+add_action( 'bbp_new_topic', 'edd_bbp_send_priority_to_slack', 10, 4 );
 
 
 /**
@@ -811,8 +812,12 @@ function edd_bbp_close_old_tickets_and_notify() {
 		$emails->__set( 'from_address', 'no-reply@easydigitaldownloads.com' );
 		$emails->heading = 'Support Alert';
 
+		$headers = $emails->get_headers();
+		$headers .= "Bcc: pippin@pippinsplugins.com,andrew@sumobi.com,sdavis2702@gmail.com\r\n";
+
 		foreach( $tickets as $ticket ) {
 
+			$emails->__set( 'headers', $headers );
 			$author_name  = get_the_author_meta( 'display_name', $ticket->post_author );
 			$author_email = get_the_author_meta( 'user_email', $ticket->post_author );
 
@@ -820,7 +825,6 @@ function edd_bbp_close_old_tickets_and_notify() {
 
 			$to   = array();
 			$to[] = $author_email;
-			$to[] = 'pippin@pippinsplugins.com';
 
 			$message  = "Hello {$author_name},\n\n";
 			$message .= "This email is to alert you that your ticket titled {$ticket->post_title} at https://easydigitaldownloads.com has been automatically closed due to inactivity.\n\n";
@@ -834,6 +838,7 @@ function edd_bbp_close_old_tickets_and_notify() {
 		}
 
 		$emails->__set( 'from_address', false );
+		$emails->__set( 'headers', '' );
 
 	}
 
@@ -864,6 +869,10 @@ EMAILMSG;
 }
 
 function edd_bbp_common_issues() {
+
+	if( bbp_is_topic_edit() ) {
+		return;
+	}
 ?>
 	<script type="text/javascript">
 	jQuery(document).ready(function($) {
@@ -971,10 +980,17 @@ add_action( 'bbp_new_topic', 'edd_bbp_store_docs_helpful_selection', 20, 4 );
 
 function edd_bbp_show_docs_helpful_selection() {
 
+	static $edd_bbp_doc_notice;
+
 	$helpful  = get_post_meta( bbp_get_topic_id(), '_edd_bbp_docs_helpful', true );
 	if( empty( $helpful ) || ! current_user_can( 'moderate' ) ) {
 		return;
 	}
+
+	if( $edd_bbp_doc_notice ) {
+		return;
+	}
+
 ?>
 	<div class="bbp-template-notice edd-bbp-docs-helpful">
 		<p>
@@ -988,5 +1004,42 @@ function edd_bbp_show_docs_helpful_selection() {
 		</p>
 	</div>
 <?php
+	$edd_bbp_doc_notice = true;
 }
 add_action( 'bbp_theme_after_reply_content', 'edd_bbp_show_docs_helpful_selection' );
+
+/**
+ * Send a Pushover Notification when a moderator is assigned to a topic
+ */
+function edd_bbp_send_pushover_notification_on_assignment() {
+	if ( isset( $_POST['bbps_support_topic_assign'] ) ) {
+
+		if( ! function_exists( 'ckpn_send_notification' ) )
+			return;
+
+		$user_id  = absint( $_POST['bbps_assign_list'] );
+		$topic    = bbp_get_topic( $_POST['bbps_topic_id'] );
+
+		if ( $user_id > 0 && $user_id != get_current_user_id() ) {
+			$title = __( 'Easy Digital Downloads: A forum topic has been assigned to you', 'eddwp' );
+			$message = sprintf( __( 'You have been assigned to %1$s by another moderator', 'eddwp' ), $topic->post_title );
+			$user_push_key = get_user_meta( $user_id, 'ckpn_user_key', true );
+
+			if( $user_push_key ) {
+				$url       = $topic->guid;
+				$url_title = __( 'View Topic', 'eddwp' );
+
+				$args = array(
+					'title' => $title,
+					'message' => $message,
+					'user' => $user_push_key,
+					'url' => $url,
+					'url_title' => $url_title
+				);
+
+				ckpn_send_notification( $args );
+			}
+		}
+	}
+}
+add_action( 'init', 'edd_bbp_send_pushover_notification_on_assignment' );

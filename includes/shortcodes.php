@@ -127,10 +127,6 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 				'key'   => '_bbps_topic_pending'
 			),
 			array(
-				'key'   => '_bbps_topic_status',
-				'value' => '1'
-			),
-			array(
 				'key'   => 'bbps_topic_assigned',
 				'value' => $user_ID,
 			)
