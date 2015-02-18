@@ -150,6 +150,9 @@ function edd_bbp_d_generate_status_options( $topic_id ) {
 function edd_bbp_update_status() {
 	$topic_id = absint( $_POST['bbps_topic_id'] );
 	$status   = sanitize_text_field( $_POST['bbps_support_option'] );
+	if( 1 == (int) $status ) {
+		delete_post_meta( $topic_id, '_bbps_topic_pending' );
+	}
 	update_post_meta( $topic_id, '_bbps_topic_status', $status );
 }
 
