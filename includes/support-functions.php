@@ -818,7 +818,7 @@ function edd_bbp_close_old_tickets_and_notify() {
 		$emails->heading = 'Support Alert';
 
 		$headers = $emails->get_headers();
-		$headers .= "Bcc: pippin@pippinsplugins.com,andrew@sumobi.com,sdavis2702@gmail.com\r\n";
+		//$headers .= "Bcc: pippin@pippinsplugins.com,andrew@sumobi.com,sdavis2702@gmail.com\r\n";
 
 		foreach( $tickets as $ticket ) {
 
@@ -838,6 +838,7 @@ function edd_bbp_close_old_tickets_and_notify() {
 
 			$emails->send( $to, 'Support Ticket Closed', $message );
 
+			delete_post_meta( $ticket->ID, '_bbps_topic_pending' );
 			update_post_meta( $ticket->ID, '_bbps_topic_status', '2' );
 
 		}
