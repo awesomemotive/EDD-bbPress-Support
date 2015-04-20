@@ -3,7 +3,7 @@
  * Plugin Name:		EDD bbPress Support Dashboard
  * Plugin URI:		https://github.com/easydigitaldownloads/EDD-bbPress-Support/
  * Description:		Support dashboard for sites running EDD and bbPress
- * Version:			2.1
+ * Version:			2.1.1
  * Author:			Pippin Williamson, Daniel J Griffiths and Sunny Ratilal
  * Author URI:		https://easydigitaldownloads.com/
  *
@@ -143,7 +143,7 @@ if( ! class_exists( 'EDD_BBP' ) ) {
 			if( isset( $links['stick'] ) ) {
 
 				unset( $links['stick'] );
-				
+
 			}
 
 			unset( $links['reply'] );

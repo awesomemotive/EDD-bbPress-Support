@@ -56,7 +56,7 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 				<div class="mod-name"><?php echo $mod->display_name; ?></div>
 				<div class="mod-gravatar"><?php echo get_avatar( $mod->ID, 45 ); ?></div>
 				<div class="mod-ticket-count">
-					<a href="<?php echo add_query_arg( 'mod', $mod->ID ); ?>">Tickets: <strong><?php echo $ticket_count; ?></strong></div></a>
+					<a href="<?php echo esc_url( add_query_arg( 'mod', $mod->ID ) ); ?>">Tickets: <strong><?php echo $ticket_count; ?></strong></div></a>
 			</div>
 
 		<?php endforeach; ?>
@@ -268,7 +268,7 @@ function edd_bbp_dashboard_shortcode( $atts, $content = null ) {
 							<?php while( $waiting_tickets->have_posts() ) : $waiting_tickets->the_post(); ?>
 								<?php $parent = get_post_field( 'post_parent', get_the_ID() ); ?>
 								<?php $row_class = ( $parent == 499 ) ? 'danger' : ''; ?>
-								<?php $remove_url = add_query_arg( array( 'topic_id' => get_the_ID(), 'bbps_action' => 'remove_pending' ) ); ?>
+								<?php $remove_url = esc_url( add_query_arg( array( 'topic_id' => get_the_ID(), 'bbps_action' => 'remove_pending' ) ) ); ?>
 								<tr class = "<?php echo $row_class; ?>">
 									<td>
 										<input type="checkbox" name="tickets[]" value="<?php echo esc_attr( get_the_ID() ); ?>"/>

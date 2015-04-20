@@ -208,8 +208,8 @@ function edd_bbp_assign_topic_form() {
 	$status_label = $status == '1' ? 'not resolved' : 'resolved';
 
 	if ( ! current_user_can( 'moderate' ) ) {
-		
-?>		
+
+?>
 	<div class="moderator-tools clearfix">This topic is: <?php echo $status_label; ?></div>
 <?php
 		return;
@@ -268,7 +268,7 @@ function edd_bbp_assign_topic_form() {
 					<input type="hidden" value="<?php echo $topic_id ?>" name="bbps_topic_id" />
 				</form>
 				<?php endif; ?>
-				
+
 				<div class="clearfix"></div>
 				<form id="bbps-topic-status" name="bbps_support" action="" method="post">
 					<select name="bbps_support_option" id="bbps_support_options">
@@ -546,7 +546,7 @@ function edd_bbp_reply_and_resolve( $reply_id = 0, $topic_id = 0, $forum_id = 0,
 	if ( isset( $_POST['bbp_reply_open'] ) ) {
 		update_post_meta( $topic_id, '_bbps_topic_status', 1 );
 	}
-	
+
 	delete_post_meta( $topic_id, '_bbps_topic_pending' );
 }
 add_action( 'bbp_new_reply', 'edd_bbp_reply_and_resolve', 0, 6 );
@@ -781,7 +781,7 @@ add_action( 'edd_bbp_sidebar', 'edd_bbp_display_connected_docs' );
  * @return		void
  */
 function edd_bbp_close_old_tickets_and_notify() {
-	
+
 	$args = array(
 		'post_type'    => 'topic',
 		'meta_query'   => array(
