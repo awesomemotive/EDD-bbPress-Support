@@ -818,7 +818,6 @@ function edd_bbp_close_old_tickets_and_notify() {
 		$emails->heading = 'Support Alert';
 
 		$headers = $emails->get_headers();
-		//$headers .= "Bcc: pippin@pippinsplugins.com,andrew@sumobi.com,sdavis2702@gmail.com\r\n";
 
 		foreach( $tickets as $ticket ) {
 
